@@ -22,3 +22,4 @@ Reactions
    ternary_chemical_activation
    troe
    tunneling
+   wet_deposition
