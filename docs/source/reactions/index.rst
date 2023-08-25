@@ -8,3 +8,4 @@ Reactions
 
    arrhenius
    aqueous_equilibrium
+   cmaq_H2O2
