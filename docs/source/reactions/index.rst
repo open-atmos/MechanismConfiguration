@@ -11,3 +11,4 @@ Reactions
    cmaq_H2O2
    cmaq_OH_HNO3
    condensed_phase_arrhenius
+   condensed_phase_photolysis
