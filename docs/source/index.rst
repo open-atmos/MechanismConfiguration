@@ -12,6 +12,8 @@
 .. ~ for subsubsubsections
 .. " for paragraphs
 
+.. |project_version| replace:: 1.0.0
+
 ###############################################################
 Welcome to the OpenAtmos Mechanism Configuration documentation!
 ###############################################################

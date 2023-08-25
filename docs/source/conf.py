@@ -11,15 +11,17 @@ project = 'Mechanism Configuration'
 current_year = datetime.datetime.now().year
 copyright = f"2022-{current_year}, OpenAtmos"
 author = 'OpenAtmos'
-release = '0.0.0'
+version = '1.0.0'
+release = version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-  'sphinx_design',
-  'sphinx_tabs.tabs',
-  'sphinxcontrib.bibtex',
+    'sphinx_design',
+    'sphinx_tabs.tabs',
+    'sphinxcontrib.bibtex',
+    'sphinxemoji.sphinxemoji',
 ]
 
 templates_path = ['_templates']
