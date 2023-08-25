@@ -12,3 +12,4 @@ Reactions
    cmaq_OH_HNO3
    condensed_phase_arrhenius
    condensed_phase_photolysis
+   emission
