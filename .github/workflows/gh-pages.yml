@@ -8,10 +8,30 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+
       - name: Install dependencies
         run: |
           pip install -r docs/requirements.txt
+
       - name: Build documentation
         run: |
           cd docs
           make html
+          rsync build/html _gh-pages/
+
+      # Add the .nojekyll file
+      - name: nojekyll
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          touch _gh-pages/.nojekyll
+
+      # Deploy
+      # https://github.com/peaceiris/actions-gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _gh-pages/
+          force_orphan: true
