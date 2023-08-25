@@ -1,9 +1,9 @@
 SIMPOL.1 Phase-Transfer Reaction
 ================================
 
-SIMPOL phase transfer reactions are based on the SIMPOL.1 model calculations of vapor pressure described by Pankow and Asher (2008) [Pankow2008]_.
+SIMPOL phase transfer reactions are based on the SIMPOL.1 model calculations of vapor pressure described by Pankow and Asher (2008) :cite:`Pankow2008`.
 
-Mass accommodation coefficients and condensation rate constants are calculated using the method of Ervans et al. (2003) [Ervens2003]_ and references therein. Mass accommodation coefficients (:math:`\alpha`) are calculated as:
+Mass accommodation coefficients and condensation rate constants are calculated using the method of Ervans et al. (2003) :cite:`Ervens2003` and references therein. Mass accommodation coefficients (:math:`\alpha`) are calculated as:
 
 .. math::
 
@@ -17,9 +17,9 @@ Mass accommodation coefficients and condensation rate constants are calculated u
 
    \frac{\alpha}{1-\alpha} = e^{\frac{-\Delta G^{*}}{RT}}
 
-If :math:`\Delta H` and :math:`\Delta S` are not provided, the mass accommodation coefficient is assumed to be 0.1 [Zaveri2008]_.
+If :math:`\Delta H` and :math:`\Delta S` are not provided, the mass accommodation coefficient is assumed to be 0.1 :cite:`Zaveri2008`.
 
-Condensation rate constants are calculated following [Zaveri2008]_ as:
+Condensation rate constants are calculated following :cite:`Zaveri2008` as:
 
 .. math::
 
@@ -35,7 +35,7 @@ Rates can be calculated as:
 
 where :math:`[G]` is the gas-phase species concentration [ppm], :math:`N_a` is the number concentration of particles [\text{particle}\,\text{m}^{-3}], and the rate :math:`r_c` is in [\text{ppm}\,\text{s}^{-1}].
 
-The particle radius used to calculate :math:`k_{f}` is the effective radius [:math:`r_{eff}`], which is taken as the "least-wrong" choice for condensation rates, as it is weighted to surface area [Zender2002]_.
+The particle radius used to calculate :math:`k_{f}` is the effective radius [:math:`r_{eff}`], which is taken as the "least-wrong" choice for condensation rates, as it is weighted to surface area :cite:`Zender2002`.
 
 Input data for SIMPOL phase transfer reactions have the following format:
 
@@ -76,14 +76,4 @@ The key-value pair ``B`` is also required and must have a value of an array of e
 
    B_{n,i} = \sum_{k} \nu_{k,i} B_{n,k} \forall n \in [1...4]
 
-where :math:`\nu_{k,i}` is the number of functional groups :math:`k` in species :math:`i`, and the parameters :math:`B_{n,k}` for each functional group :math:`k` can be found in table 5 of Pankow and Asher (2008) [Pankow2008]_.
-
-References
-----------
-.. [Pankow2008] Pankow, J. F., & Asher, W. E. (2008). SIMPOL.1: a simple group contribution method for predicting vapor pressures and enthalpies of vaporization of multifunctional organic compounds. Atmospheric Chemistry and Physics, 8(10), 2773–2796. doi:10.5194/acp-8-2773-2008
-
-.. [Ervens2003] Ervens, B. (2003). CAPRAM 2.4 (MODAC mechanism): An extended and condensed tropospheric aqueous phase mechanism and its application. Journal of Geophysical Research, 108(D14), 4426. doi:10.1029/2002JD002202
-
-.. [Zaveri2008] Zaveri, R. A., Easter, R. C., Fast, J. D., & Peters, L. K. (2008). Model for Simulating Aerosol Interactions and Chemistry (MOSAIC). Journal of Geophysical Research: Atmospheres, 113(D13). doi:10.1029/2007JD008782
-
-.. [Zender2002] Zender, C. (2002). Particle size distributions: theory and application to aeros
+where :math:`\nu_{k,i}` is the number of functional groups :math:`k` in species :math:`i`, and the parameters :math:`B_{n,k}` for each functional group :math:`k` can be found in table 5 of Pankow and Asher (2008) :cite:`Pankow2008`.

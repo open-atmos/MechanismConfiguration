@@ -15,7 +15,7 @@ CMAQ rate constants are calculated as:
 
    k = k_0 + \left( \frac{k_3 [\mathrm{M}]}{1 + \frac{k_3 [\mathrm{M}]}{k_2}} \right)
 
-where :math:`k_0`, :math:`k_2`, and :math:`k_3` are `Arrhenius` rate constants with :math:`D = 300` and :math:`E = 0`, and :math:`[\mathrm{M}]` is the concentration of air [Gipson]_.
+where :math:`k_0`, :math:`k_2`, and :math:`k_3` are `Arrhenius` rate constants with :math:`D = 300` and :math:`E = 0`, and :math:`[\mathrm{M}]` is the concentration of air :cite:`Gipson`.
 
 Input data for CMAQ :math:`\ce{OH + HNO3}` reactions have the following format:
 
@@ -78,7 +78,3 @@ The key-value pairs ``reactants`` and ``products`` are required. Reactants witho
 The three sets of parameters beginning with ``k0_``, ``k2_``, and ``k3_`` are the `Arrhenius` parameters for the :math:`k_0`, :math:`k_2`, and :math:`k_3` rate constants, respectively. When not present, ``_A`` parameters are assumed to be 1.0, ``_B`` to be 0.0, and ``_C`` to be 0.0.
 
 The unit for time is assumed to be s, but inclusion of the optional key-value pair ``time unit = MIN`` can be used to indicate a rate with minutes as the time unit.
-
-References
-----------
-.. [Gipson] Gipson, G. L. (Reference details to be provided).

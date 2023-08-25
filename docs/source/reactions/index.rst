@@ -19,3 +19,4 @@ Reactions
    simpol_phase_transfer
    surface
    ternary_chemical_activation
+   troe

@@ -16,7 +16,7 @@ where:
 - :math:`D` (K), :math:`B` (unitless), and :math:`E` (:math:`\mathrm{Pa}^{-1}`) are reaction parameters,
 - :math:`T` is the temperature (K), and :math:`P` is the pressure (Pa).
 
-The first two terms are described in Finlayson-Pitts and Pitts (2000) [Finlayson-Pitts2000]_.
+The first two terms are described in Finlayson-Pitts and Pitts (2000) :cite:`Finlayson-Pitts2000`.
 The final term is included to accommodate CMAQ EBI solver type 7 rate constants.
 
 Input data for Arrhenius equations has the following format:
@@ -80,9 +80,3 @@ included, they are assumed to be 0.0. When ``A`` is not included, it is assumed 
 0.0. When ``E`` is not included, it is assumed to be 0.0. The unit for time is assumed to be s, but
 inclusion of the optional key-value pair ``time unit = MIN`` can be used to indicate a rate with
 minutes as the time unit.
-
-
-References
-----------
-.. [Finlayson-Pitts2000] Finlayson-Pitts, B. J., & Pitts Jr, J. N. (2000). Chemistry of the Upper and Lower
-   Atmosphere: Theory, Experiments, and Applications. Academic Press.
