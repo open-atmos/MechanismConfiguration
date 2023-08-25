@@ -18,3 +18,4 @@ Reactions
    photolysis
    simpol_phase_transfer
    surface
+   ternary_chemical_activation
