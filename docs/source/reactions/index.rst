@@ -21,3 +21,4 @@ Reactions
    surface
    ternary_chemical_activation
    troe
+   tunneling
