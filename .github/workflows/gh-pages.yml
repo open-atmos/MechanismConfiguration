@@ -17,13 +17,13 @@ jobs:
         run: |
           cd docs
           make html
-          rsync build/html _gh-pages/
+          rsync build/html _gh_pages/
 
       # Add the .nojekyll file
       - name: nojekyll
         if: ${{ github.event_name == 'push' }}
         run: |
-          touch _gh-pages/.nojekyll
+          touch _gh_pages/.nojekyll
 
       # Deploy
       # https://github.com/peaceiris/actions-gh-pages
@@ -33,5 +33,5 @@ jobs:
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _gh-pages/
+          publish_dir: _gh_pages/
           force_orphan: true
