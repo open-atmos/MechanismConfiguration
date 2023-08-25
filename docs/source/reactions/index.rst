@@ -10,3 +10,4 @@ Reactions
    aqueous_equilibrium
    cmaq_H2O2
    cmaq_OH_HNO3
+   condensed_phase_arrhenius
