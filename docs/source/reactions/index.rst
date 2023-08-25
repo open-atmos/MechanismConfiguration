@@ -14,3 +14,4 @@ Reactions
    condensed_phase_photolysis
    emission
    first_order_loss
+   hl_phase_transfer
