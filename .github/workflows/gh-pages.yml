@@ -40,7 +40,7 @@ jobs:
         run: |
           cd docs
           make html
-          rsync build/html _gh-pages/
+          cp -r build/html/* _gh-pages/
 
       # Add the .nojekyll file
       - name: nojekyll
