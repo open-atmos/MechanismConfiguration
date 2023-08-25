@@ -12,10 +12,10 @@ where:
 - :math:`A` is the pre-exponential factor (:math:`[U]^{-(n-1)}\,\mathrm{s}^{-1}`),
 - :math:`U` is the unit of the reactants and products, which can be :math:`M` for aqueous-phase reactions or :math:`\mathrm{mol\,m}^{-3}` for all other condensed-phase reactions,
 - :math:`n` is the number of reactants,
-- :math:`E_a` is the activation energy (J),
-- :math:`k_b` is the Boltzmann constant (J/K),
-- :math:`D` (K), :math:`B` (unitless), and :math:`E` (:math:`\mathrm{Pa}^{-1}`) are reaction parameters,
-- :math:`T` is the temperature (K), and :math:`P` is the pressure (Pa).
+- :math:`E_a` is the activation energy :math:`(\mathrm{J})`,
+- :math:`k_b` is the Boltzmann constant :math:`(\mathrm{J}/\mathrm{K})`,
+- :math:`D` :math:`(\mathrm{K})`, :math:`B` (unitless), and :math:`E` (:math:`\mathrm{Pa}^{-1}`) are reaction parameters,
+- :math:`T` is the temperature :math:`(\mathrm{K})`, and :math:`P` is the pressure :math:`(\mathrm{Pa})`.
 
 The first two terms are described in Finlayson-Pitts and Pitts (2000) :cite:`Finlayson-Pitts2000`. The final term is included to accommodate CMAQ EBI solver type 7 rate constants :cite:`Gipson`.
 

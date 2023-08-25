@@ -32,8 +32,8 @@ wet_deposition                         |:white_check_mark:|                     
    :maxdepth: 2
    :caption: Contents:
 
-   arrhenius
    aqueous_equilibrium
+   arrhenius
    branched
    cmaq_H2O2
    cmaq_OH_HNO3

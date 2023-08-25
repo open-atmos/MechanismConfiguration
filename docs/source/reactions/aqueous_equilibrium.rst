@@ -2,7 +2,8 @@ Aqueous-Phase Equilibrium
 =========================
 
 Aqueous equilibrium reactions are calculated as forward and reverse reactions.
-The reverse rate constant must be provided as part of the input data, and the forward rate constant is calculated using the provided reverse rate constant and an equilibrium constant of the following format:
+The reverse rate constant must be provided as part of the input data, and the forward rate constant is calculated using the provided 
+reverse rate constant and an equilibrium constant of the following format:
 
 .. math::
 
@@ -10,9 +11,9 @@ The reverse rate constant must be provided as part of the input data, and the fo
 
 where:
 
-- :math:`A` is the pre-exponential factor (:math:`s^{-1}`),
+- :math:`A` is the pre-exponential factor (:math:`\mathrm{s}^{-1}`),
 - :math:`C` is a constant,
-- :math:`T` is the temperature (K).
+- :math:`T` is the temperature :math:`(\mathrm{K})`.
 
 Input data for aqueous equilibrium equations should take the form:
 
@@ -64,7 +65,11 @@ Input data for aqueous equilibrium equations should take the form:
                 }
             }
 
-The key-value pairs ``reactants`` and ``products`` are required. Reactants and products without a ``qty`` value are assumed to appear once in the reaction equation. Reactant and product species must be present in the specified phase and include a ``molecular weight [kg mol-1]`` parameter in kg mole^{-1}. The parameter ``aqueous-phase water`` is required and must be the name of the aerosol-phase species that is used for water. The parameter ``ion pair`` is optional. When it is included, its value must be the name of an ion pair that is present in the specified aerosol phase. Its mean binary activity coefficient will be applied to the reverse reaction.
+The key-value pairs ``reactants`` and ``products`` are required. Reactants and products without a ``qty`` value are assumed to appear once
+in the reaction equation. Reactant and product species must be present in the specified phase and include a ``molecular weight [kg mol-1]`` 
+parameter in :math:`\mathrm{kg}\ \mathrm{mole}^{-1}`. The parameter ``aqueous-phase water`` is required and must be the name of the aerosol-phase species that is used for water.
+The parameter ``ion pair`` is optional. When it is included, its value must be the name of an ion pair that is present in the specified aerosol phase.
+Its mean binary activity coefficient will be applied to the reverse reaction.
 
 When ``A`` is not included, it is assumed to be 1.0; when ``C`` is not included, it is assumed to be 0.0. The reverse reaction rate constant ``k_reverse`` is required.
 

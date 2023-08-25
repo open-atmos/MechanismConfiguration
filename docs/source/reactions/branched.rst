@@ -18,14 +18,14 @@ a temperature- and structure-dependent branching ratio calculated as:
 
    A(T, [\text{M}], n) = \frac{2 \times 10^{-22} e^n [\text{M}]}{1 + \frac{2 \times 10^{-22} e^n [\text{M}]}{0.43(T/298)^{-8}}} 0.41^{(1+[\log( \frac{2 \times 10^{-22} e^n [\text{M}]}{0.43(T/298)^{-8}})]^2)^{-1}}
 
-where T is temperature (K), [M] is the number density of air (molecules cm^{-3}),
-X and Y are Arrhenius parameters for the overall reaction, n is the number of
-heavy atoms in the RO2 reacting species (excluding the peroxy moiety), and Z
-is defined as a function of two parameters (α_0, n):
+where :math:`T` is temperature :math:`(\mathrm{K})`, :math:`[\mathrm{M}]` is the number density of air :math:`(\mathrm{molecules}\ \mathrm{cm}^{-3})`,
+:math:`X` and :math:`Y` are Arrhenius parameters for the overall reaction, :math:`n` is the number of
+heavy atoms in the RO2 reacting species (excluding the peroxy moiety), and :math:`Z`
+is defined as a function of two parameters :math:`(\alpha_0, n)`:
 
 .. math::
 
-   Z(α_0, n) = A(T = 293 K, [M] = 2.45 \times 10^{19} \frac{\text{molec}}{\text{cm}^3}, n) \frac{(1-α_0)}{α_0}
+   Z(\alpha_0, n) = A(T = 293 K, [M] = 2.45 \times 10^{19} \frac{\text{molec}}{\text{cm}^3}, n) \frac{(1-α_0)}{α_0}
 
 More details can be found in Wennberg et al. (2018) :cite:`Wennberg2018`.
 

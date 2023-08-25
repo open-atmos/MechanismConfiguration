@@ -69,4 +69,11 @@ Input data for Phase transfer equations have the following format:
                 "aerosol-phase water": "H2O_aq",
             }
 
-The key-value pairs ``gas-phase species`` and ``aerosol-phase species`` are required. Only one gas-phase and one aerosol-phase species are allowed per phase-transfer reaction. Additionally, gas-phase species must include parameters named ``HLC(298K)`` [M\,Pa^{-1}], which is the Henry's Law constant at 298 K, ``HLC exp factor`` [K], which is the Henry's Law constant exponential factor "C", ``diffusion coeff`` [m^2\,s^{-1}], which specifies the diffusion coefficient in \(\text{m}^2\,\text{s}^{-1}\), and ``molecular weight`` [
+The key-value pairs ``gas-phase species`` and ``aerosol-phase species`` are required. 
+Only one gas-phase and one aerosol-phase species are allowed per phase-transfer reaction.
+Additionally, gas-phase species must include parameters named ``HLC(298K)`` :math:`[\mathrm{M}\ \mathrm{Pa}^{-1}]`,
+which is the Henry's Law constant at 298 K, ``HLC exp factor`` :math:`[\mathrm{K}]`, which is the Henry's Law constant exponential factor ``C``, 
+``diffusion coeff [m2 s-1]`` which specifies the diffusion coefficient in 
+:math:`\mathrm{m}^2\,\mathrm{s}^{-1}`, and ``molecular weight``, which specifies the molecular weight of the species in :math:`\mathrm{kg}\,\mathrm{mol}^{−1}`.
+They may optionally include the parameter ``N star``, which will be used to calculate the mass accomodation coefficient.
+When this parameter is not included, the mass accomodation coefficient is assumed to be 1.0.

@@ -25,7 +25,8 @@ Condensation rate constants are calculated following :cite:`Zaveri2008` as:
 
    k_c = 4 \pi r D_g f_{fs}( K_n, \alpha )
 
-where :math:`r` is the radius of the particle(s) [m], :math:`D_g` is the diffusion coefficient of the gas-phase species [\text{m}^2\,\text{s}^{-1}], :math:`f_{fs}( K_n, \alpha )` is the Fuchs Sutugin transition regime correction factor [unitless], :math:`K_n` is the Knudsen Number [unitless], and :math:`\alpha` is the mass accommodation coefficient.
+where :math:`r` is the radius of the particle(s) [m], :math:`D_g` is the diffusion coefficient of the gas-phase species :math:`[\mathrm{m}^2\,\mathrm{s}^{-1}]`,
+:math:`f_{fs}( K_n, \alpha )` is the Fuchs Sutugin transition regime correction factor [unitless], :math:`K_n` is the Knudsen Number [unitless], and :math:`\alpha` is the mass accommodation coefficient.
 
 Rates can be calculated as:
 
@@ -33,7 +34,8 @@ Rates can be calculated as:
 
    r_c = [G] N_a k_c
 
-where :math:`[G]` is the gas-phase species concentration [ppm], :math:`N_a` is the number concentration of particles [\text{particle}\,\text{m}^{-3}], and the rate :math:`r_c` is in [\text{ppm}\,\text{s}^{-1}].
+where :math:`[G]` is the gas-phase species concentration [ppm], :math:`N_a` is the number concentration of particles 
+:math:`[\mathrm{particle}\,\mathrm{m}^{-3}]`, and the rate :math:`r_c` is in :math:`[\mathrm{ppm}\,\mathrm{s}^{-1}]`.
 
 The particle radius used to calculate :math:`k_{f}` is the effective radius [:math:`r_{eff}`], which is taken as the "least-wrong" choice for condensation rates, as it is weighted to surface area :cite:`Zender2002`.
 
@@ -66,9 +68,15 @@ Input data for SIMPOL phase transfer reactions have the following format:
                 "B": [ 123.2e3, -41.24, 2951.2, -1.245e-4 ],
             }
 
-The key-value pairs ``gas-phase species``, ``aerosol phase``, and ``aerosol-phase species`` are required. Only one gas-phase and one aerosol-phase species are allowed per phase-transfer reaction. The key-value pair ``aerosol-phase activity coefficient`` is optional. When included, its value must be the name of a species of type \c ACTIVITY_COEFF that is present in the specified aerosol phase. When not included, activity coefficients are assumed to be 1.0.
+The key-value pairs ``gas-phase species``, ``aerosol phase``, and ``aerosol-phase species`` are required. 
+Only one gas-phase and one aerosol-phase species are allowed per phase-transfer reaction. 
+The key-value pair ``aerosol-phase activity coefficient`` is optional. 
+When included, its value must be the name of a species of type \c ACTIVITY_COEFF that is present in the specified aerosol phase. 
+When not included, activity coefficients are assumed to be 1.0.
 
-Gas-phase species must include parameters named ``diffusion coeff`` [:math:`m^2\,s^{-1}`], which specifies the diffusion coefficient in :math:`m^2\,s^{-1}`, and ``molecular weight`` [:math:`kg\,mol^{-1}`], which specifies the molecular weight of the species in :math:`kg\,mol^{-1}`. They may optionally include the parameter ``N star``, which will be used to calculate the mass accommodation coefficient. When this parameter is not included, the mass accommodation coefficient is assumed to be 1.0.
+Gas-phase species must include parameters named ``diffusion coeff [m2 s-1]`` , which specifies the diffusion coefficient in :math:`\mathrm{m}^2\,\mathrm{s}^{-1}`,
+and ``molecular weight [kg mol-1]``, which specifies the molecular weight of the species in :math:`[\mathrm{kg}\,\mathrm{mol}^{-1}]`. 
+They may optionally include the parameter ``N star``, which will be used to calculate the mass accommodation coefficient. When this parameter is not included, the mass accommodation coefficient is assumed to be 1.0.
 
 The key-value pair ``B`` is also required and must have a value of an array of exactly four members that specifies the SIMPOL parameters for the partitioning species. The ``B`` parameters can be obtained by summing the contributions of each functional group present in the partitioning species to the overall :math:`B_{n,i}` for species :math:`i`, such that:
 
