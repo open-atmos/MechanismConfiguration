@@ -16,3 +16,4 @@ Reactions
    first_order_loss
    hl_phase_transfer
    photolysis
+   simpol_phase_transfer

@@ -13,11 +13,16 @@ Mass accommodation coefficients and condensation rate constants are calculated u
 
 .. math::
 
-   \Delta H_{obs} &= -10 \times (N^*-1) + 7.53 \times (N^{*2/3}-1) - 0.1 \times 10 \quad (\text{kcal}\,\text{M}^{-1})
+   \Delta H_{obs} = -10 \times (N^*-1) + 7.53 \times (N^{*2/3}-1) - 0.1 \times 10 \quad (\text{kcal}\,\text{M}^{-1})
    
-   \Delta S_{obs} &= -13 \times (N^*-1) - 19 \times (N^*-1) + 9.21 \times (N^{*2/3}-1) - 0.1 \times 13 \quad (\text{cal}\,\text{M}^{-1}\,\text{K}^{-1})
+
+.. math::
+
+   \Delta S_{obs} = -13 \times (N^*-1) - 19 \times (N^*-1) + 9.21 \times (N^{*2/3}-1) - 0.1 \times 13 \quad (\text{cal}\,\text{M}^{-1}\,\text{K}^{-1})
    
-   \frac{\alpha}{1-\alpha} &= e^{\frac{-\Delta G^{*}}{RT}}
+.. math::
+
+   \frac{\alpha}{1-\alpha} = e^{\frac{-\Delta G^{*}}{RT}}
 
 If :math:`\Delta H` and :math:`\Delta S` are not provided, :math:`\alpha` is set to 0.1 [Zaveri2008].
 
