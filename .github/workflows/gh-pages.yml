@@ -36,7 +36,6 @@ jobs:
           pip list
 
       - name: Setup gh-pages folder
-        if: ${{ github.event_name == 'push' }}
         run: |
           set -x
           git fetch
