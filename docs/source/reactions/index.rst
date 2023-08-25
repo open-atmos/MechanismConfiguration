@@ -7,3 +7,4 @@ Reactions
    :caption: Contents:
 
    arrhenius
+   aqueous_equilibrium
