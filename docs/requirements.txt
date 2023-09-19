@@ -2,3 +2,5 @@ pydata-sphinx-theme
 sphinx
 sphinx-design
 sphinx-tabs
+sphinxcontrib-bibtex
+sphinxemoji

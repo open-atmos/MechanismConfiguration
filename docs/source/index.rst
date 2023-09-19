@@ -1,9 +1,9 @@
-.. CAMP Configuration documentation master file, created by
+.. OpenAtmos Mechanism Configuration documentation master file, created by
    sphinx-quickstart on Fri Jul 21 21:05:33 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. camp configuration documentation HTML titles
+.. open atmos mechanism configuration documentation HTML titles
 ..
 .. # (over and under) for module headings
 .. = for sections
@@ -12,9 +12,11 @@
 .. ~ for subsubsubsections
 .. " for paragraphs
 
-##############################################
-Welcome to CAMP Configuration's documentation!
-##############################################
+.. |project_version| replace:: 1.0.0
+
+###############################################################
+Welcome to the OpenAtmos Mechanism Configuration documentation!
+###############################################################
 
 .. toctree::
    :maxdepth: 2
@@ -22,6 +24,7 @@ Welcome to CAMP Configuration's documentation!
 
    aerosol_phases/index
    aerosol_representations/index
+   bibliography
    chemical_species/index
    examples/index
    mechanisms/index
