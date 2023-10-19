@@ -71,12 +71,12 @@ Individual configuration files have the following format:
 
 
 Each input file should contain exactly one object with a single key-value
-pair `camp-data` whose value is an array of objects.
+pair ``camp-data`` whose value is an array of objects.
 Additional top-level key-value pairs will be ignored.
-Each of the objects in the `camp-data` array must contain a key-value pair `type`
+Each of the objects in the ``camp-data`` array must contain a key-value pair ``type``
 whose value is a string referencing a valid configuration class.
 
-The valid top-level configuration objects that can appear in the `camp-data`
+The valid top-level configuration objects that can appear in the ``camp-data``
 array are described here:
 
 :ref:`chemical-species`
@@ -87,9 +87,9 @@ array are described here:
 
 :ref:`mechanisms`
 
-The arrangement of objects within the `camp-data` array and between input files is arbitrary.
+The arrangement of objects within the ``camp-data`` array and between input files is arbitrary.
 Additionally, some objects, such as chemical species and mechanisms may be split into
-multiple objects within the `camp-data` array and/or between files,
+multiple objects within the ``camp-data`` array and/or between files,
 and will be combined based on their unique name.
 This flexibility is provided so that the chemical mechanism data can be organized
 in a way that makes sense to the designer of the mechanism.
