@@ -9,7 +9,7 @@ Arrhenius-like reaction rate constant equations are calculated as follows:
 
 where:
 
-- :math:`A` is the pre-exponential factor (:math:`(\mathrm{cm}^{-3})^{-(n-1)}\,\mathrm{s}^{-1}`),
+- :math:`A` is the pre-exponential factor (:math:`(\mbox{molecule}\,\mathrm{cm}^{-3})^{-(n-1)}\,\mathrm{s}^{-1}`),
 - :math:`n` is the number of reactants,
 - :math:`E_a` is the activation energy :math:`(\mathrm{J})`,
 - :math:`k_b` is the Boltzmann constant :math:`(\mathrm{J}/\mathrm{K})`,
@@ -26,6 +26,7 @@ Input data for Arrhenius equations has the following format:
     .. tab-item:: YAML
 
         .. code-block:: yaml
+           :force:
 
             type: ARRHENIUS
             A: 123.45
@@ -35,21 +36,22 @@ Input data for Arrhenius equations has the following format:
             E: 6.0e-06
             time unit: MIN
             reactants:
-            spec1: {}
-            spec2:
+              spec1:
+              spec2:
                 qty: 2
-            # ... (other reactants)
+              ...
             products:
-            spec3: {}
-            spec4:
+              spec3:
+              spec4:
                 yield: 0.65
-            # ... (other products)
+              ...
 
 
 
     .. tab-item:: JSON
 
         .. code-block:: json
+           :force:
 
             {
                 "type" : "ARRHENIUS",
@@ -60,12 +62,14 @@ Input data for Arrhenius equations has the following format:
                 "E"  : 0.6E-5,
                 "time unit" : "MIN",
                 "reactants" : {
-                "spec1" : {},
-                "spec2" : { "qty" : 2 },
+                  "spec1" : {},
+                  "spec2" : { "qty" : 2 },
+                  ...
                 },
                 "products" : {
-                "spec3" : {},
-                "spec4" : { "yield" : 0.65 },
+                  "spec3" : {},
+                  "spec4" : { "yield" : 0.65 },
+                  ...
                 }
             }
 

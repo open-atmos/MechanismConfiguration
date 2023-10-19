@@ -5,7 +5,7 @@ Troe (fall-off) reaction rate constant equations take the form:
 
 .. math::
 
-   \frac{k_0[\mathrm{M}]}{1 + \frac{k_0[\mathrm{M}]}{k_{\infty}} F_C^{\left(1 + \frac{1}{N} [\log_{10}(\frac{k_0[\mathrm{M}]}{k_{\infty}})]^2\right)^{-1}}}
+   \frac{k_0[\mathrm{M}]}{1 + \frac{k_0[\mathrm{M}]}{k_{\infty}}} F_C^{\left(1 + \frac{1}{N} [\log_{10}(\frac{k_0[\mathrm{M}]}{k_{\infty}})]^2\right)^{-1}}
 
 where:
 
@@ -39,12 +39,11 @@ Input data for Troe reactions have the following format:
                 spec1: {}
                 spec2:
                     qty: 2
-                # ... (other reactants)
             products:
                 spec3: {}
                 spec4:
                     yield: 0.65
-                # ... (other products)
+
 
     .. tab-item:: JSON
 
@@ -65,13 +64,13 @@ Input data for Troe reactions have the following format:
                     "spec1": {},
                     "spec2": {
                         "qty": 2
-                    },
+                    }
                 },
                 "products": {
                     "spec3": {},
                     "spec4": {
                         "yield": 0.65
-                    },
+                    }
                 }
             }
 
@@ -83,6 +82,6 @@ The two sets of parameters beginning with ``k0_`` and ``kinf_`` are the `Arrheni
 :math:`k_0` and :math:`k_{\infty}` rate constants, respectively. When not present, ``_A`` parameters are
 assumed to be 1.0, ``_B`` to be 0.0, ``_C`` to be 0.0, ``Fc`` to be 0.6, and ``N`` to be 1.0.
 
-The unit for time is assumed to be s, but inclusion of the optional key-value pair ``time unit = MIN``
+The unit for time is assumed to be s, but inclusion of the optional key-value pair ``time unit`` = ``MIN``
 can be used to indicate a rate with minutes as the time unit.
 

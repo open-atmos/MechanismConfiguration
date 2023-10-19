@@ -22,14 +22,13 @@ Input data for photolysis reactions have the following format:
 
             type: PHOTOLYSIS
             reactants:
-                spec1: {}
+                spec1:
             products:
-                spec2: {}
+                spec2:
                 spec3:
                     yield: 0.65
-                ...
             scaling factor: 1.2
-            ...
+
 
     .. tab-item:: JSON
 
@@ -44,9 +43,9 @@ Input data for photolysis reactions have the following format:
                     "spec2": {},
                     "spec3": {
                         "yield": 0.65
-                    },
+                    }
                 },
-                "scaling factor": 1.2,
+                "scaling factor": 1.2
             }
 
 The key-value pairs ``reactants`` and ``products`` are required.
