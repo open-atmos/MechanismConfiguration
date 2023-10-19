@@ -22,13 +22,14 @@ Welcome to the OpenAtmos Mechanism Configuration documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   overview
+   chemical_species/index
    aerosol_phases/index
    aerosol_representations/index
-   bibliography
-   chemical_species/index
-   examples/index
    mechanisms/index
    reactions/index
+   examples/index
+   bibliography
 
 
 

@@ -1,3 +1,4 @@
+.. _aerosol-phases:
 ##############
 Aerosol Phases
 ##############

@@ -1,3 +1,4 @@
+.. _chemical-species:
 ################
 Chemical Species
 ################
