@@ -8,6 +8,8 @@ An attempt at defining a model-independent configuration schema for atmospheric 
 
 Copyright (C) 2017&ndash;2023 Barcelona Supercomputing Center, University of Illinois at Urbana&ndash;Champaign, and National Center for Atmospheric Research
 
+The configuration documentation can be found [here](https://open-atmos.github.io/MechanismConfiguration/).
+
 ## Building the Documentation
 
 With python and pip installed, go to the `docs/` folder and run:
