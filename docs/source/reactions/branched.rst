@@ -31,9 +31,9 @@ More details can be found in Wennberg et al. (2018) :cite:`Wennberg2018`.
 
 Input data for Wennberg NO + RO2 equations has the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -57,7 +57,7 @@ Input data for Wennberg NO + RO2 equations has the following format:
                 yield: 0.32
 
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

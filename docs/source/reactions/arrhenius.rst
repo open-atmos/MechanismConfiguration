@@ -21,9 +21,9 @@ The final term is included to accommodate CMAQ EBI solver type 7 rate constants.
 
 Input data for Arrhenius equations has the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -47,7 +47,7 @@ Input data for Arrhenius equations has the following format:
 
 
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

@@ -13,9 +13,9 @@ The reaction rate can be scaled by providing the "scaling factor" keyword in the
 
 Input data for condensed-phase Photolysis reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -34,7 +34,7 @@ Input data for condensed-phase Photolysis reactions have the following format:
               ...
             scaling factor: 11.20
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

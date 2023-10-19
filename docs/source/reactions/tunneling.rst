@@ -14,9 +14,9 @@ dependence as described in Wennberg et al. (2018) :cite:`Wennberg2018`.
 
 Input data for Wennberg tunneling equations has the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -34,7 +34,7 @@ Input data for Wennberg tunneling equations has the following format:
                 spec4:
                     yield: 0.65
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

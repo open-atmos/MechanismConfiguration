@@ -44,9 +44,9 @@ where :math:`[G]` is the gas-phase species concentration [ppm], :math:`N_a` is t
 
 Input data for Phase transfer equations have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -57,7 +57,7 @@ Input data for Phase transfer equations have the following format:
             aerosol-phase water: H2O_aq
             ...
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

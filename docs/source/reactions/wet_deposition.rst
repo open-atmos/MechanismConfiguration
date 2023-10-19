@@ -15,9 +15,9 @@ A conforming implementation of version |version| of the configuration will provi
 
 Input data for wet deposition reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -28,7 +28,7 @@ Input data for wet deposition reactions have the following format:
                 ...
             }
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

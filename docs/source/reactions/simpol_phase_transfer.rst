@@ -41,9 +41,9 @@ The particle radius used to calculate :math:`k_{f}` is the effective radius [:ma
 
 Input data for SIMPOL phase transfer reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -55,7 +55,7 @@ Input data for SIMPOL phase transfer reactions have the following format:
             B: [ 123.2e3, -41.24, 2951.2, -1.245e-4 ]
             ...
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

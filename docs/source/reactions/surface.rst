@@ -26,9 +26,9 @@ where ``R`` is the ideal gas constant :math:`[\mathrm{J} \mathrm{K}^{-1} \mathrm
 
 Input data for surface reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-   .. tab:: YAML
+   .. tab-item:: YAML
 
       .. code-block:: yaml
 
@@ -40,7 +40,7 @@ Input data for surface reactions have the following format:
             another gas species : { "yield" : 0.3 }
          aerosol phase : my aqueous phase
 
-   .. tab:: JSON
+   .. tab-item:: JSON
 
       .. code-block:: json
 

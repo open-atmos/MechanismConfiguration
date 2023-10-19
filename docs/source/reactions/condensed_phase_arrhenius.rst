@@ -21,9 +21,9 @@ The first two terms are described in Finlayson-Pitts and Pitts (2000) :cite:`Fin
 
 Input data for condensed-phase Arrhenius reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -48,7 +48,7 @@ Input data for condensed-phase Arrhenius reactions have the following format:
                 yield: 0.65
             # ... (other products)
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

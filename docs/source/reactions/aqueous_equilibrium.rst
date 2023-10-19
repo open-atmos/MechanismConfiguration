@@ -17,9 +17,9 @@ where:
 
 Input data for aqueous equilibrium equations should take the form:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -42,7 +42,7 @@ Input data for aqueous equilibrium equations should take the form:
                 qty: 0.65
             # ... (other products)
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 

@@ -19,9 +19,9 @@ where :math:`k_0`, :math:`k_2`, and :math:`k_3` are `Arrhenius` rate constants w
 
 Input data for CMAQ :math:`\ce{OH + HNO3}` reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -47,7 +47,7 @@ Input data for CMAQ :math:`\ce{OH + HNO3}` reactions have the following format:
                 yield: 0.65
             # ... (other products)
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 
