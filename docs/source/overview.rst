@@ -81,10 +81,6 @@ array are described here:
 
 :ref:`chemical-species`
 
-:ref:`aerosol-phases`
-
-:ref:`aerosol-representations`
-
 :ref:`mechanisms`
 
 The arrangement of objects within the ``camp-data`` array and between input files is arbitrary.

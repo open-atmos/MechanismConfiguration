@@ -24,8 +24,6 @@ Welcome to the OpenAtmos Mechanism Configuration documentation!
 
    overview
    chemical_species/index
-   aerosol_phases/index
-   aerosol_representations/index
    mechanisms/index
    reactions/index
    examples/index
