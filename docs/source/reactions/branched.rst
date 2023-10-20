@@ -31,9 +31,9 @@ More details can be found in Wennberg et al. (2018) :cite:`Wennberg2018`.
 
 Input data for Wennberg NO + RO2 equations has the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
@@ -44,20 +44,20 @@ Input data for Wennberg NO + RO2 equations has the following format:
             n: 6
             time unit: MIN
             reactants:
-                spec1: {}
+                spec1:
                 spec2:
-                qty: 2
+                  qty: 2
             alkoxy products:
-                spec3: {}
+                spec3:
                 spec4:
-                yield: 0.65
+                  yield: 0.65
             nitrate products:
-                spec5: {}
+                spec5:
                 spec6:
-                yield: 0.32
+                  yield: 0.32
 
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. code-block:: json
 
@@ -69,27 +69,27 @@ Input data for Wennberg NO + RO2 equations has the following format:
                 "n" : 6,
                 "time unit" : "MIN",
                 "reactants" : {
-                "spec1" : {},
-                "spec2" : { "qty" : 2 },
+                  "spec1" : {},
+                  "spec2" : { "qty" : 2 },
                 },
                 "alkoxy products" : {
-                "spec3" : {},
-                "spec4" : { "yield" : 0.65 },
+                  "spec3" : {},
+                  "spec4" : { "yield" : 0.65 },
                 },
                 "nitrate products" : {
-                "spec5" : {},
-                "spec6" : { "yield" : 0.32 },
+                  "spec5" : {},
+                  "spec6" : { "yield" : 0.32 },
                 }
             }
 
 
-The key-value pairs "reactants," and both sets of "products" are required.
-Reactants without a "qty" value are assumed to appear once in the reaction equation.
-Products without a specified "yield" are assumed to have a yield of 1.0.
+The key-value pairs ``reactants``, ``alkoxy products``, and ``nitrate products`` are required.
+Reactants without a ``qty`` value are assumed to appear once in the reaction equation.
+Products without a specified ``yield`` are assumed to have a yield of 1.0.
 
-When "X" is not included, it is assumed to be 1.0, when "Y" is not
-included, it is assumed to be 0.0 K, when "a0" is not included, it is
-assumed to be 1.0, and when "n" is not included, it is assumed to be 0.
+When ``X`` is not included, it is assumed to be 1.0, when ``Y`` is not
+included, it is assumed to be 0.0 K, when ``a0`` is not included, it is
+assumed to be 1.0, and when ``n`` is not included, it is assumed to be 0.
 The unit for time is assumed to be s, but inclusion of the optional
-key-value pair "time unit" = "MIN" can be used to indicate a rate
+key-value pair ``time unit`` = ``MIN`` can be used to indicate a rate
 with min as the time unit.

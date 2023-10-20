@@ -14,25 +14,25 @@ A conforming implementation of version |version| of the configuration will provi
 
 Input data for first-order loss reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
             type: FIRST_ORDER_LOSS
-            species: species_name
+            species: species name
             scaling factor: 1.2
-            ...
 
-    .. tab:: JSON
+
+    .. tab-item:: JSON
 
         .. code-block:: json
 
             {
                 "type": "FIRST_ORDER_LOSS",
-                "species": "species_name",
-                "scaling factor": 1.2,
+                "species": "species name",
+                "scaling factor": 1.2
             }
 
 The key-value pair ``species`` is required, and its value must be the name of the species being removed by the reaction. 

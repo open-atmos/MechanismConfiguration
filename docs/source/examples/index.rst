@@ -25,14 +25,14 @@ Top Level Config
     </div>
     
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. literalinclude:: ../_static/examples/yaml/chapman/config.yaml
             :language: yaml
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. literalinclude:: ../_static/examples/json/chapman/config.json
             :language: json
@@ -41,14 +41,14 @@ Top Level Config
 Reactions
 ---------
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. literalinclude:: ../_static/examples/yaml/chapman/reactions.yaml
             :language: yaml
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. literalinclude:: ../_static/examples/json/chapman/reactions.json
             :language: json
@@ -56,14 +56,14 @@ Reactions
 Species
 ---------
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. literalinclude:: ../_static/examples/yaml/chapman/species.yaml
             :language: yaml
 
-    .. tab:: JSON
+    .. tab-item:: JSON
 
         .. literalinclude:: ../_static/examples/json/chapman/species.json
             :language: json

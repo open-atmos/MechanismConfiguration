@@ -14,24 +14,23 @@ A conforming implementation of version |version| of the configuration will provi
 
 Input data for photolysis reactions have the following format:
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: YAML
+    .. tab-item:: YAML
 
         .. code-block:: yaml
 
             type: PHOTOLYSIS
             reactants:
-                spec1: {}
+                spec1:
             products:
-                spec2: {}
+                spec2:
                 spec3:
                     yield: 0.65
-                ...
             scaling factor: 1.2
-            ...
 
-    .. tab:: JSON
+
+    .. tab-item:: JSON
 
         .. code-block:: json
 
@@ -44,9 +43,9 @@ Input data for photolysis reactions have the following format:
                     "spec2": {},
                     "spec3": {
                         "yield": 0.65
-                    },
+                    }
                 },
-                "scaling factor": 1.2,
+                "scaling factor": 1.2
             }
 
 The key-value pairs ``reactants`` and ``products`` are required.
