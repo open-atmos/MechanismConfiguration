@@ -20,6 +20,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
 
+      - name: Install dependencies
+        run: |
+          pip install -r docs/requirements.txt
+
       - name: Debugging information
         run: |
           echo "github.ref:" ${{github.ref}}
@@ -41,10 +45,6 @@ jobs:
           git fetch
           ( git branch gh-pages remotes/origin/gh-pages && git clone . --branch=gh-pages _gh-pages/ ) || mkdir _gh-pages
           rm -rf _gh-pages/.git/
-
-      - name: Install dependencies
-        run: |
-          pip install -r docs/requirements.txt
 
       - name: Build documentation
         run: |
