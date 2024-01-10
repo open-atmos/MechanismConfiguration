@@ -8,7 +8,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 
 namespace open_atmos
 {
@@ -73,8 +72,6 @@ namespace open_atmos
 
     class JsonReaderPolicy
     {
-      using json = nlohmann::json;
-
     public:
 
       /// @brief Parse configures
@@ -93,7 +90,7 @@ namespace open_atmos
       /// @brief Reads and parses configures
       /// @param config_dir Path to a the configuration directory
       /// @return an enum indicating the success or failure of the parse
-      [[nodiscard]] ConfigParseStatus ReadAndParse(const std::filesystem::path &config_dir);
+      [[nodiscard]] ConfigParseStatus ReadAndParse(const std::filesystem::path &config_dir)
       {
         return this->Parse(config_dir);
       }

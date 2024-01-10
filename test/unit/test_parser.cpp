@@ -2,9 +2,9 @@
 
 #include <open_atmos/mechanism_configuration/parser.hpp>
 
-using open_atmos::mechanism_configuration;
+using namespace open_atmos::mechanism_configuration;
 
 TEST(Parser, Returns)
 {
-  ConfigurationReader reader;
+  ConfigurationReader<JsonReaderPolicy> reader;
 }
