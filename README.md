@@ -9,7 +9,7 @@ An attempt at defining a model-independent configuration schema for atmospheric 
 [![Mac](https://github.com/open-atmos/MechanismConfiguration/actions/workflows/mac.yml/badge.svg)](https://github.com/open-atmos/MechanismConfiguration/actions/workflows/mac.yml)
 [![Ubuntu](https://github.com/open-atmos/MechanismConfiguration/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/open-atmos/MechanismConfiguration/actions/workflows/ubuntu.yml)
 
-Copyright (C) 2017&ndash;2023 Barcelona Supercomputing Center, University of Illinois at Urbana&ndash;Champaign, and National Center for Atmospheric Research
+Copyright (C) 2017&ndash;2024 Barcelona Supercomputing Center, University of Illinois at Urbana&ndash;Champaign, and National Center for Atmospheric Research
 
 The configuration documentation can be found [here](https://open-atmos.github.io/MechanismConfiguration/).
 
