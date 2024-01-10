@@ -13,9 +13,9 @@ target_sources(mechanism_configuration
 message(STATUS "Path: ${PROJECT_SOURCE_DIR}/include")
 
 target_include_directories(mechanism_configuration
-  INTERFACE
+  PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(mechanism_configuration INTERFACE nlohmann_json::nlohmann_json)
+target_link_libraries(mechanism_configuration PUBLIC nlohmann_json::nlohmann_json)
