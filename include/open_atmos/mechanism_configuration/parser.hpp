@@ -4,10 +4,15 @@
 
 #pragma once
 
-#include <array>
+#include <vector>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
+#include <string>
+#include <utility>
+
+#include <open_atmos/types.hpp>
 
 namespace open_atmos
 {
@@ -19,10 +24,10 @@ namespace open_atmos
       None,
       InvalidKey,
       UnknownKey,
-      InvalidCAMPFilePath,
+      InvalidFilePath,
       NoConfigFilesFound,
-      CAMPFilesSectionNotFound,
-      CAMPDataSectionNotFound,
+      FilesSectionNotFound,
+      DataSectionNotFound,
       InvalidSpecies,
       InvalidMechanism,
       ObjectTypeNotFound,
@@ -30,56 +35,21 @@ namespace open_atmos
       ContainsNonStandardKey,
       MutuallyExclusiveOption
     };
+    std::string configParseStatusToString(const ConfigParseStatus &status);
 
-    constexpr double MolesM3ToMoleculesCm3 = 1.0e-6 * 6.02214076e23;
-
-    inline std::string configParseStatusToString(const ConfigParseStatus &status)
-    {
-      switch (status)
-      {
-      case ConfigParseStatus::Success:
-        return "Success";
-      case ConfigParseStatus::None:
-        return "None";
-      case ConfigParseStatus::InvalidKey:
-        return "InvalidKey";
-      case ConfigParseStatus::UnknownKey:
-        return "UnknownKey";
-      case ConfigParseStatus::InvalidCAMPFilePath:
-        return "InvalidCAMPFilePath";
-      case ConfigParseStatus::NoConfigFilesFound:
-        return "NoConfigFilesFound";
-      case ConfigParseStatus::CAMPFilesSectionNotFound:
-        return "CAMPFilesSectionNotFound";
-      case ConfigParseStatus::CAMPDataSectionNotFound:
-        return "CAMPDataSectionNotFound";
-      case ConfigParseStatus::InvalidSpecies:
-        return "InvalidSpecies";
-      case ConfigParseStatus::InvalidMechanism:
-        return "InvalidMechanism";
-      case ConfigParseStatus::ObjectTypeNotFound:
-        return "ObjectTypeNotFound";
-      case ConfigParseStatus::RequiredKeyNotFound:
-        return "RequiredKeyNotFound";
-      case ConfigParseStatus::ContainsNonStandardKey:
-        return "ContainsNonStandardKey";
-      case ConfigParseStatus::MutuallyExclusiveOption:
-        return "MutuallyExclusiveOption";
-      default:
-        return "Unknown";
-      }
-    }
+    struct Mechanism
+    {    
+      std::vector<types::Species> species_arr_;
+      std::unordered_map<std::string, types::Phase> phases_;
+    };
 
     class JsonReaderPolicy
     {
     public:
-
       /// @brief Parse configures
       /// @param config_path Path to a the CAMP configuration directory or file
       /// @return True for successful parsing
-      ConfigParseStatus Parse(const std::filesystem::path &config_path);
-
-    private:
+      std::pair<ConfigParseStatus, Mechanism> Parse(const std::filesystem::path &config_path);
     };
 
     /// @brief Public interface to read and parse config
@@ -90,7 +60,7 @@ namespace open_atmos
       /// @brief Reads and parses configures
       /// @param config_dir Path to a the configuration directory
       /// @return an enum indicating the success or failure of the parse
-      [[nodiscard]] ConfigParseStatus ReadAndParse(const std::filesystem::path &config_dir)
+      [[nodiscard]] std::pair<ConfigParseStatus, Mechanism> ReadAndParse(const std::filesystem::path &config_dir)
       {
         return this->Parse(config_dir);
       }
