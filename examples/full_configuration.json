@@ -96,7 +96,7 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "gas-phase species": "H2O2",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "H2O2_aq",
@@ -105,7 +105,7 @@
     },
     {
       "type": "SIMPOL_PHASE_TRANSFER",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "gas-phase species": "ethanol",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "ethanol_aq",
@@ -119,7 +119,7 @@
     },
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "A": 1.14e-2,
@@ -189,7 +189,7 @@
     },
     {
       "type": "EMISSION",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "B",
@@ -201,7 +201,7 @@
     },
     {
       "type": "FIRST_ORDER_LOSS",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "products": [
         {
           "species name": "C",
@@ -213,7 +213,7 @@
     },
     {
       "type": "PHOTOLYSIS",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "B",
@@ -231,7 +231,7 @@
     },
     {
       "type": "SURFACE",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "gas-phase reactant": "foo",
       "reaction probability": 2.0e-2,
       "gas-phase products": {
@@ -245,7 +245,7 @@
     },
     {
       "type": "TROE",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "B",
@@ -274,7 +274,7 @@
     },
     {
       "type": "BRANCHED_NO_RO2",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "A",
@@ -319,14 +319,14 @@
     },
     {
       "type": "WET_DEPOSITION",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "aerosol phase": "cloud",
       "name": "rxn cloud",
       "scaling factor": 12.3
     },
     {
       "type": "ARRHENIUS",
-      "gas-phase": "gas",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "B",
