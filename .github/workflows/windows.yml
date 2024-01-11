@@ -1,0 +1,31 @@
+name: Windows
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  msvc2022:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        build_type: [Release]
+        architecture: [Win32, x64]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run CMake
+      run: cmake -S . -B build -A ${{ matrix.architecture }}
+      if: matrix.build_type == 'Release'
+    - name: Run CMake
+      run: cmake -S . -B build -A ${{ matrix.architecture }}
+      if: matrix.build_type == 'Debug'
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
+    - name: Run tests
+      run: |
+        cd build
+        ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose

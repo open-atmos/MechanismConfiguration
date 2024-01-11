@@ -1,4 +1,5 @@
 pydata-sphinx-theme
+setuptools
 sphinx
 sphinx-design
 sphinx-tabs
