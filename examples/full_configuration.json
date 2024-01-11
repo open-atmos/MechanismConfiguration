@@ -96,6 +96,7 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
+      "gas-phase": "gas",
       "gas-phase species": "H2O2",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "H2O2_aq",
@@ -104,6 +105,7 @@
     },
     {
       "type": "SIMPOL_PHASE_TRANSFER",
+      "gas-phase": "gas",
       "gas-phase species": "ethanol",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "ethanol_aq",
@@ -117,6 +119,7 @@
     },
     {
       "type": "AQUEOUS_EQUILIBRIUM",
+      "gas-phase": "gas",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "A": 1.14e-2,
@@ -186,6 +189,7 @@
     },
     {
       "type": "EMISSION",
+      "gas-phase": "gas",
       "reactants": [
         {
           "species name": "B",
@@ -197,6 +201,7 @@
     },
     {
       "type": "FIRST_ORDER_LOSS",
+      "gas-phase": "gas",
       "products": [
         {
           "species name": "C",
@@ -208,6 +213,7 @@
     },
     {
       "type": "PHOTOLYSIS",
+      "gas-phase": "gas",
       "reactants": [
         {
           "species name": "B",
@@ -225,6 +231,7 @@
     },
     {
       "type": "SURFACE",
+      "gas-phase": "gas",
       "gas-phase reactant": "foo",
       "reaction probability": 2.0e-2,
       "gas-phase products": {
@@ -237,34 +244,15 @@
       "name": "my surface"
     },
     {
-      "type": "TERNARY_CHEMICAL_ACTIVATION",
-      "reactants": [
-        {
-          "species name": "B",
-          "coeff": 1
-        }
-      ],
-      "products": [
-        {
-          "species name": "C",
-          "coeff": 1
-        }
-      ],
-      "k0_A": 1.2e-6,
-      "k0_B": 167,
-      "k0_C": 3,
-      "kinf_A": 136e6,
-      "kinf_B": 5,
-      "kinf_C": 24,
-      "Fc": 0.9,
-      "N": 0.8,
-      "name": "my ternary"
-    },
-    {
       "type": "TROE",
+      "gas-phase": "gas",
       "reactants": [
         {
           "species name": "B",
+          "coeff": 1
+        },
+        {
+          "species name": "M",
           "coeff": 1
         }
       ],
@@ -285,7 +273,8 @@
       "name": "my troe"
     },
     {
-      "type": "WENNBERG_NO_RO2",
+      "type": "BRANCHED_NO_RO2",
+      "gas-phase": "gas",
       "reactants": [
         {
           "species name": "A",
@@ -308,16 +297,36 @@
       "Y": 167,
       "a0": 0.15,
       "n": 9,
-      "name": "my wennberg"
+      "name": "my branched"
+    },
+    {
+      "type" : "TUNNELING",
+      "A" : 123.45,
+      "B"  : 1200.0,
+      "C"  : 1.0e8,
+      "reactants": [
+        {
+          "species name": "B",
+          "coeff": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coeff": 1
+        }
+      ]
     },
     {
       "type": "WET_DEPOSITION",
+      "gas-phase": "gas",
       "aerosol phase": "cloud",
       "name": "rxn cloud",
       "scaling factor": 12.3
     },
     {
       "type": "ARRHENIUS",
+      "gas-phase": "gas",
       "reactants": [
         {
           "species name": "B",
