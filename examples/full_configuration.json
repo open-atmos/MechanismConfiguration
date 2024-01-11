@@ -1,5 +1,5 @@
 {
-  "version": "XXX",
+  "version": "1.0.0",
   "name": "Full Configuration",
   "species": [
     {
@@ -15,8 +15,8 @@
     {
       "name": "H2O2",
       "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
-      "HLC exp factor [K]": 6340,
-      "diffusion coeff [m2 s-1]": 1.46E-05,
+      "HLC exponential factor [K]": 6340,
+      "diffusion coefficient [m2 s-1]": 1.46E-05,
       "N star": 1.74,
       "molecular weight [kg mol-1]": 0.0340147,
       "density [kg m-3]": 1000.0,
@@ -24,7 +24,7 @@
     },
     {
       "name": "ethanol",
-      "diffusion coeff [m2 s-1]": 0.95E-05,
+      "diffusion coefficient [m2 s-1]": 0.95E-05,
       "N star": 2.55,
       "molecular weight [kg mol-1]": 0.04607,
       "absolute tolerance": 1.0e-20
@@ -129,17 +129,17 @@
       "reactants": [
         {
           "species name": "A",
-          "coeff": 2
+          "coefficient": 2
         }
       ],
       "products": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         },
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "name": "my aqueous eq"
@@ -152,17 +152,17 @@
       "reactants": [
         {
           "species name": "A",
-          "coeff": 1
+          "coefficient": 1
         },
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "name": "my condensed arrhenius"
@@ -175,13 +175,13 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "scaling factor": 12.3,
@@ -193,7 +193,7 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "name": "my emission",
@@ -205,7 +205,7 @@
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "name": "my first order loss",
@@ -217,13 +217,13 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "name": "photo B",
@@ -249,17 +249,17 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         },
         {
           "species name": "M",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "k0_A": 1.2e-12,
@@ -278,19 +278,19 @@
       "reactants": [
         {
           "species name": "A",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "alkoxy products": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "nitrate products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "X": 1.2e-4,
@@ -307,13 +307,13 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ]
     },
@@ -330,13 +330,13 @@
       "reactants": [
         {
           "species name": "B",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "products": [
         {
           "species name": "C",
-          "coeff": 1
+          "coefficient": 1
         }
       ],
       "A": 32.1,
