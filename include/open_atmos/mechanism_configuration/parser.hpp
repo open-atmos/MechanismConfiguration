@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include <vector>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <unordered_map>
-#include <string>
-#include <utility>
-
+#include <nlohmann/json.hpp>
 #include <open_atmos/types.hpp>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace open_atmos
 {
@@ -26,44 +26,33 @@ namespace open_atmos
       UnknownKey,
       InvalidFilePath,
       NoConfigFilesFound,
-      FilesSectionNotFound,
       DataSectionNotFound,
       InvalidSpecies,
-      InvalidMechanism,
       ObjectTypeNotFound,
       RequiredKeyNotFound,
       ContainsNonStandardKey,
-      MutuallyExclusiveOption
+      MutuallyExclusiveOption,
+      InvalidVersion
     };
     std::string configParseStatusToString(const ConfigParseStatus &status);
 
-    struct Mechanism
-    {    
-      std::vector<types::Species> species_arr_;
-      std::unordered_map<std::string, types::Phase> phases_;
-    };
-
-    class JsonReaderPolicy
+    class JsonParser
     {
-    public:
-      /// @brief Parse configures
-      /// @param config_path Path to a the CAMP configuration directory or file
-      /// @return True for successful parsing
-      std::pair<ConfigParseStatus, Mechanism> Parse(const std::filesystem::path &config_path);
-    };
+     public:
+      /// @brief Reads a configuration from a json object
+      /// @param object a json object
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const nlohmann::json &object);
 
-    /// @brief Public interface to read and parse config
-    template <class ConfigTypePolicy = JsonReaderPolicy>
-    class ConfigurationReader : public ConfigTypePolicy
-    {
-    public:
-      /// @brief Reads and parses configures
-      /// @param config_dir Path to a the configuration directory
-      /// @return an enum indicating the success or failure of the parse
-      [[nodiscard]] std::pair<ConfigParseStatus, Mechanism> ReadAndParse(const std::filesystem::path &config_dir)
-      {
-        return this->Parse(config_dir);
-      }
+      /// @brief Reads a configuration from a file path
+      /// @param file_path A path to single json configuration
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const std::filesystem::path &file_path);
+
+      /// @brief Reads a configuration from a file path
+      /// @param file_path A path to single json configuration
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const std::string &file_path);
     };
-  }
-}
+  }  // namespace mechanism_configuration
+}  // namespace open_atmos

@@ -4,14 +4,32 @@
 
 #pragma once
 
+#include <string>
+#include <unordered_map>
+
 namespace open_atmos
 {
   namespace types
   {
-    struct Species {
+    struct Species
+    {
+      std::string name;
+
+      std::map<std::string, double> optional_properties;
+
+      std::unordered_map<std::string, std::string> unknown_properties;
     };
 
-    struct Phase {
+    struct Phase
+    {
     };
-  }
-}
+
+    struct Mechanism
+    {
+      std::string name; // optional
+      std::vector<types::Species> species;
+      std::unordered_map<std::string, types::Phase> phases;
+    };
+
+  }  // namespace types
+}  // namespace open_atmos

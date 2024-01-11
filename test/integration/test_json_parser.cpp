@@ -4,7 +4,7 @@
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(Parser, Returns)
+TEST(JsonParser, Returns)
 {
-  ConfigurationReader<JsonReaderPolicy> reader;
+  JsonParser parser;
 }
