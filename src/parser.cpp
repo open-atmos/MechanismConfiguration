@@ -139,6 +139,21 @@ namespace open_atmos
       return ConfigParseStatus::Success;
     }
 
+    bool ContainsOnlyUniqueSpecies(const std::vector<types::Species>& all_species)
+    {
+      for (size_t i = 0; i < all_species.size(); ++i)
+      {
+        for (size_t j = i + 1; j < all_species.size(); ++j)
+        {
+          if (all_species[i].name == all_species[j].name)
+          {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
     std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const json& objects)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -183,20 +198,8 @@ namespace open_atmos
         all_species.push_back(species);
       }
 
-      // check for duplicate species
-      for (size_t i = 0; i < all_species.size(); ++i)
-      {
-        for (size_t j = i + 1; j < all_species.size(); ++j)
-        {
-          if (all_species[i].name == all_species[j].name)
-          {
-            status = ConfigParseStatus::DuplicateSpeciesDetected;
-          }
-          break;
-        }
-        if (status != ConfigParseStatus::Success)
-          break;
-      }
+      if (!ContainsOnlyUniqueSpecies(all_species))
+        status = ConfigParseStatus::DuplicateSpeciesDetected;
 
       return { status, all_species };
     }
