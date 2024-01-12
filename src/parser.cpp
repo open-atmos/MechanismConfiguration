@@ -21,11 +21,8 @@ namespace open_atmos
         case ConfigParseStatus::InvalidKey: return "InvalidKey";
         case ConfigParseStatus::UnknownKey: return "UnknownKey";
         case ConfigParseStatus::InvalidFilePath: return "InvalidFilePath";
-        case ConfigParseStatus::NoConfigFilesFound: return "NoConfigFilesFound";
-        case ConfigParseStatus::InvalidSpecies: return "InvalidSpecies";
         case ConfigParseStatus::ObjectTypeNotFound: return "ObjectTypeNotFound";
         case ConfigParseStatus::RequiredKeyNotFound: return "RequiredKeyNotFound";
-        case ConfigParseStatus::ContainsNonStandardKey: return "ContainsNonStandardKey";
         case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
         case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
         default: return "Unknown";
@@ -136,7 +133,7 @@ namespace open_atmos
         {
           std::cerr << "Non-standard key '" << key << "' found in object" << object << std::endl;
 
-          return ConfigParseStatus::ContainsNonStandardKey;
+          return ConfigParseStatus::InvalidKey;
         }
       }
       return ConfigParseStatus::Success;
@@ -150,13 +147,11 @@ namespace open_atmos
       for (const auto& object : objects)
       {
         types::Species species;
-        auto status = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
+        status = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
         if (status != ConfigParseStatus::Success)
         {
           break;
         }
-
-        // std::cout << "object:\n" << object.dump(4) << std::endl;
 
         std::string name = object[validation::keys.name].get<std::string>();
         std::string phase = object[validation::keys.phase].get<std::string>();
@@ -167,11 +162,13 @@ namespace open_atmos
         {
           if (object.contains(key))
           {
-            if (key == validation::keys.tracer_type) {
+            if (key == validation::keys.tracer_type)
+            {
               std::string val = object[key].get<std::string>();
               string_properties[key] = val;
             }
-            else {
+            else
+            {
               double val = object[key].get<double>();
               numerical_properties[key] = val;
             }
@@ -197,14 +194,18 @@ namespace open_atmos
       }
 
       // check for duplicate species
-      for(size_t i = 0; i < all_species.size(); ++i) {
-        for(size_t j = i+1; j < all_species.size(); ++j) {
-          if (all_species[i].name == all_species[j].name) {
+      for (size_t i = 0; i < all_species.size(); ++i)
+      {
+        for (size_t j = i + 1; j < all_species.size(); ++j)
+        {
+          if (all_species[i].name == all_species[j].name)
+          {
             status = ConfigParseStatus::DuplicateSpeciesDetected;
           }
           break;
         }
-        if (status != ConfigParseStatus::Success) break;
+        if (status != ConfigParseStatus::Success)
+          break;
       }
 
       return { status, all_species };

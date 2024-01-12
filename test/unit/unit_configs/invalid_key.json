@@ -1,14 +1,11 @@
 {
   "version": "1.0.0",
-  "name": "Duplicate Species",
+  "name": "Invalid key",
   "species": [
     {
       "name": "A",
-      "phase": "gas"
-    },
-    {
-      "name": "A",
-      "phase": "gas"
+      "phase": "gas",
+      "_absolute tolerance": 1.0e-30
     }
   ],
   "phases": [ ],

@@ -47,3 +47,19 @@ TEST(JsonParser, DetectsDuplicateSpecies)
 
   EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
 }
+
+TEST(JsonParser, DetectsMissingRequiredKeys)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/missing_required_key.json"));
+
+  EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+}
+
+TEST(JsonParser, DetectsInvalidKeys)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/invalid_key.json"));
+
+  EXPECT_EQ(status, ConfigParseStatus::InvalidKey);
+}

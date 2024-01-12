@@ -25,12 +25,8 @@ namespace open_atmos
       InvalidKey,
       UnknownKey,
       InvalidFilePath,
-      NoConfigFilesFound,
-      DataSectionNotFound,
-      InvalidSpecies,
       ObjectTypeNotFound,
       RequiredKeyNotFound,
-      ContainsNonStandardKey,
       MutuallyExclusiveOption,
       InvalidVersion,
       DuplicateSpeciesDetected

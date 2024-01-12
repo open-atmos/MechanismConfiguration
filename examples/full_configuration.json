@@ -4,16 +4,20 @@
   "species": [
     {
       "name": "A",
-      "__absolute tolerance": 1.0e-30
+      "__absolute tolerance": 1.0e-30,
+      "phase": "gas"
     },
     {
-      "name": "B"
+      "name": "B",
+      "phase": "gas"
     },
     {
-      "name": "C"
+      "name": "C",
+      "phase": "gas"
     },
     {
       "name": "H2O2",
+      "phase": "gas",
       "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
       "HLC exponential factor [K]": 6340,
       "diffusion coefficient [m2 s-1]": 1.46E-05,
@@ -24,6 +28,7 @@
     },
     {
       "name": "ethanol",
+      "phase": "gas",
       "diffusion coefficient [m2 s-1]": 0.95E-05,
       "N star": 2.55,
       "molecular weight [kg mol-1]": 0.04607,
@@ -31,18 +36,21 @@
     },
     {
       "name": "ethanol_aq",
+      "phase": "gas",
       "molecular weight [kg mol-1]": 0.04607,
       "density [kg m-3]": 1000.0,
       "__absolute tolerance": 1.0e-20
     },
     {
       "name": "H2O2_aq",
+      "phase": "gas",
       "molecular weight [kg mol-1]": 0.0340147,
       "density [kg m-3]": 1000.0,
       "__absolute tolerance": 1.0e-10
     },
     {
       "name": "H2O_aq",
+      "phase": "gas",
       "density [kg m-3]": 1000.0,
       "molecular weight [kg mol-1]": 0.01801
     },
