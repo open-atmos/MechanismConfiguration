@@ -48,14 +48,12 @@
     },
     {
       "name": "aerosol stuff",
-      "phase": "AEROSOL",
       "molecular weight [kg mol-1]": 0.5,
       "density [kg m-3]": 1000.0,
       "__absolute tolerance": 1.0e-20
     },
     {
       "name": "more aerosol stuff",
-      "phase": "AEROSOL",
       "molecular weight [kg mol-1]": 0.2,
       "density [kg m-3]": 1000.0,
       "__absolute tolerance": 1.0e-20

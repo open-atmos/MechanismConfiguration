@@ -4,10 +4,15 @@
 
 #pragma once
 
-#include <array>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <open_atmos/types.hpp>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace open_atmos
 {
@@ -19,81 +24,32 @@ namespace open_atmos
       None,
       InvalidKey,
       UnknownKey,
-      InvalidCAMPFilePath,
-      NoConfigFilesFound,
-      CAMPFilesSectionNotFound,
-      CAMPDataSectionNotFound,
-      InvalidSpecies,
-      InvalidMechanism,
+      InvalidFilePath,
       ObjectTypeNotFound,
       RequiredKeyNotFound,
-      ContainsNonStandardKey,
-      MutuallyExclusiveOption
+      MutuallyExclusiveOption,
+      InvalidVersion,
+      DuplicateSpeciesDetected
     };
+    std::string configParseStatusToString(const ConfigParseStatus &status);
 
-    constexpr double MolesM3ToMoleculesCm3 = 1.0e-6 * 6.02214076e23;
-
-    inline std::string configParseStatusToString(const ConfigParseStatus &status)
+    class JsonParser
     {
-      switch (status)
-      {
-      case ConfigParseStatus::Success:
-        return "Success";
-      case ConfigParseStatus::None:
-        return "None";
-      case ConfigParseStatus::InvalidKey:
-        return "InvalidKey";
-      case ConfigParseStatus::UnknownKey:
-        return "UnknownKey";
-      case ConfigParseStatus::InvalidCAMPFilePath:
-        return "InvalidCAMPFilePath";
-      case ConfigParseStatus::NoConfigFilesFound:
-        return "NoConfigFilesFound";
-      case ConfigParseStatus::CAMPFilesSectionNotFound:
-        return "CAMPFilesSectionNotFound";
-      case ConfigParseStatus::CAMPDataSectionNotFound:
-        return "CAMPDataSectionNotFound";
-      case ConfigParseStatus::InvalidSpecies:
-        return "InvalidSpecies";
-      case ConfigParseStatus::InvalidMechanism:
-        return "InvalidMechanism";
-      case ConfigParseStatus::ObjectTypeNotFound:
-        return "ObjectTypeNotFound";
-      case ConfigParseStatus::RequiredKeyNotFound:
-        return "RequiredKeyNotFound";
-      case ConfigParseStatus::ContainsNonStandardKey:
-        return "ContainsNonStandardKey";
-      case ConfigParseStatus::MutuallyExclusiveOption:
-        return "MutuallyExclusiveOption";
-      default:
-        return "Unknown";
-      }
-    }
+     public:
+      /// @brief Reads a configuration from a json object
+      /// @param object a json object
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const nlohmann::json &object);
 
-    class JsonReaderPolicy
-    {
-    public:
+      /// @brief Reads a configuration from a file path
+      /// @param file_path A path to single json configuration
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const std::filesystem::path &file_path);
 
-      /// @brief Parse configures
-      /// @param config_path Path to a the CAMP configuration directory or file
-      /// @return True for successful parsing
-      ConfigParseStatus Parse(const std::filesystem::path &config_path);
-
-    private:
+      /// @brief Reads a configuration from a file path
+      /// @param file_path A path to single json configuration
+      /// @return A pair containing the parsing status and mechanism
+      std::pair<ConfigParseStatus, types::Mechanism> Parse(const std::string &file_path);
     };
-
-    /// @brief Public interface to read and parse config
-    template <class ConfigTypePolicy = JsonReaderPolicy>
-    class ConfigurationReader : public ConfigTypePolicy
-    {
-    public:
-      /// @brief Reads and parses configures
-      /// @param config_dir Path to a the configuration directory
-      /// @return an enum indicating the success or failure of the parse
-      [[nodiscard]] ConfigParseStatus ReadAndParse(const std::filesystem::path &config_dir)
-      {
-        return this->Parse(config_dir);
-      }
-    };
-  }
-}
+  }  // namespace mechanism_configuration
+}  // namespace open_atmos

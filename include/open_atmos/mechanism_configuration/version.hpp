@@ -9,7 +9,7 @@ namespace open_atmos
 extern "C" {
 #endif
 
-  const char* getmechanism_configurationVersion()
+  const char* getVersionString()
   {
     return "1.0.0";
   }
