@@ -29,6 +29,7 @@ namespace open_atmos
       }
     }
 
+    // Returns a vector for the allowed nonstandard keys, those that start with two underscores, like "__absolute tolerance"
     std::vector<std::string>
     GetComments(const json& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
     {
