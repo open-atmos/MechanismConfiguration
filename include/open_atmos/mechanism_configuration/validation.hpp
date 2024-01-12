@@ -23,7 +23,6 @@ namespace open_atmos
       const std::string reactions = "reactions";
 
       // Species
-      const std::string tracer_type = "tracer type";
       const std::string absolute_tolerance = "absolute tolerance";
       const std::string diffusion_coefficient = "diffusion coefficient [m2 s-1]";
       const std::string molecular_weight = "molecular weight [kg mol-1]";
@@ -43,8 +42,7 @@ namespace open_atmos
     struct Species
     {
       const std::vector<std::string> required_keys{ keys.name, keys.phase };
-      const std::vector<std::string> optional_keys{ keys.tracer_type,
-                                                    keys.absolute_tolerance,
+      const std::vector<std::string> optional_keys{ keys.absolute_tolerance,
                                                     keys.diffusion_coefficient,
                                                     keys.molecular_weight,
                                                     keys.henrys_law_constant_298,
