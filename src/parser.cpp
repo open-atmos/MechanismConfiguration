@@ -27,6 +27,7 @@ namespace open_atmos
         case ConfigParseStatus::RequiredKeyNotFound: return "RequiredKeyNotFound";
         case ConfigParseStatus::ContainsNonStandardKey: return "ContainsNonStandardKey";
         case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
+        case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
         default: return "Unknown";
       }
     }
@@ -155,33 +156,54 @@ namespace open_atmos
           break;
         }
 
-        std::cout << "object:\n" << object.dump(4) << std::endl;
+        // std::cout << "object:\n" << object.dump(4) << std::endl;
 
         std::string name = object[validation::keys.name].get<std::string>();
-        std::map<std::string, double> properties{};
+        std::string phase = object[validation::keys.phase].get<std::string>();
+
+        std::map<std::string, double> numerical_properties{};
+        std::map<std::string, std::string> string_properties{};
         for (const auto& key : validation::species.optional_keys)
         {
           if (object.contains(key))
           {
-            double val = object[key].get<double>();
-            properties[key] = val;
+            if (key == validation::keys.tracer_type) {
+              std::string val = object[key].get<std::string>();
+              string_properties[key] = val;
+            }
+            else {
+              double val = object[key].get<double>();
+              numerical_properties[key] = val;
+            }
           }
         }
 
         auto comments = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
 
         std::unordered_map<std::string, std::string> unknown_properties;
-        for (const auto& key : validation::species.optional_keys)
+        for (const auto& key : comments)
         {
           std::string val = object[key].dump();
           unknown_properties[key] = val;
         }
 
         species.name = name;
-        species.optional_properties = properties;
+        species.phase = phase;
+        species.optional_numerical_properties = numerical_properties;
+        species.optional_string_properties = string_properties;
         species.unknown_properties = unknown_properties;
 
         all_species.push_back(species);
+      }
+
+      for(size_t i = 0; i < all_species.size(); ++i) {
+        for(size_t j = i+1; j < all_species.size(); ++j) {
+          if (all_species[i].name == all_species[j].name) {
+            status = ConfigParseStatus::DuplicateSpeciesDetected;
+          }
+          break;
+        }
+        if (status != ConfigParseStatus::Success) break;
       }
 
       return { status, all_species };

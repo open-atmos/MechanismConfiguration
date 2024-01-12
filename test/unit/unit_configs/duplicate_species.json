@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "name": "Full Configuration",
+  "species": [
+    {
+      "name": "A",
+      "phase": "gas"
+    },
+    {
+      "name": "A",
+      "phase": "gas"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [ ]
+}

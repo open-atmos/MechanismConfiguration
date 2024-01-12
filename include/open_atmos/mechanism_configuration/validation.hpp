@@ -43,12 +43,11 @@ namespace open_atmos
 
     struct Species
     {
-      const std::vector<std::string> required_keys{ keys.name };
+      const std::vector<std::string> required_keys{ keys.name, keys.phase };
       const std::vector<std::string> optional_keys{ keys.tracer_type,
                                                     keys.absolute_tolerance,
                                                     keys.diffusion_coefficient,
                                                     keys.molecular_weight,
-                                                    keys.phase,
                                                     keys.henrys_law_constant_298,
                                                     keys.henrys_law_constant_exponential_factor,
                                                     keys.n_star,
