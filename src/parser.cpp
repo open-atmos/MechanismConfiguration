@@ -157,21 +157,12 @@ namespace open_atmos
         std::string phase = object[validation::keys.phase].get<std::string>();
 
         std::map<std::string, double> numerical_properties{};
-        std::map<std::string, std::string> string_properties{};
         for (const auto& key : validation::species.optional_keys)
         {
           if (object.contains(key))
           {
-            if (key == validation::keys.tracer_type)
-            {
-              std::string val = object[key].get<std::string>();
-              string_properties[key] = val;
-            }
-            else
-            {
-              double val = object[key].get<double>();
-              numerical_properties[key] = val;
-            }
+            double val = object[key].get<double>();
+            numerical_properties[key] = val;
           }
         }
 
@@ -187,7 +178,6 @@ namespace open_atmos
         species.name = name;
         species.phase = phase;
         species.optional_numerical_properties = numerical_properties;
-        species.optional_string_properties = string_properties;
         species.unknown_properties = unknown_properties;
 
         all_species.push_back(species);

@@ -34,8 +34,6 @@ TEST(JsonParser, CanParseValidSpecies)
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties.size(), 2);
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties["molecular weight [kg mol-1]"], 0.5);
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties["density [kg m-3]"], 1000.0);
-  EXPECT_EQ(mechanism.species[2].optional_string_properties.size(), 1);
-  EXPECT_EQ(mechanism.species[2].optional_string_properties["tracer type"], "CONSTANT");
   EXPECT_EQ(mechanism.species[2].unknown_properties.size(), 1);
   EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"], "1e-20");
 }

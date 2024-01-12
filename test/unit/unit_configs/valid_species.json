@@ -23,7 +23,6 @@
       "phase": "AEROSOL",
       "molecular weight [kg mol-1]": 0.5,
       "density [kg m-3]": 1000.0,
-      "tracer type" : "CONSTANT",
       "__absolute tolerance": 1.0e-20
     }
   ],
