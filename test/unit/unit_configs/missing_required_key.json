@@ -3,8 +3,7 @@
   "name": "Invalid key",
   "species": [
     {
-      "Name": "A",
-      "Phase": "gas"
+      "Name": "A"
     }
   ],
   "phases": [ ],

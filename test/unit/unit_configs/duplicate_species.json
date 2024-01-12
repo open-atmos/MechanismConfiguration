@@ -3,12 +3,10 @@
   "name": "Duplicate Species",
   "species": [
     {
-      "name": "A",
-      "phase": "gas"
+      "name": "A"
     },
     {
-      "name": "A",
-      "phase": "gas"
+      "name": "A"
     }
   ],
   "phases": [ ],

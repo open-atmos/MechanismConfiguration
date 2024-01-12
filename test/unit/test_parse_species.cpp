@@ -13,12 +13,10 @@ TEST(JsonParser, CanParseValidSpecies)
   EXPECT_EQ(mechanism.species.size(), 3);
 
   EXPECT_EQ(mechanism.species[0].name, "A");
-  EXPECT_EQ(mechanism.species[0].phase, "gas");
   EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 1);
   EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1e-30");
 
   EXPECT_EQ(mechanism.species[1].name, "H2O2");
-  EXPECT_EQ(mechanism.species[1].phase, "gas");
   EXPECT_EQ(mechanism.species[1].optional_numerical_properties.size(), 6);
   EXPECT_EQ(mechanism.species[1].optional_numerical_properties["HLC(298K) [mol m-3 Pa-1]"], 1.011596348);
   EXPECT_EQ(mechanism.species[1].optional_numerical_properties["HLC exponential factor [K]"], 6340);
@@ -30,7 +28,6 @@ TEST(JsonParser, CanParseValidSpecies)
   EXPECT_EQ(mechanism.species[1].unknown_properties["__absolute tolerance"], "1e-10");
 
   EXPECT_EQ(mechanism.species[2].name, "aerosol stuff");
-  EXPECT_EQ(mechanism.species[2].phase, "AEROSOL");
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties.size(), 2);
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties["molecular weight [kg mol-1]"], 0.5);
   EXPECT_EQ(mechanism.species[2].optional_numerical_properties["density [kg m-3]"], 1000.0);

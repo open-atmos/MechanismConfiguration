@@ -14,7 +14,6 @@ namespace open_atmos
     struct Species
     {
       std::string name;
-      std::string phase;
 
       std::map<std::string, double> optional_numerical_properties;
 
