@@ -34,8 +34,6 @@ namespace open_atmos
       const std::string density = "density [kg m-3]";
     } keys;
 
-    // Initialize static const members of Keys
-
     struct Configuration
     {
       const std::vector<std::string> required_keys{ keys.version, keys.species, keys.phases, keys.reactions };
