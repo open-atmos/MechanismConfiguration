@@ -196,6 +196,7 @@ namespace open_atmos
         all_species.push_back(species);
       }
 
+      // check for duplicate species
       for(size_t i = 0; i < all_species.size(); ++i) {
         for(size_t j = i+1; j < all_species.size(); ++j) {
           if (all_species[i].name == all_species[j].name) {
@@ -258,6 +259,7 @@ namespace open_atmos
       std::string name = object[validation::keys.name].get<std::string>();
       mechanism.name = name;
 
+      // parse all of the species at once
       auto species_parsing = ParseSpecies(object["species"]);
 
       if (species_parsing.first != ConfigParseStatus::Success)
