@@ -7,7 +7,7 @@ using namespace open_atmos::mechanism_configuration;
 TEST(JsonParser, CanParseValidSpecies)
 {
   JsonParser parser;
-  auto [status, mechanism] = parser.Parse(std::string("unit_configs/valid_species.json"));
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/valid_species.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::Success);
   EXPECT_EQ(mechanism.species.size(), 3);
@@ -38,7 +38,7 @@ TEST(JsonParser, CanParseValidSpecies)
 TEST(JsonParser, DetectsDuplicateSpecies)
 {
   JsonParser parser;
-  auto [status, mechanism] = parser.Parse(std::string("unit_configs/duplicate_species.json"));
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/duplicate_species.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
 }
@@ -46,7 +46,7 @@ TEST(JsonParser, DetectsDuplicateSpecies)
 TEST(JsonParser, DetectsMissingRequiredKeys)
 {
   JsonParser parser;
-  auto [status, mechanism] = parser.Parse(std::string("unit_configs/missing_required_key.json"));
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/missing_required_key.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
@@ -54,7 +54,7 @@ TEST(JsonParser, DetectsMissingRequiredKeys)
 TEST(JsonParser, DetectsInvalidKeys)
 {
   JsonParser parser;
-  auto [status, mechanism] = parser.Parse(std::string("unit_configs/invalid_key.json"));
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/invalid_key.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::InvalidKey);
 }

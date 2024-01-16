@@ -22,13 +22,16 @@ namespace open_atmos
 
     struct Phase
     {
+      std::string name;
+      std::vector<std::string> species;
+      std::unordered_map<std::string, std::string> unknown_properties;
     };
 
     struct Mechanism
     {
       std::string name; // optional
       std::vector<types::Species> species;
-      std::unordered_map<std::string, types::Phase> phases;
+      std::vector<types::Phase> phases;
     };
 
   }  // namespace types

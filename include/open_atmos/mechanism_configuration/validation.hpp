@@ -53,14 +53,14 @@ namespace open_atmos
 
     struct Phase
     {
-      const std::vector<std::string> required_keys {};
-      const std::vector<std::string> optional_keys {};
+      const std::vector<std::string> required_keys{ keys.name, keys.species };
+      const std::vector<std::string> optional_keys{};
     } phase;
 
     struct Mechanism
     {
-      const std::vector<std::string> required_keys {};
-      const std::vector<std::string> optional_keys {};
+      const std::vector<std::string> required_keys{};
+      const std::vector<std::string> optional_keys{};
     } mechanism;
 
   }  // namespace validation
