@@ -317,7 +317,8 @@ namespace open_atmos
         for (const auto& product : object[validation::keys.products])
         {
           auto product_parse = ParseReactionComponent(product);
-          if (product_parse.first != ConfigParseStatus::Success) {
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success) {
             break;
           }
           products.push_back(product_parse.second);
@@ -327,7 +328,8 @@ namespace open_atmos
         for (const auto& reactant : object[validation::keys.reactants])
         {
           auto reactant_parse = ParseReactionComponent(reactant);
-          if (reactant_parse.first != ConfigParseStatus::Success) {
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success) {
             break;
           }
           reactants.push_back(reactant_parse.second);
@@ -386,7 +388,7 @@ namespace open_atmos
           requested_species.push_back(spec.species_name);
         }
 
-        if (RequiresUnknownSpecies(requested_species, existing_species)) {
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species)) {
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 

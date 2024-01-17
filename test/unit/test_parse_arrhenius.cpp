@@ -69,3 +69,17 @@ TEST(JsonParser, ArrheniusDetectsUnknownSpecies)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/arrhenius/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
+
+TEST(JsonParser, ArrheniusDetectsMutuallyExclusiveOptions)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/arrhenius/mutually_exclusive.json"));
+  EXPECT_EQ(status, ConfigParseStatus::MutuallyExclusiveOption);
+}
+
+TEST(JsonParser, ArrheniusDetectsBadReactionComponent)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/arrhenius/bad_reaction_component.json"));
+  EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+}

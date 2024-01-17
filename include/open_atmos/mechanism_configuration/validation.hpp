@@ -86,7 +86,7 @@ namespace open_atmos
     struct Arrhenius
     {
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
-      const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.name };
+      const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
     } arrhenius;
 
     struct Mechanism

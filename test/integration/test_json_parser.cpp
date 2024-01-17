@@ -13,3 +13,10 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.species.size(), 10);
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
 }
+
+TEST(JsonParser, ParserReportsBadFiles)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("examples/_missing_configuration.json"));
+  EXPECT_EQ(status, ConfigParseStatus::InvalidFilePath);
+}
