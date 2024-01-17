@@ -31,6 +31,26 @@ namespace open_atmos
       const std::string phase = "phase";
       const std::string n_star = "N star";
       const std::string density = "density [kg m-3]";
+
+      // Reactions
+      const std::string reactants = "reactants";
+      const std::string products = "products";
+      const std::string type = "type";
+      const std::string gas_phase = "gas phase";
+
+      // Reactant and product
+      const std::string species_name = "species name";
+      const std::string coefficient = "coefficient";
+
+      // Arrhenius
+      const std::string Arrhenius_key = "ARRHENIUS";
+      const std::string A = "A";
+      const std::string B = "B";
+      const std::string C = "C";
+      const std::string D = "D";
+      const std::string E = "E";
+      const std::string Ea = "Ea";
+
     } keys;
 
     struct Configuration
@@ -56,6 +76,18 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.name, keys.species };
       const std::vector<std::string> optional_keys{};
     } phase;
+
+    struct ReactionComponent
+    {
+      const std::vector<std::string> required_keys{ keys.species_name };
+      const std::vector<std::string> optional_keys{ keys.coefficient };
+    } reaction_component;
+
+    struct Arrhenius
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.name };
+    } arrhenius;
 
     struct Mechanism
     {

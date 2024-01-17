@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include <open_atmos/constants.hpp>
 #include <open_atmos/mechanism_configuration/parser.hpp>
 #include <open_atmos/mechanism_configuration/validation.hpp>
 #include <open_atmos/mechanism_configuration/version.hpp>
@@ -271,6 +272,138 @@ namespace open_atmos
       return { status, all_phases };
     }
 
+    std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const json& object)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::ReactionComponent component;
+
+      status = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        double coefficient = object[validation::keys.coefficient].get<double>();
+        std::string species_name = object[validation::keys.species_name].get<std::string>();
+
+        auto comments = GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        component.species_name = species_name;
+        component.coefficient = coefficient;
+        component.unknown_properties = unknown_properties;
+      }
+
+      return { status, component };
+    }
+
+    std::pair<ConfigParseStatus, types::Arrhenius> ParseArrhenius(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Arrhenius arrhenius;
+
+      status = ValidateSchema(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          if (product_parse.first != ConfigParseStatus::Success) {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          if (reactant_parse.first != ConfigParseStatus::Success) {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.A))
+        {
+          arrhenius.A = object[validation::keys.A].get<double>();
+        }
+        if (object.contains(validation::keys.B))
+        {
+          arrhenius.B = object[validation::keys.B].get<double>();
+        }
+        if (object.contains(validation::keys.C))
+        {
+          arrhenius.C = object[validation::keys.C].get<double>();
+        }
+        if (object.contains(validation::keys.D))
+        {
+          arrhenius.D = object[validation::keys.D].get<double>();
+        }
+        if (object.contains(validation::keys.E))
+        {
+          arrhenius.E = object[validation::keys.E].get<double>();
+        }
+        if (object.contains(validation::keys.Ea))
+        {
+          if (arrhenius.C != 0)
+          {
+            std::cerr << "Ea is specified when C is also specified for an Arrhenius reaction. Pick one." << std::endl;
+            status = ConfigParseStatus::MutuallyExclusiveOption;
+          }
+          // Calculate 'C' using 'Ea'
+          arrhenius.C = -1 * object[validation::keys.Ea].get<double>() / constants::boltzmann;
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          arrhenius.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        arrhenius.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        arrhenius.products = products;
+        arrhenius.reactants = reactants;
+        arrhenius.unknown_properties = unknown_properties;
+      }
+
+      return { status, arrhenius };
+    }
+
+    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Reactions reactions;
+
+      for (const auto& object : objects)
+      {
+        std::string type = object[validation::keys.type].get<std::string>();
+        if (type == validation::keys.Arrhenius_key)
+        {
+          auto arrhenius_parse = ParseArrhenius(object, existing_species);
+          if (arrhenius_parse.first != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.arrhenius.push_back(arrhenius_parse.second);
+        }
+      }
+
+      return { status, reactions };
+    }
+
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::string& file_path)
     {
       return JsonParser::Parse(std::filesystem::path(file_path));
@@ -321,7 +454,7 @@ namespace open_atmos
       mechanism.name = name;
 
       // parse all of the species at once
-      auto species_parsing = ParseSpecies(object["species"]);
+      auto species_parsing = ParseSpecies(object[validation::keys.species]);
 
       if (species_parsing.first != ConfigParseStatus::Success)
       {
@@ -331,7 +464,7 @@ namespace open_atmos
       }
 
       // parse all of the phases at once
-      auto phases_parsing = ParsePhases(object["phases"], species_parsing.second);
+      auto phases_parsing = ParsePhases(object[validation::keys.phases], species_parsing.second);
 
       if (phases_parsing.first != ConfigParseStatus::Success)
       {
@@ -340,8 +473,19 @@ namespace open_atmos
         std::cerr << "[" << msg << "] Failed to parse the phases." << std::endl;
       }
 
+      // parse all of the reactions at once
+      auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second);
+
+      if (reactions_parsing.first != ConfigParseStatus::Success)
+      {
+        status = reactions_parsing.first;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Failed to parse the reactions." << std::endl;
+      }
+
       mechanism.species = species_parsing.second;
       mechanism.phases = phases_parsing.second;
+      mechanism.reactions = reactions_parsing.second;
 
       return { status, mechanism };
     }
