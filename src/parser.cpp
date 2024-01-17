@@ -28,6 +28,7 @@ namespace open_atmos
         case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
         case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
         case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
+        case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
         default: return "Unknown";
       }
     }
@@ -159,7 +160,7 @@ namespace open_atmos
       return true;
     }
 
-    bool PhaseRequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<types::Species>& existing_species)
+    bool RequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<types::Species>& existing_species)
     {
       for (const auto& spec : requested_species)
       {
@@ -257,7 +258,7 @@ namespace open_atmos
         phase.species = species;
         phase.unknown_properties = unknown_properties;
 
-        if (PhaseRequiresUnknownSpecies(species, existing_species))
+        if (RequiresUnknownSpecies(species, existing_species))
         {
           status = ConfigParseStatus::PhaseRequiresUnknownSpecies;
           break;
@@ -280,8 +281,12 @@ namespace open_atmos
       status = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
       if (status == ConfigParseStatus::Success)
       {
-        double coefficient = object[validation::keys.coefficient].get<double>();
         std::string species_name = object[validation::keys.species_name].get<std::string>();
+        double coefficient = 1;
+        if (object.contains(validation::keys.coefficient))
+        {
+           coefficient = object[validation::keys.coefficient].get<double>();
+        }
 
         auto comments = GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
 
@@ -373,6 +378,18 @@ namespace open_atmos
           unknown_properties[key] = val;
         }
 
+        std::vector<std::string> requested_species;
+        for(const auto& spec : products) {
+          requested_species.push_back(spec.species_name);
+        }
+        for(const auto& spec : reactants) {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (RequiresUnknownSpecies(requested_species, existing_species)) {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
         arrhenius.gas_phase = object[validation::keys.gas_phase].get<std::string>();
         arrhenius.products = products;
         arrhenius.reactants = reactants;
@@ -393,7 +410,8 @@ namespace open_atmos
         if (type == validation::keys.Arrhenius_key)
         {
           auto arrhenius_parse = ParseArrhenius(object, existing_species);
-          if (arrhenius_parse.first != ConfigParseStatus::Success)
+          status = arrhenius_parse.first;
+          if (status != ConfigParseStatus::Success)
           {
             break;
           }

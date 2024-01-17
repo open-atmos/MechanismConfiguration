@@ -76,6 +76,20 @@
       "D": 6.4,
       "E": -0.3,
       "name": "my arrhenius2"
+    },
+    {
+      "type": "ARRHENIUS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
     }
   ]
 }
