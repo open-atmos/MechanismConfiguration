@@ -878,6 +878,72 @@ namespace open_atmos
       return { status, photolysis };
     }
 
+    std::pair<ConfigParseStatus, types::Emission> ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Emission emission;
+
+      status = ValidateSchema(object, validation::emission.required_keys, validation::emission.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.scaling_factor))
+        {
+          emission.scaling_factor_ = object[validation::keys.scaling_factor].get<double>();
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          emission.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::emission.required_keys, validation::emission.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        emission.gas_phase = gas_phase;
+        emission.reactants = reactants;
+        emission.unknown_properties = unknown_properties;
+      }
+
+      return { status, emission };
+    }
+
     std::pair<ConfigParseStatus, types::Reactions>
     ParseReactions(const json& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
@@ -946,6 +1012,16 @@ namespace open_atmos
             break;
           }
           reactions.photolysis.push_back(photolysis_parse.second);
+        }
+        else if (type == validation::keys.Emission_key)
+        {
+          auto emission_parse = ParseEmission(object, existing_species, existing_phases);
+          status = emission_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.emission.push_back(emission_parse.second);
         }
       }
 
