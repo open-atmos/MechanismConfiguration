@@ -685,7 +685,8 @@ namespace open_atmos
       return { status, tunneling };
     }
 
-    std::pair<ConfigParseStatus, types::Surface> ParseSurface(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Surface>
+    ParseSurface(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Surface surface;
@@ -744,9 +745,8 @@ namespace open_atmos
         }
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
-        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) {
-          return phase.name == aerosol_phase;
-        });
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
@@ -762,7 +762,8 @@ namespace open_atmos
       return { status, surface };
     }
 
-    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Reactions>
+    ParseReactions(const json& objects, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Reactions reactions;
