@@ -285,7 +285,7 @@ namespace open_atmos
         double coefficient = 1;
         if (object.contains(validation::keys.coefficient))
         {
-           coefficient = object[validation::keys.coefficient].get<double>();
+          coefficient = object[validation::keys.coefficient].get<double>();
         }
 
         auto comments = GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
@@ -318,7 +318,8 @@ namespace open_atmos
         {
           auto product_parse = ParseReactionComponent(product);
           status = product_parse.first;
-          if (status != ConfigParseStatus::Success) {
+          if (status != ConfigParseStatus::Success)
+          {
             break;
           }
           products.push_back(product_parse.second);
@@ -329,7 +330,8 @@ namespace open_atmos
         {
           auto reactant_parse = ParseReactionComponent(reactant);
           status = reactant_parse.first;
-          if (status != ConfigParseStatus::Success) {
+          if (status != ConfigParseStatus::Success)
+          {
             break;
           }
           reactants.push_back(reactant_parse.second);
@@ -381,14 +383,17 @@ namespace open_atmos
         }
 
         std::vector<std::string> requested_species;
-        for(const auto& spec : products) {
+        for (const auto& spec : products)
+        {
           requested_species.push_back(spec.species_name);
         }
-        for(const auto& spec : reactants) {
+        for (const auto& spec : reactants)
+        {
           requested_species.push_back(spec.species_name);
         }
 
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species)) {
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
@@ -399,6 +404,109 @@ namespace open_atmos
       }
 
       return { status, arrhenius };
+    }
+
+    std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Troe troe;
+
+      status = ValidateSchema(object, validation::troe.required_keys, validation::troe.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.k0_A))
+        {
+          troe.k0_A = object[validation::keys.k0_A].get<double>();
+        }
+        if (object.contains(validation::keys.k0_B))
+        {
+          troe.k0_B = object[validation::keys.k0_B].get<double>();
+        }
+        if (object.contains(validation::keys.k0_C))
+        {
+          troe.k0_C = object[validation::keys.k0_C].get<double>();
+        }
+        if (object.contains(validation::keys.kinf_A))
+        {
+          troe.kinf_A = object[validation::keys.kinf_A].get<double>();
+        }
+        if (object.contains(validation::keys.kinf_B))
+        {
+          troe.kinf_B = object[validation::keys.kinf_B].get<double>();
+        }
+        if (object.contains(validation::keys.kinf_C))
+        {
+          troe.kinf_C = object[validation::keys.kinf_C].get<double>();
+        }
+        if (object.contains(validation::keys.Fc))
+        {
+          troe.Fc = object[validation::keys.Fc].get<double>();
+        }
+        if (object.contains(validation::keys.N))
+        {
+          troe.N = object[validation::keys.N].get<double>();
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          troe.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::troe.required_keys, validation::troe.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        troe.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        troe.products = products;
+        troe.reactants = reactants;
+        troe.unknown_properties = unknown_properties;
+      }
+
+      return { status, troe };
     }
 
     std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
@@ -418,6 +526,16 @@ namespace open_atmos
             break;
           }
           reactions.arrhenius.push_back(arrhenius_parse.second);
+        }
+        else if (type == validation::keys.Troe_key)
+        {
+          auto troe_parse = ParseTroe(object, existing_species);
+          status = troe_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.troe.push_back(troe_parse.second);
         }
       }
 

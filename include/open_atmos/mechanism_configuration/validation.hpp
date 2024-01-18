@@ -51,6 +51,17 @@ namespace open_atmos
       const std::string E = "E";
       const std::string Ea = "Ea";
 
+      // Troe
+      const std::string Troe_key = "TROE";
+      const std::string k0_A = "k0_A";
+      const std::string k0_B = "k0_B";
+      const std::string k0_C = "k0_C";
+      const std::string kinf_A = "kinf_A";
+      const std::string kinf_B = "kinf_B";
+      const std::string kinf_C = "kinf_C";
+      const std::string Fc = "Fc";
+      const std::string N = "N";
+
     } keys;
 
     struct Configuration
@@ -88,6 +99,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
     } arrhenius;
+
+    struct Troe
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.k0_A, keys.k0_B, keys.k0_C, keys.kinf_A, keys.kinf_B, keys.kinf_C, keys.Fc, keys.N };
+    } troe;
 
     struct Mechanism
     {

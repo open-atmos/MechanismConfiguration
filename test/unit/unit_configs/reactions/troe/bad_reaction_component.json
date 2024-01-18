@@ -20,7 +20,7 @@
   ],
   "reactions": [
     {
-      "type": "ARRHENIUS",
+      "type": "TROE",
       "gas phase": "gas",
       "reactants": [
         {
