@@ -11,6 +11,7 @@ create_standard_test(NAME parse_phases SOURCES test_parse_phases.cpp)
 create_standard_test(NAME parse_arrhenius SOURCES test_parse_arrhenius.cpp)
 create_standard_test(NAME parse_troe SOURCES test_parse_troe.cpp)
 create_standard_test(NAME parse_branched SOURCES test_parse_branched.cpp)
+create_standard_test(NAME parse_tunneling SOURCES test_parse_tunneling.cpp)
 
 ################################################################################
 # Copy test data

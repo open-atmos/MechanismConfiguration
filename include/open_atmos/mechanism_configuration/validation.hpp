@@ -71,6 +71,13 @@ namespace open_atmos
       const std::string nitrate_products = "nitrate products";
       const std::string alkoxy_products = "alkoxy products";
 
+      // Tunneling
+      const std::string Tunneling_key = "TUNNELING";
+      // also these, but they are defined above
+      // A
+      // B
+      // C
+
     } keys;
 
     struct Configuration
@@ -120,6 +127,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.nitrate_products, keys.alkoxy_products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.X, keys.Y, keys.a0, keys.n };
     } branched;
+
+    struct Tunneling
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.B, keys.C };
+    } tunneling;
 
     struct Mechanism
     {
