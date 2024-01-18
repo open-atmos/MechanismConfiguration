@@ -306,7 +306,7 @@ namespace open_atmos
       return { status, component };
     }
 
-    std::pair<ConfigParseStatus, types::Arrhenius> ParseArrhenius(const json& object, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::Arrhenius> ParseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Arrhenius arrhenius;
@@ -398,7 +398,15 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        arrhenius.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        arrhenius.gas_phase = gas_phase;
         arrhenius.products = products;
         arrhenius.reactants = reactants;
         arrhenius.unknown_properties = unknown_properties;
@@ -407,7 +415,7 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
-    std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Troe troe;
@@ -501,7 +509,16 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        troe.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        troe.gas_phase = gas_phase;
         troe.products = products;
         troe.reactants = reactants;
         troe.unknown_properties = unknown_properties;
@@ -510,7 +527,7 @@ namespace open_atmos
       return { status, troe };
     }
 
-    std::pair<ConfigParseStatus, types::Branched> ParseBranched(const json& object, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::Branched> ParseBranched(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Branched branched;
@@ -592,7 +609,15 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        branched.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        branched.gas_phase = gas_phase;
         branched.nitrate_products = nitrate_products;
         branched.alkoxy_products = alkoxy_products;
         branched.reactants = reactants;
@@ -846,7 +871,7 @@ namespace open_atmos
     }
 
     std::pair<ConfigParseStatus, types::Reactions>
-    ParseReactions(const json& objects, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    ParseReactions(const json& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Reactions reactions;
@@ -856,7 +881,7 @@ namespace open_atmos
         std::string type = object[validation::keys.type].get<std::string>();
         if (type == validation::keys.Arrhenius_key)
         {
-          auto arrhenius_parse = ParseArrhenius(object, existing_species);
+          auto arrhenius_parse = ParseArrhenius(object, existing_species, existing_phases);
           status = arrhenius_parse.first;
           if (status != ConfigParseStatus::Success)
           {
@@ -866,7 +891,7 @@ namespace open_atmos
         }
         else if (type == validation::keys.Troe_key)
         {
-          auto troe_parse = ParseTroe(object, existing_species);
+          auto troe_parse = ParseTroe(object, existing_species, existing_phases);
           status = troe_parse.first;
           if (status != ConfigParseStatus::Success)
           {
@@ -876,7 +901,7 @@ namespace open_atmos
         }
         else if (type == validation::keys.Branched_key)
         {
-          auto branched_parse = ParseBranched(object, existing_species);
+          auto branched_parse = ParseBranched(object, existing_species, existing_phases);
           status = branched_parse.first;
           if (status != ConfigParseStatus::Success)
           {
