@@ -103,7 +103,9 @@ namespace open_atmos
     struct Troe
     {
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
-      const std::vector<std::string> optional_keys{ keys.name, keys.k0_A, keys.k0_B, keys.k0_C, keys.kinf_A, keys.kinf_B, keys.kinf_C, keys.Fc, keys.N };
+      const std::vector<std::string> optional_keys{
+        keys.name, keys.k0_A, keys.k0_B, keys.k0_C, keys.kinf_A, keys.kinf_B, keys.kinf_C, keys.Fc, keys.N
+      };
     } troe;
 
     struct Mechanism
