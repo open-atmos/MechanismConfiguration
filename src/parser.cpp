@@ -285,7 +285,7 @@ namespace open_atmos
         double coefficient = 1;
         if (object.contains(validation::keys.coefficient))
         {
-           coefficient = object[validation::keys.coefficient].get<double>();
+          coefficient = object[validation::keys.coefficient].get<double>();
         }
 
         auto comments = GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
@@ -318,7 +318,8 @@ namespace open_atmos
         {
           auto product_parse = ParseReactionComponent(product);
           status = product_parse.first;
-          if (status != ConfigParseStatus::Success) {
+          if (status != ConfigParseStatus::Success)
+          {
             break;
           }
           products.push_back(product_parse.second);
@@ -329,7 +330,8 @@ namespace open_atmos
         {
           auto reactant_parse = ParseReactionComponent(reactant);
           status = reactant_parse.first;
-          if (status != ConfigParseStatus::Success) {
+          if (status != ConfigParseStatus::Success)
+          {
             break;
           }
           reactants.push_back(reactant_parse.second);
@@ -381,14 +383,17 @@ namespace open_atmos
         }
 
         std::vector<std::string> requested_species;
-        for(const auto& spec : products) {
+        for (const auto& spec : products)
+        {
           requested_species.push_back(spec.species_name);
         }
-        for(const auto& spec : reactants) {
+        for (const auto& spec : reactants)
+        {
           requested_species.push_back(spec.species_name);
         }
 
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species)) {
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
