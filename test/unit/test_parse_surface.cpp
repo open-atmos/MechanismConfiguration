@@ -23,6 +23,8 @@ TEST(JsonParser, CanParseValidSurfaceReaction)
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products[0].coefficient, 1);
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products[1].species_name, "C");
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products[1].coefficient, 1);
+  EXPECT_EQ(mechanism.reactions.surface[0].unknown_properties.size(), 1);
+  EXPECT_EQ(mechanism.reactions.surface[0].unknown_properties["__comment"], "\"key lime pie is superior to all other pies\"");
 
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase, "gas");
   EXPECT_EQ(mechanism.reactions.surface[1].aerosol_phase, "surface reacting phase");
