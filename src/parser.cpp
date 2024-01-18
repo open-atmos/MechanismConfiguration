@@ -2,18 +2,512 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include <open_atmos/constants.hpp>
 #include <open_atmos/mechanism_configuration/parser.hpp>
-#include <nlohmann/json.hpp>
+#include <open_atmos/mechanism_configuration/validation.hpp>
+#include <open_atmos/mechanism_configuration/version.hpp>
 
 namespace open_atmos
 {
   namespace mechanism_configuration
   {
-    // explicit template instanatiation
-    template class ConfigurationReader<JsonReaderPolicy>;
+    using nlohmann::json;
 
-    ConfigParseStatus JsonReaderPolicy::Parse(const std::filesystem::path &config_path) {
+    std::string configParseStatusToString(const ConfigParseStatus& status)
+    {
+      switch (status)
+      {
+        case ConfigParseStatus::Success: return "Success";
+        case ConfigParseStatus::None: return "None";
+        case ConfigParseStatus::InvalidKey: return "InvalidKey";
+        case ConfigParseStatus::UnknownKey: return "UnknownKey";
+        case ConfigParseStatus::InvalidFilePath: return "InvalidFilePath";
+        case ConfigParseStatus::ObjectTypeNotFound: return "ObjectTypeNotFound";
+        case ConfigParseStatus::RequiredKeyNotFound: return "RequiredKeyNotFound";
+        case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
+        case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
+        case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
+        case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
+        case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
+        default: return "Unknown";
+      }
+    }
+
+    // Returns a vector for the allowed nonstandard keys, those that start with two underscores, like "__absolute tolerance"
+    std::vector<std::string>
+    GetComments(const json& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
+    {
+      // standard keys are:
+      // those in required keys
+      // those in optional keys
+      // starting with __
+      // anything else is reported as an error so that typos are caught, specifically for optional keys
+
+      std::vector<std::string> sorted_object_keys;
+      for (auto& [key, value] : object.items())
+        sorted_object_keys.push_back(key);
+
+      auto sorted_required_keys = required_keys;
+      auto sorted_optional_keys = optional_keys;
+      std::sort(sorted_object_keys.begin(), sorted_object_keys.end());
+      std::sort(sorted_required_keys.begin(), sorted_required_keys.end());
+      std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());
+
+      // get the difference between the object keys and those required
+      // what's left should be the optional keys and valid comments
+      std::vector<std::string> difference;
+      std::set_difference(
+          sorted_object_keys.begin(),
+          sorted_object_keys.end(),
+          sorted_required_keys.begin(),
+          sorted_required_keys.end(),
+          std::back_inserter(difference));
+
+      std::vector<std::string> remaining;
+      std::set_difference(
+          difference.begin(), difference.end(), sorted_optional_keys.begin(), sorted_optional_keys.end(), std::back_inserter(remaining));
+
+      return remaining;
+    }
+
+    /// @brief Search for nonstandard keys. Only nonstandard keys starting with __ are allowed. Others are considered typos
+    /// @param object the object whose keys need to be validated
+    /// @param required_keys The required keys
+    /// @param optional_keys The optional keys
+    /// @return true if only standard keys are found
+    ConfigParseStatus ValidateSchema(const json& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
+    {
+      // standard keys are:
+      // those in required keys
+      // those in optional keys
+      // starting with __
+      // anything else is reported as an error so that typos are caught, specifically for optional keys
+
+      // debug statement
+      // std::cout << "ValidateSchema object " << object.dump(4) << std::endl;
+
+      if (!object.empty() && object.begin().value().is_null())
+      {
+        return ConfigParseStatus::Success;
+      }
+
+      std::vector<std::string> sorted_object_keys;
+      for (auto& [key, value] : object.items())
+        sorted_object_keys.push_back(key);
+
+      auto sorted_required_keys = required_keys;
+      auto sorted_optional_keys = optional_keys;
+      std::sort(sorted_object_keys.begin(), sorted_object_keys.end());
+      std::sort(sorted_required_keys.begin(), sorted_required_keys.end());
+      std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());
+
+      // get the difference between the object keys and those required
+      // what's left should be the optional keys and valid comments
+      std::vector<std::string> difference;
+      std::set_difference(
+          sorted_object_keys.begin(),
+          sorted_object_keys.end(),
+          sorted_required_keys.begin(),
+          sorted_required_keys.end(),
+          std::back_inserter(difference));
+
+      // check that the number of keys remaining is exactly equal to the expected number of required keys
+      if (difference.size() != (sorted_object_keys.size() - required_keys.size()))
+      {
+        std::vector<std::string> missing_keys;
+        std::set_difference(
+            sorted_required_keys.begin(),
+            sorted_required_keys.end(),
+            sorted_object_keys.begin(),
+            sorted_object_keys.end(),
+            std::back_inserter(missing_keys));
+        for (auto& key : missing_keys)
+          std::cerr << "Missing required key '" << key << "' in object: " << object << std::endl;
+
+        return ConfigParseStatus::RequiredKeyNotFound;
+      }
+
+      std::vector<std::string> remaining;
+      std::set_difference(
+          difference.begin(), difference.end(), sorted_optional_keys.begin(), sorted_optional_keys.end(), std::back_inserter(remaining));
+
+      // now, anything left must be standard comment starting with __
+      for (auto& key : remaining)
+      {
+        if (!key.starts_with("__"))
+        {
+          std::cerr << "Non-standard key '" << key << "' found in object" << object << std::endl;
+
+          return ConfigParseStatus::InvalidKey;
+        }
+      }
       return ConfigParseStatus::Success;
     }
-  }
-}
+
+    template<typename T>
+    bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
+    {
+      for (size_t i = 0; i < collection.size(); ++i)
+      {
+        for (size_t j = i + 1; j < collection.size(); ++j)
+        {
+          if (collection[i].name == collection[j].name)
+          {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    bool RequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<types::Species>& existing_species)
+    {
+      for (const auto& spec : requested_species)
+      {
+        auto it =
+            std::find_if(existing_species.begin(), existing_species.end(), [&spec](const types::Species& existing) { return existing.name == spec; });
+
+        if (it == existing_species.end())
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const json& objects)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      std::vector<types::Species> all_species;
+
+      for (const auto& object : objects)
+      {
+        types::Species species;
+        status = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
+        if (status != ConfigParseStatus::Success)
+        {
+          break;
+        }
+
+        std::string name = object[validation::keys.name].get<std::string>();
+
+        std::map<std::string, double> numerical_properties{};
+        for (const auto& key : validation::species.optional_keys)
+        {
+          if (object.contains(key))
+          {
+            double val = object[key].get<double>();
+            numerical_properties[key] = val;
+          }
+        }
+
+        auto comments = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        species.name = name;
+        species.optional_numerical_properties = numerical_properties;
+        species.unknown_properties = unknown_properties;
+
+        all_species.push_back(species);
+      }
+
+      if (!ContainsUniqueObjectsByName<types::Species>(all_species))
+        status = ConfigParseStatus::DuplicateSpeciesDetected;
+
+      return { status, all_species };
+    }
+
+    std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(const json& objects, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      std::vector<types::Phase> all_phases;
+
+      for (const auto& object : objects)
+      {
+        types::Phase phase;
+        status = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
+        if (status != ConfigParseStatus::Success)
+        {
+          break;
+        }
+
+        std::string name = object[validation::keys.name].get<std::string>();
+
+        std::vector<std::string> species{};
+        for (const auto& spec : object[validation::keys.species])
+        {
+          species.push_back(spec);
+        }
+
+        auto comments = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        phase.name = name;
+        phase.species = species;
+        phase.unknown_properties = unknown_properties;
+
+        if (RequiresUnknownSpecies(species, existing_species))
+        {
+          status = ConfigParseStatus::PhaseRequiresUnknownSpecies;
+          break;
+        }
+
+        all_phases.push_back(phase);
+      }
+
+      if (status == ConfigParseStatus::Success && !ContainsUniqueObjectsByName<types::Phase>(all_phases))
+        status = ConfigParseStatus::DuplicatePhasesDetected;
+
+      return { status, all_phases };
+    }
+
+    std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const json& object)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::ReactionComponent component;
+
+      status = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::string species_name = object[validation::keys.species_name].get<std::string>();
+        double coefficient = 1;
+        if (object.contains(validation::keys.coefficient))
+        {
+           coefficient = object[validation::keys.coefficient].get<double>();
+        }
+
+        auto comments = GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        component.species_name = species_name;
+        component.coefficient = coefficient;
+        component.unknown_properties = unknown_properties;
+      }
+
+      return { status, component };
+    }
+
+    std::pair<ConfigParseStatus, types::Arrhenius> ParseArrhenius(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Arrhenius arrhenius;
+
+      status = ValidateSchema(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success) {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success) {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.A))
+        {
+          arrhenius.A = object[validation::keys.A].get<double>();
+        }
+        if (object.contains(validation::keys.B))
+        {
+          arrhenius.B = object[validation::keys.B].get<double>();
+        }
+        if (object.contains(validation::keys.C))
+        {
+          arrhenius.C = object[validation::keys.C].get<double>();
+        }
+        if (object.contains(validation::keys.D))
+        {
+          arrhenius.D = object[validation::keys.D].get<double>();
+        }
+        if (object.contains(validation::keys.E))
+        {
+          arrhenius.E = object[validation::keys.E].get<double>();
+        }
+        if (object.contains(validation::keys.Ea))
+        {
+          if (arrhenius.C != 0)
+          {
+            std::cerr << "Ea is specified when C is also specified for an Arrhenius reaction. Pick one." << std::endl;
+            status = ConfigParseStatus::MutuallyExclusiveOption;
+          }
+          // Calculate 'C' using 'Ea'
+          arrhenius.C = -1 * object[validation::keys.Ea].get<double>() / constants::boltzmann;
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          arrhenius.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for(const auto& spec : products) {
+          requested_species.push_back(spec.species_name);
+        }
+        for(const auto& spec : reactants) {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species)) {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        arrhenius.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        arrhenius.products = products;
+        arrhenius.reactants = reactants;
+        arrhenius.unknown_properties = unknown_properties;
+      }
+
+      return { status, arrhenius };
+    }
+
+    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Reactions reactions;
+
+      for (const auto& object : objects)
+      {
+        std::string type = object[validation::keys.type].get<std::string>();
+        if (type == validation::keys.Arrhenius_key)
+        {
+          auto arrhenius_parse = ParseArrhenius(object, existing_species);
+          status = arrhenius_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.arrhenius.push_back(arrhenius_parse.second);
+        }
+      }
+
+      return { status, reactions };
+    }
+
+    std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::string& file_path)
+    {
+      return JsonParser::Parse(std::filesystem::path(file_path));
+    }
+
+    std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::filesystem::path& file_path)
+    {
+      ConfigParseStatus status;
+
+      if (!std::filesystem::exists(file_path) || std::filesystem::is_directory(file_path))
+      {
+        status = ConfigParseStatus::InvalidFilePath;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << msg << std::endl;
+        return { status, types::Mechanism() };
+      }
+
+      json config = json::parse(std::ifstream(file_path));
+
+      return JsonParser::Parse(config);
+    }
+
+    std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const nlohmann::json& object)
+    {
+      ConfigParseStatus status;
+      types::Mechanism mechanism;
+
+      status = ValidateSchema(object, validation::configuration.required_keys, validation::configuration.optional_keys);
+
+      if (status != ConfigParseStatus::Success)
+      {
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Invalid top level configuration." << std::endl;
+        return { status, mechanism };
+      }
+
+      std::string version = object[validation::keys.version].get<std::string>();
+
+      if (version != getVersionString())
+      {
+        status = ConfigParseStatus::InvalidVersion;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] This parser supports version " << getVersionString() << " and you requested version " << version
+                  << ". Please download the appropriate version of the parser or switch to the supported format's version." << std::endl;
+      }
+
+      std::string name = object[validation::keys.name].get<std::string>();
+      mechanism.name = name;
+
+      // parse all of the species at once
+      auto species_parsing = ParseSpecies(object[validation::keys.species]);
+
+      if (species_parsing.first != ConfigParseStatus::Success)
+      {
+        status = species_parsing.first;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Failed to parse the species." << std::endl;
+      }
+
+      // parse all of the phases at once
+      auto phases_parsing = ParsePhases(object[validation::keys.phases], species_parsing.second);
+
+      if (phases_parsing.first != ConfigParseStatus::Success)
+      {
+        status = phases_parsing.first;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Failed to parse the phases." << std::endl;
+      }
+
+      // parse all of the reactions at once
+      auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second);
+
+      if (reactions_parsing.first != ConfigParseStatus::Success)
+      {
+        status = reactions_parsing.first;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Failed to parse the reactions." << std::endl;
+      }
+
+      mechanism.species = species_parsing.second;
+      mechanism.phases = phases_parsing.second;
+      mechanism.reactions = reactions_parsing.second;
+
+      return { status, mechanism };
+    }
+  }  // namespace mechanism_configuration
+}  // namespace open_atmos

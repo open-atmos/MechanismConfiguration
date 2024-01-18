@@ -18,4 +18,4 @@ target_include_directories(mechanism_configuration
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(mechanism_configuration PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(mechanism_configuration PUBLIC nlohmann_json::nlohmann_json)

@@ -40,6 +40,11 @@ add_subdirectory(src)
 if(PROJECT_IS_TOP_LEVEL AND ENABLE_TESTS)
   enable_testing()
   add_subdirectory(test)
+
+  # Copy example folder to use as test data
+
+  add_custom_target(copy_example_configs ALL ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_BINARY_DIR}/examples)
 endif()
 
 ################################################################################

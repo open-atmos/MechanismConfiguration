@@ -6,7 +6,9 @@ include(test_util)
 ################################################################################
 # Tests
 
-create_standard_test(NAME parser SOURCES test_parser.cpp)
+create_standard_test(NAME parse_species SOURCES test_parse_species.cpp)
+create_standard_test(NAME parse_phases SOURCES test_parse_phases.cpp)
+create_standard_test(NAME parse_arrhenius SOURCES test_parse_arrhenius.cpp)
 
 ################################################################################
 # Copy test data
