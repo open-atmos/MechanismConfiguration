@@ -15,6 +15,7 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.reactions.troe.size(), 1);
   EXPECT_EQ(mechanism.reactions.branched.size(), 1);
   EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
+  EXPECT_EQ(mechanism.reactions.surface.size(), 1);
 }
 
 TEST(JsonParser, ParserReportsBadFiles)

@@ -235,14 +235,21 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase reactant": "foo",
-      "reaction probability": 2.0e-2,
-      "gas-phase products": {
-        "bar": {},
-        "baz": {
-          "yield": 0.4
-        }
+      "gas-phase reactant": {
+        "species name": "A",
+        "coefficient": 1
       },
+      "reaction probability": 2.0e-2,
+      "gas-phase products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
       "aerosol phase": "surface reacting phase",
       "name": "my surface"
     },

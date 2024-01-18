@@ -33,6 +33,7 @@ namespace open_atmos
       DuplicatePhasesDetected,
       PhaseRequiresUnknownSpecies,
       ReactionRequiresUnknownSpecies,
+      UnknownPhase
     };
     std::string configParseStatusToString(const ConfigParseStatus &status);
 

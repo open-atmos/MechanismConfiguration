@@ -134,12 +134,31 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct Surface
+    {
+      /// @brief Reaction probability (0-1) [unitless]
+      double reaction_probability{ 1.0 };
+      /// @brief A list of reactants
+      ReactionComponent gas_phase_reactant;
+      /// @brief A list of products
+      std::vector<ReactionComponent> gas_phase_products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
       std::vector<types::Troe> troe;
       std::vector<types::Branched> branched;
       std::vector<types::Tunneling> tunneling;
+      std::vector<types::Surface> surface;
     };
 
     struct Mechanism
