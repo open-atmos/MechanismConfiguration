@@ -719,7 +719,7 @@ namespace open_atmos
     }
 
     std::pair<ConfigParseStatus, types::Surface>
-    ParseSurface(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    ParseSurface(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Surface surface;
