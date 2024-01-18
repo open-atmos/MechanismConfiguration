@@ -62,6 +62,15 @@ namespace open_atmos
       const std::string Fc = "Fc";
       const std::string N = "N";
 
+      // Branched
+      const std::string Branched_key = "BRANCHED_NO_RO2";
+      const std::string X = "X";
+      const std::string Y = "Y";
+      const std::string a0 = "a0";
+      const std::string n = "n";
+      const std::string nitrate_products = "nitrate products";
+      const std::string alkoxy_products = "alkoxy products";
+
     } keys;
 
     struct Configuration
@@ -105,6 +114,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.k0_A, keys.k0_B, keys.k0_C, keys.kinf_A, keys.kinf_B, keys.kinf_C, keys.Fc, keys.N };
     } troe;
+
+    struct Branched
+    {
+      const std::vector<std::string> required_keys{ keys.nitrate_products, keys.alkoxy_products, keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.X, keys.Y, keys.a0, keys.n };
+    } branched;
 
     struct Mechanism
     {

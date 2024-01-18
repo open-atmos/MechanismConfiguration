@@ -509,6 +509,98 @@ namespace open_atmos
       return { status, troe };
     }
 
+    std::pair<ConfigParseStatus, types::Branched> ParseBranched(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Branched branched;
+
+      status = ValidateSchema(object, validation::branched.required_keys, validation::branched.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> alkoxy_products{};
+        for (const auto& product : object[validation::keys.alkoxy_products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          alkoxy_products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> nitrate_products{};
+        for (const auto& product : object[validation::keys.nitrate_products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          nitrate_products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        branched.X = object[validation::keys.X].get<double>();
+        branched.Y = object[validation::keys.Y].get<double>();
+        branched.a0 = object[validation::keys.a0].get<double>();
+        branched.n = object[validation::keys.n].get<double>();
+
+        if (object.contains(validation::keys.name))
+        {
+          branched.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::branched.required_keys, validation::branched.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : nitrate_products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : alkoxy_products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        branched.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        branched.nitrate_products = nitrate_products;
+        branched.alkoxy_products = alkoxy_products;
+        branched.reactants = reactants;
+        branched.unknown_properties = unknown_properties;
+      }
+
+      return { status, branched };
+    }
+
     std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -536,6 +628,16 @@ namespace open_atmos
             break;
           }
           reactions.troe.push_back(troe_parse.second);
+        }
+        else if (type == validation::keys.Branched_key)
+        {
+          auto branched_parse = ParseBranched(object, existing_species);
+          status = branched_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.branched.push_back(branched_parse.second);
         }
       }
 
