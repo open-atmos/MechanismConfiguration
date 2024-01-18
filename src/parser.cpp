@@ -627,7 +627,7 @@ namespace open_atmos
       return { status, branched };
     }
 
-    std::pair<ConfigParseStatus, types::Tunneling> ParseTunneling(const json& object, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::Tunneling> ParseTunneling(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Tunneling tunneling;
@@ -701,7 +701,15 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        tunneling.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        tunneling.gas_phase = gas_phase;
         tunneling.products = products;
         tunneling.reactants = reactants;
         tunneling.unknown_properties = unknown_properties;
@@ -911,7 +919,7 @@ namespace open_atmos
         }
         else if (type == validation::keys.Tunneling_key)
         {
-          auto tunneling_parse = ParseTunneling(object, existing_species);
+          auto tunneling_parse = ParseTunneling(object, existing_species, existing_phases);
           status = tunneling_parse.first;
           if (status != ConfigParseStatus::Success)
           {
