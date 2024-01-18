@@ -85,6 +85,10 @@ namespace open_atmos
       const std::string gas_phase_products = "gas-phase products";
       const std::string aerosol_phase = "aerosol phase";
 
+      // Photolysis
+      const std::string Photolysis_key = "PHOTOLYSIS";
+      const std::string scaling_factor = "scaling factor";
+
     } keys;
 
     struct Configuration
@@ -148,6 +152,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.gas_phase_products, keys.gas_phase_reactant, keys.type, keys.gas_phase, keys.aerosol_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.reaction_probability };
     } surface;
+
+    struct Photolysis
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } photolysis;
 
     struct Mechanism
     {
