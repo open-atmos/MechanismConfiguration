@@ -90,10 +90,35 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct Branched
+    {
+      /// @brief pre-exponential factor
+      double X;
+      /// @brief exponential factor
+      double Y;
+      /// @brief branching factor
+      double a0;
+      /// @brief number of heavy atoms in the RO2 reacting species (excluding the peroxy moiety)
+      int n;
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of nitrate products
+      std::vector<ReactionComponent> nitrate_products;
+      /// @brief A list of alkoxy products
+      std::vector<ReactionComponent> alkoxy_products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
       std::vector<types::Troe> troe;
+      std::vector<types::Branched> branched;
     };
 
     struct Mechanism

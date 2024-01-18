@@ -13,6 +13,7 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.species.size(), 11);
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
   EXPECT_EQ(mechanism.reactions.troe.size(), 1);
+  EXPECT_EQ(mechanism.reactions.branched.size(), 1);
 }
 
 TEST(JsonParser, ParserReportsBadFiles)
