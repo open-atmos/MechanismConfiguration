@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Bad reaction component",
+  "name": "Unknown species",
   "species": [
     {
       "name": "A"
@@ -20,16 +20,17 @@
   ],
   "reactions": [
     {
-      "type": "ARRHENIUS",
+      "__my comment": {},
+      "type": "TROE",
       "gas phase": "gas",
       "reactants": [
         {
-          "Species name": "A"
+          "species name": "A"
         }
       ],
       "products": [
         {
-          "species name": "B"
+          "species name": "C"
         }
       ]
     }

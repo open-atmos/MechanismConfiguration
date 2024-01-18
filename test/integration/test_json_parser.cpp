@@ -10,8 +10,9 @@ TEST(JsonParser, ParsesFullConfiguration)
   auto [status, mechanism] = parser.Parse(std::string("examples/full_configuration.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
   EXPECT_EQ(mechanism.name, "Full Configuration");
-  EXPECT_EQ(mechanism.species.size(), 10);
+  EXPECT_EQ(mechanism.species.size(), 11);
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
+  EXPECT_EQ(mechanism.reactions.troe.size(), 1);
 }
 
 TEST(JsonParser, ParserReportsBadFiles)

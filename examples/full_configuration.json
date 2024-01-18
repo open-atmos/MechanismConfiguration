@@ -13,6 +13,9 @@
       "name": "C"
     },
     {
+      "name": "M"
+    },
+    {
       "name": "H2O2",
       "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
       "HLC exponential factor [K]": 6340,

@@ -14,9 +14,8 @@ namespace open_atmos
     struct Species
     {
       std::string name;
-
       std::map<std::string, double> optional_numerical_properties;
-
+      /// @brief Unknown properties, prefixed with two underscores (__)
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
@@ -24,6 +23,7 @@ namespace open_atmos
     {
       std::string name;
       std::vector<std::string> species;
+      /// @brief Unknown properties, prefixed with two underscores (__)
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
@@ -31,6 +31,7 @@ namespace open_atmos
     {
       std::string species_name;
       double coefficient;
+      /// @brief Unknown properties, prefixed with two underscores (__)
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
@@ -47,7 +48,6 @@ namespace open_atmos
       double D{ 300 };
       /// @brief A factor that determines pressure dependence [Pa-1]
       double E{ 0 };
-
       /// @brief A list of reactants
       std::vector<ReactionComponent> reactants;
       /// @brief A list of products
@@ -56,13 +56,44 @@ namespace open_atmos
       std::string name;
       /// @brief An identifier indicating which gas phase this reaction takes place in
       std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
 
+    struct Troe
+    {
+      /// @brief low-pressure pre-exponential factor
+      double k0_A = 1.0;
+      /// @brief low-pressure temperature-scaling parameter
+      double k0_B = 0.0;
+      /// @brief low-pressure exponential factor
+      double k0_C = 0.0;
+      /// @brief high-pressure pre-exponential factor
+      double kinf_A = 1.0;
+      /// @brief high-pressure temperature-scaling parameter
+      double kinf_B = 0.0;
+      /// @brief high-pressure exponential factor
+      double kinf_C = 0.0;
+      /// @brief Troe F_c parameter
+      double Fc = 0.6;
+      /// @brief Troe N parameter
+      double N = 1.0;
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
+      std::vector<types::Troe> troe;
     };
 
     struct Mechanism
