@@ -601,6 +601,89 @@ namespace open_atmos
       return { status, branched };
     }
 
+    std::pair<ConfigParseStatus, types::Tunneling> ParseTunneling(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Tunneling tunneling;
+
+      status = ValidateSchema(object, validation::tunneling.required_keys, validation::tunneling.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.A))
+        {
+          tunneling.A = object[validation::keys.A].get<double>();
+        }
+        if (object.contains(validation::keys.B))
+        {
+          tunneling.B = object[validation::keys.B].get<double>();
+        }
+        if (object.contains(validation::keys.C))
+        {
+          tunneling.C = object[validation::keys.C].get<double>();
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          tunneling.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::tunneling.required_keys, validation::tunneling.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        tunneling.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        tunneling.products = products;
+        tunneling.reactants = reactants;
+        tunneling.unknown_properties = unknown_properties;
+      }
+
+      return { status, tunneling };
+    }
+
     std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -638,6 +721,16 @@ namespace open_atmos
             break;
           }
           reactions.branched.push_back(branched_parse.second);
+        }
+        else if (type == validation::keys.Tunneling_key)
+        {
+          auto tunneling_parse = ParseTunneling(object, existing_species);
+          status = tunneling_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.tunneling.push_back(tunneling_parse.second);
         }
       }
 

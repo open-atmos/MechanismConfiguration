@@ -114,11 +114,32 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct Tunneling
+    {
+      /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
+      double A = 1.0;
+      /// @brief Linear temperature-dependent parameter [K]
+      double B = 0.0;
+      /// @brief Cubed temperature-dependent parameter [K^3]
+      double C = 0.0;
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
       std::vector<types::Troe> troe;
       std::vector<types::Branched> branched;
+      std::vector<types::Tunneling> tunneling;
     };
 
     struct Mechanism
