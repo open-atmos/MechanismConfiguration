@@ -29,6 +29,7 @@ namespace open_atmos
         case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
         case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
         case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
+        case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
         default: return "Unknown";
       }
     }
@@ -684,7 +685,84 @@ namespace open_atmos
       return { status, tunneling };
     }
 
-    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::Surface> ParseSurface(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::Surface surface;
+
+      status = ValidateSchema(object, validation::surface.required_keys, validation::surface.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        auto reactant_parse = ParseReactionComponent(object[validation::keys.gas_phase_reactant]);
+        status = reactant_parse.first;
+        if (status != ConfigParseStatus::Success)
+        {
+          return { status, surface };
+        }
+
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& reactant : object[validation::keys.gas_phase_products])
+        {
+          auto product_parse = ParseReactionComponent(reactant);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        if (object.contains(validation::keys.reaction_probability))
+        {
+          surface.reaction_probability = object[validation::keys.reaction_probability].get<double>();
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          surface.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::surface.required_keys, validation::surface.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        requested_species.push_back(reactant_parse.second.species_name);
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) {
+          return phase.name == aerosol_phase;
+        });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        surface.gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        surface.aerosol_phase = aerosol_phase;
+        surface.gas_phase_products = products;
+        surface.gas_phase_reactant = reactant_parse.second;
+        surface.unknown_properties = unknown_properties;
+      }
+
+      return { status, surface };
+    }
+
+    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const json& objects, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Reactions reactions;
@@ -731,6 +809,16 @@ namespace open_atmos
             break;
           }
           reactions.tunneling.push_back(tunneling_parse.second);
+        }
+        else if (type == validation::keys.Surface_key)
+        {
+          auto surface_parse = ParseSurface(object, existing_species, existing_phases);
+          status = surface_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.surface.push_back(surface_parse.second);
         }
       }
 
@@ -807,7 +895,7 @@ namespace open_atmos
       }
 
       // parse all of the reactions at once
-      auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second);
+      auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second, phases_parsing.second);
 
       if (reactions_parsing.first != ConfigParseStatus::Success)
       {
