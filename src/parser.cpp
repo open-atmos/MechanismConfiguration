@@ -25,6 +25,8 @@ namespace open_atmos
         case ConfigParseStatus::RequiredKeyNotFound: return "RequiredKeyNotFound";
         case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
         case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
+        case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
+        case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
         default: return "Unknown";
       }
     }
@@ -140,19 +142,35 @@ namespace open_atmos
       return ConfigParseStatus::Success;
     }
 
-    bool ContainsOnlyUniqueSpecies(const std::vector<types::Species>& all_species)
+    template<typename T>
+    bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
     {
-      for (size_t i = 0; i < all_species.size(); ++i)
+      for (size_t i = 0; i < collection.size(); ++i)
       {
-        for (size_t j = i + 1; j < all_species.size(); ++j)
+        for (size_t j = i + 1; j < collection.size(); ++j)
         {
-          if (all_species[i].name == all_species[j].name)
+          if (collection[i].name == collection[j].name)
           {
             return false;
           }
         }
       }
       return true;
+    }
+
+    bool PhaseRequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<types::Species>& existing_species)
+    {
+      for (const auto& spec : requested_species)
+      {
+        auto it =
+            std::find_if(existing_species.begin(), existing_species.end(), [&spec](const types::Species& existing) { return existing.name == spec; });
+
+        if (it == existing_species.end())
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const json& objects)
@@ -197,10 +215,60 @@ namespace open_atmos
         all_species.push_back(species);
       }
 
-      if (!ContainsOnlyUniqueSpecies(all_species))
+      if (!ContainsUniqueObjectsByName<types::Species>(all_species))
         status = ConfigParseStatus::DuplicateSpeciesDetected;
 
       return { status, all_species };
+    }
+
+    std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(const json& objects, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      std::vector<types::Phase> all_phases;
+
+      for (const auto& object : objects)
+      {
+        types::Phase phase;
+        status = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
+        if (status != ConfigParseStatus::Success)
+        {
+          break;
+        }
+
+        std::string name = object[validation::keys.name].get<std::string>();
+
+        std::vector<std::string> species{};
+        for (const auto& spec : object[validation::keys.species])
+        {
+          species.push_back(spec);
+        }
+
+        auto comments = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        phase.name = name;
+        phase.species = species;
+        phase.unknown_properties = unknown_properties;
+
+        if (PhaseRequiresUnknownSpecies(species, existing_species))
+        {
+          status = ConfigParseStatus::PhaseRequiresUnknownSpecies;
+          break;
+        }
+
+        all_phases.push_back(phase);
+      }
+
+      if (status == ConfigParseStatus::Success && !ContainsUniqueObjectsByName<types::Phase>(all_phases))
+        status = ConfigParseStatus::DuplicatePhasesDetected;
+
+      return { status, all_phases };
     }
 
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::string& file_path)
@@ -262,7 +330,18 @@ namespace open_atmos
         std::cerr << "[" << msg << "] Failed to parse the species." << std::endl;
       }
 
+      // parse all of the phases at once
+      auto phases_parsing = ParsePhases(object["phases"], species_parsing.second);
+
+      if (phases_parsing.first != ConfigParseStatus::Success)
+      {
+        status = phases_parsing.first;
+        std::string msg = configParseStatusToString(status);
+        std::cerr << "[" << msg << "] Failed to parse the phases." << std::endl;
+      }
+
       mechanism.species = species_parsing.second;
+      mechanism.phases = phases_parsing.second;
 
       return { status, mechanism };
     }

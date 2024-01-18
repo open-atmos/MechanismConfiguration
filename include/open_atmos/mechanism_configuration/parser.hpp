@@ -29,7 +29,9 @@ namespace open_atmos
       RequiredKeyNotFound,
       MutuallyExclusiveOption,
       InvalidVersion,
-      DuplicateSpeciesDetected
+      DuplicateSpeciesDetected,
+      DuplicatePhasesDetected,
+      PhaseRequiresUnknownSpecies,
     };
     std::string configParseStatusToString(const ConfigParseStatus &status);
 
