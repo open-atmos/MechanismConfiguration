@@ -30,6 +30,7 @@ namespace open_atmos
         case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
         case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
         case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
+        case ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase: return "RequestedAerosolSpeciesNotIncludedInAerosolPhase";
         default: return "Unknown";
       }
     }
@@ -167,6 +168,21 @@ namespace open_atmos
       {
         auto it =
             std::find_if(existing_species.begin(), existing_species.end(), [&spec](const types::Species& existing) { return existing.name == spec; });
+
+        if (it == existing_species.end())
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    bool RequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<std::string>& existing_species)
+    {
+      for (const auto& spec : requested_species)
+      {
+        auto it =
+            std::find_if(existing_species.begin(), existing_species.end(), [&spec](const std::string& existing) { return existing == spec; });
 
         if (it == existing_species.end())
         {
@@ -407,7 +423,7 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
-    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species> existing_species)
+    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
@@ -503,6 +519,21 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
+        auto phase_it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) {
+          return phase.name == aerosol_phase;
+        });
+
+        if (phase_it != existing_phases.end()) {
+          // check if all of the species for this reaction are actually in the aerosol phase
+          std::vector<std::string> aerosol_phase_species = {(*phase_it).species.begin(), (*phase_it).species.end()};
+          if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, aerosol_phase_species))
+          {
+            status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
+          }
+        }
+        else {
+          // TODO phase check
+        }
 
         condensed_phase_arrhenius.aerosol_phase = aerosol_phase;
         condensed_phase_arrhenius.aerosol_phase_water = aerosol_phase_water;
@@ -890,7 +921,7 @@ namespace open_atmos
         }
         else if (type == validation::keys.CondensedPhaseArrhenius_key)
         {
-          auto condensed_phase_arrhenius_parse = ParseCondensedPhaseArrhenius(object, existing_species);
+          auto condensed_phase_arrhenius_parse = ParseCondensedPhaseArrhenius(object, existing_species, existing_phases);
           status = condensed_phase_arrhenius_parse.first;
           if (status != ConfigParseStatus::Success)
           {

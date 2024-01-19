@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Mutually Exclusive",
+  "name": "Missing condensed phase arrhenius aerosol phase water",
   "species": [
     {
       "name": "A"
@@ -9,15 +9,19 @@
       "name": "B"
     },
     {
+      "name": "C"
+    },
+    {
       "name": "H2O_aq"
     }
   ],
   "phases": [
     {
-      "name": "gas",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",
+        "C",
         "H2O_aq"
       ]
     }
@@ -26,7 +30,7 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aerosol-phase water": "H2O_a",
       "reactants": [
         {
           "species name": "A"
@@ -34,11 +38,9 @@
       ],
       "products": [
         {
-          "species name": "B"
+          "species name": "C"
         }
-      ],
-      "C": 10,
-      "Ea": 0.5
+      ]
     }
   ]
 }

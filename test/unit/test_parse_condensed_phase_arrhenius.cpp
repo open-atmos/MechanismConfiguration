@@ -86,3 +86,17 @@ TEST(JsonParser, CondensedPhaseArrheniusDetectsBadReactionComponent)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
+
+TEST(JsonParser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water.json"));
+  EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+}
+
+TEST(JsonParser, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+}

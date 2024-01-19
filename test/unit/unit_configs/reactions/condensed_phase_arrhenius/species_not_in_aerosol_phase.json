@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Valid condensed phase arrhenius",
+  "name": "Condensed phase arrhenius using species not in its requested aerosol phase",
   "species": [
     {
       "name": "A"
@@ -20,7 +20,6 @@
       "name": "aqueous aerosol",
       "species": [
         "A",
-        "B",
         "C",
         "H2O_aq"
       ]

@@ -7,6 +7,9 @@
     },
     {
       "name": "B"
+    },
+    {
+      "name": "H2O_aq"
     }
   ],
   "phases": [
@@ -14,14 +17,16 @@
       "name": "gas",
       "species": [
         "A",
-        "B"
+        "B",
+        "H2O_aq"
       ]
     }
   ],
   "reactions": [
     {
-      "type": "ARRHENIUS",
-      "gas phase": "gas",
+      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_a",
       "reactants": [
         {
           "Species name": "A"
