@@ -93,6 +93,10 @@ namespace open_atmos
       const std::string Emission_key = "EMISSION";
       // also scaling factor
 
+      // First Order Loss
+      const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
+      // also scaling factor
+
     } keys;
 
     struct Configuration
@@ -168,6 +172,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } emission;
+
+    struct FirstOrderLoss
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } first_order_loss;
 
     struct Mechanism
     {
