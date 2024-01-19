@@ -306,7 +306,7 @@ namespace open_atmos
     }
 
     /// @brief Parses all reactions
-    /// @param object 
+    /// @param object
     /// @return A pair indicating parsing success and a struct of all reactions found in the mechanism
     std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const json& object)
     {
@@ -453,7 +453,6 @@ namespace open_atmos
 
       return { status, arrhenius };
     }
-
 
     /// @brief Parses a condensed phase arrhenius reaction
     /// @param object A json object that should have information containing arrhenius parameters
@@ -1334,7 +1333,7 @@ namespace open_atmos
       return { status, reactions };
     }
 
-    /// @brief Parse a mechanism 
+    /// @brief Parse a mechanism
     /// @param file_path a location on the hard drive containing a mechanism
     /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::string& file_path)
@@ -1342,7 +1341,7 @@ namespace open_atmos
       return JsonParser::Parse(std::filesystem::path(file_path));
     }
 
-    /// @brief Parse a mechanism 
+    /// @brief Parse a mechanism
     /// @param file_path a location on the hard drive containing a mechanism
     /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::filesystem::path& file_path)
@@ -1362,7 +1361,7 @@ namespace open_atmos
       return JsonParser::Parse(config);
     }
 
-    /// @brief Parse a mechanism 
+    /// @brief Parse a mechanism
     /// @param object A json object representing a mechanism
     /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const nlohmann::json& object)
