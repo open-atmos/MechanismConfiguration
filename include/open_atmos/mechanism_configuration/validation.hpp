@@ -51,6 +51,18 @@ namespace open_atmos
       const std::string E = "E";
       const std::string Ea = "Ea";
 
+      // Condensed Phase Arrhenius
+      const std::string CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
+      const std::string aerosol_phase_water = "aerosol-phase water";
+      // also these
+      // aerosol phase
+      // A 
+      // B 
+      // C 
+      // D 
+      // E 
+      // Ea
+
       // Troe
       const std::string Troe_key = "TROE";
       const std::string k0_A = "k0_A";
@@ -134,6 +146,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
     } arrhenius;
+
+    struct CondensedPhaseArrhenius
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
+    } condensed_phase_arrhenius;
 
     struct Troe
     {
