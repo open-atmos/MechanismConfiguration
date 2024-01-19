@@ -109,6 +109,15 @@ namespace open_atmos
       const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
 
+      // Henry's Law Phase Transfer
+      const std::string HenrysLaw_key = "HL_PHASE_TRANSFER";
+      const std::string gas_phase_species = "gas-phase species";
+      const std::string aerosol_phase_species = "aerosol-phase species";
+      // also
+      // gas phase
+      // aerosol phase
+      // aerosol-phase water
+
     } keys;
 
     struct Configuration
@@ -196,6 +205,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } first_order_loss;
+
+    struct HenrysLaw
+    {
+      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name };
+    } henrys_law;
 
     struct Mechanism
     {

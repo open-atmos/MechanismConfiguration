@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O_aq"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A"
+      ]
+    },
+    {
+      "name": "aqueous aerosol",
+      "species": [
+        "B",
+        "H2O_aq"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "HL_PHASE_TRANSFER",
+      "gas phase": "gas",
+      "gas-phase species": "C",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase species": "B",
+      "aerosol-phase water": "H2O_aq"
+    }
+  ]
+}
