@@ -878,7 +878,8 @@ namespace open_atmos
       return { status, photolysis };
     }
 
-    std::pair<ConfigParseStatus, types::Emission> ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Emission>
+    ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Emission emission;
@@ -929,8 +930,7 @@ namespace open_atmos
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
-        auto it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
@@ -944,7 +944,8 @@ namespace open_atmos
       return { status, emission };
     }
 
-    std::pair<ConfigParseStatus, types::FirstOrderLoss> ParseFirstOrderLoss(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::FirstOrderLoss>
+    ParseFirstOrderLoss(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::FirstOrderLoss first_order_loss;
@@ -995,8 +996,7 @@ namespace open_atmos
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
-        auto it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
