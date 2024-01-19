@@ -1328,6 +1328,16 @@ namespace open_atmos
           }
           reactions.first_order_loss.push_back(first_order_loss_parse.second);
         }
+        else if (type == validation::keys.WetDeposition_key)
+        {
+          auto wet_deposition_parse = ParseWetDeposition(object, existing_species, existing_phases);
+          status = wet_deposition_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.wet_deposition.push_back(wet_deposition_parse.second);
+        }
       }
 
       return { status, reactions };

@@ -109,6 +109,13 @@ namespace open_atmos
       const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
 
+      // Wet Deposition
+      const std::string WetDeposition_key = "WET_DEPOSITION";
+      // also
+      // scaling factor
+      // aerosol phase
+      // gas phase
+
     } keys;
 
     struct Configuration
@@ -196,6 +203,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } first_order_loss;
+
+    struct WetDeposition
+    {
+      const std::vector<std::string> required_keys{ keys.gas_phase, keys.aerosol_phase, keys.type };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } wet_deposition;
 
     struct Mechanism
     {
