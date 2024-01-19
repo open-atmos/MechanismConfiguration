@@ -163,6 +163,10 @@ namespace open_atmos
       return true;
     }
 
+    /// @brief Check if any species in required by a reaction is not in the species configured for this mechanism
+    /// @param requested_species a list of species needed by a reaction
+    /// @param existing_species all configured species in the mechanism
+    /// @return a boolean indicating if this reaction needs species that are not configured in the mechanism
     bool RequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<types::Species>& existing_species)
     {
       for (const auto& spec : requested_species)
@@ -178,6 +182,10 @@ namespace open_atmos
       return false;
     }
 
+    /// @brief Check if any species in required by a reaction is not in the species configured for this mechanism
+    /// @param requested_species a list of species needed by a reaction
+    /// @param existing_species all configured species in the mechanism
+    /// @return a boolean indicating if this reaction needs species that are not configured in the mechanism
     bool RequiresUnknownSpecies(const std::vector<std::string> requested_species, const std::vector<std::string>& existing_species)
     {
       for (const auto& spec : requested_species)
@@ -193,6 +201,9 @@ namespace open_atmos
       return false;
     }
 
+    /// @brief Parses species in a mechanism
+    /// @param objects json object of species
+    /// @return A pair indicating parsing success and a list of species
     std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const json& objects)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -241,6 +252,10 @@ namespace open_atmos
       return { status, all_species };
     }
 
+    /// @brief Parses phases in a mechanism
+    /// @param objects jsoon object of phases
+    /// @param existing_species a list of species configured in the mechanism
+    /// @return A pair indicating parsing success and a list of phases
     std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(const json& objects, const std::vector<types::Species> existing_species)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -291,6 +306,9 @@ namespace open_atmos
       return { status, all_phases };
     }
 
+    /// @brief Parses all reactions
+    /// @param object 
+    /// @return A pair indicating parsing success and a struct of all reactions found in the mechanism
     std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const json& object)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -323,6 +341,11 @@ namespace open_atmos
       return { status, component };
     }
 
+    /// @brief Parses an arrhenius reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Arrhenius parameters
     std::pair<ConfigParseStatus, types::Arrhenius>
     ParseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -432,6 +455,11 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
+    /// @brief Parses a condensed phase arrhenius reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Condensed Phase Arrhenius parameters
     std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -554,6 +582,11 @@ namespace open_atmos
       return { status, condensed_phase_arrhenius };
     }
 
+    /// @brief Parses a troe reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Troe parameters
     std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -664,6 +697,11 @@ namespace open_atmos
       return { status, troe };
     }
 
+    /// @brief Parses a branched reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Branched parameters
     std::pair<ConfigParseStatus, types::Branched>
     ParseBranched(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -764,6 +802,11 @@ namespace open_atmos
       return { status, branched };
     }
 
+    /// @brief Parses a tunneling reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Tunneling parameters
     std::pair<ConfigParseStatus, types::Tunneling>
     ParseTunneling(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -855,6 +898,11 @@ namespace open_atmos
       return { status, tunneling };
     }
 
+    /// @brief Parses a surface reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Surface parameters
     std::pair<ConfigParseStatus, types::Surface>
     ParseSurface(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -932,6 +980,11 @@ namespace open_atmos
       return { status, surface };
     }
 
+    /// @brief Parses a photolysis reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Photolysis parameters
     std::pair<ConfigParseStatus, types::Photolysis>
     ParsePhotolysis(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -1020,6 +1073,11 @@ namespace open_atmos
       return { status, photolysis };
     }
 
+    /// @brief Parses a emission reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Emission parameters
     std::pair<ConfigParseStatus, types::Emission>
     ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -1086,6 +1144,11 @@ namespace open_atmos
       return { status, emission };
     }
 
+    /// @brief Parses a first order loss reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of First Order Loss parameters
     std::pair<ConfigParseStatus, types::FirstOrderLoss>
     ParseFirstOrderLoss(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
@@ -1157,6 +1220,11 @@ namespace open_atmos
       return { status, first_order_loss };
     }
 
+    /// @brief Parses all reactions
+    /// @param objects A json object that should contain only valid reactions
+    /// @param existing_species A list of spcecies configured for a mechanism
+    /// @param existing_phases A list of phases configured for a mechanism
+    /// @return A pair indicating parsing status and a Reactions struct filled with reactions configured for a mechansim
     std::pair<ConfigParseStatus, types::Reactions>
     ParseReactions(const json& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
@@ -1261,11 +1329,17 @@ namespace open_atmos
       return { status, reactions };
     }
 
+    /// @brief Parse a mechanism 
+    /// @param file_path a location on the hard drive containing a mechanism
+    /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::string& file_path)
     {
       return JsonParser::Parse(std::filesystem::path(file_path));
     }
 
+    /// @brief Parse a mechanism 
+    /// @param file_path a location on the hard drive containing a mechanism
+    /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const std::filesystem::path& file_path)
     {
       ConfigParseStatus status;
@@ -1283,6 +1357,9 @@ namespace open_atmos
       return JsonParser::Parse(config);
     }
 
+    /// @brief Parse a mechanism 
+    /// @param object A json object representing a mechanism
+    /// @return A pair containing the parsing status and a mechanism
     std::pair<ConfigParseStatus, types::Mechanism> JsonParser::Parse(const nlohmann::json& object)
     {
       ConfigParseStatus status;
