@@ -165,7 +165,7 @@ namespace open_atmos
 
     struct Emission
     {
-      const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } emission;
 

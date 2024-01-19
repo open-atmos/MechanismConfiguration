@@ -886,16 +886,16 @@ namespace open_atmos
       status = ValidateSchema(object, validation::emission.required_keys, validation::emission.optional_keys);
       if (status == ConfigParseStatus::Success)
       {
-        std::vector<types::ReactionComponent> reactants{};
-        for (const auto& reactant : object[validation::keys.reactants])
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
         {
-          auto reactant_parse = ParseReactionComponent(reactant);
-          status = reactant_parse.first;
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
           if (status != ConfigParseStatus::Success)
           {
             break;
           }
-          reactants.push_back(reactant_parse.second);
+          products.push_back(product_parse.second);
         }
 
         if (object.contains(validation::keys.scaling_factor))
@@ -918,7 +918,7 @@ namespace open_atmos
         }
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : reactants)
+        for (const auto& spec : products)
         {
           requested_species.push_back(spec.species_name);
         }
@@ -937,7 +937,7 @@ namespace open_atmos
         }
 
         emission.gas_phase = gas_phase;
-        emission.reactants = reactants;
+        emission.products = products;
         emission.unknown_properties = unknown_properties;
       }
 

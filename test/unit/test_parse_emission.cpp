@@ -15,17 +15,17 @@ TEST(JsonParser, CanParseValidEmissionReaction)
   EXPECT_EQ(mechanism.reactions.emission[0].gas_phase, "gas");
   EXPECT_EQ(mechanism.reactions.emission[0].name, "my emission");
   EXPECT_EQ(mechanism.reactions.emission[0].scaling_factor_, 12.3);
-  EXPECT_EQ(mechanism.reactions.emission[0].reactants.size(), 1);
-  EXPECT_EQ(mechanism.reactions.emission[0].reactants[0].species_name, "B");
-  EXPECT_EQ(mechanism.reactions.emission[0].reactants[0].coefficient, 1);
+  EXPECT_EQ(mechanism.reactions.emission[0].products.size(), 1);
+  EXPECT_EQ(mechanism.reactions.emission[0].products[0].species_name, "B");
+  EXPECT_EQ(mechanism.reactions.emission[0].products[0].coefficient, 1);
   EXPECT_EQ(mechanism.reactions.emission[0].unknown_properties.size(), 1);
   EXPECT_EQ(mechanism.reactions.emission[0].unknown_properties["__comment"], "\"Dr. Pepper outranks any other soda\"");
 
   EXPECT_EQ(mechanism.reactions.emission[1].gas_phase, "gas");
   EXPECT_EQ(mechanism.reactions.emission[1].scaling_factor_, 1);
-  EXPECT_EQ(mechanism.reactions.emission[1].reactants.size(), 1);
-  EXPECT_EQ(mechanism.reactions.emission[1].reactants[0].species_name, "B");
-  EXPECT_EQ(mechanism.reactions.emission[1].reactants[0].coefficient, 1);
+  EXPECT_EQ(mechanism.reactions.emission[1].products.size(), 1);
+  EXPECT_EQ(mechanism.reactions.emission[1].products[0].species_name, "B");
+  EXPECT_EQ(mechanism.reactions.emission[1].products[0].coefficient, 1);
 }
 
 TEST(JsonParser, EmissionDetectsUnknownSpecies)

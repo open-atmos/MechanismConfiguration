@@ -17,7 +17,7 @@
     {
       "type": "EMISSION",
       "gas phase": "gas",
-      "reactants": [
+      "products": [
         {
           "species name": "C"
         }
