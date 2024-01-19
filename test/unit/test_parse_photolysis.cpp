@@ -54,3 +54,10 @@ TEST(JsonParser, PhotolysisDetectsUnknownPhase)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/photolysis/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
+
+TEST(JsonParser, PhotolysisDoesNotAcceptMoreThanOneReactant)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/photolysis/more_than_one_reactant.json"));
+  EXPECT_EQ(status, ConfigParseStatus::TooManyReactionComponents);
+}

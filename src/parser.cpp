@@ -1008,6 +1008,11 @@ namespace open_atmos
           status = ConfigParseStatus::UnknownPhase;
         }
 
+        if (status == ConfigParseStatus::Success && reactants.size() > 1)
+        {
+          status = ConfigParseStatus::TooManyReactionComponents;
+        }
+
         photolysis.gas_phase = gas_phase;
         photolysis.products = products;
         photolysis.reactants = reactants;
