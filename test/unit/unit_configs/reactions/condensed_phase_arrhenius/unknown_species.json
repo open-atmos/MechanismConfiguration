@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O_aq"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous aerosol",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

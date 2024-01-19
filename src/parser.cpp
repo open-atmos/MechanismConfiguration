@@ -407,6 +407,113 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
+    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species> existing_species)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::CondensedPhaseArrhenius condensed_phase_arrhenius;
+
+      status = ValidateSchema(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.A))
+        {
+          condensed_phase_arrhenius.A = object[validation::keys.A].get<double>();
+        }
+        if (object.contains(validation::keys.B))
+        {
+          condensed_phase_arrhenius.B = object[validation::keys.B].get<double>();
+        }
+        if (object.contains(validation::keys.C))
+        {
+          condensed_phase_arrhenius.C = object[validation::keys.C].get<double>();
+        }
+        if (object.contains(validation::keys.D))
+        {
+          condensed_phase_arrhenius.D = object[validation::keys.D].get<double>();
+        }
+        if (object.contains(validation::keys.E))
+        {
+          condensed_phase_arrhenius.E = object[validation::keys.E].get<double>();
+        }
+        if (object.contains(validation::keys.Ea))
+        {
+          if (condensed_phase_arrhenius.C != 0)
+          {
+            std::cerr << "Ea is specified when C is also specified for an CondensedPhasecondensed_phase_arrhenius reaction. Pick one." << std::endl;
+            status = ConfigParseStatus::MutuallyExclusiveOption;
+          }
+          // Calculate 'C' using 'Ea'
+          condensed_phase_arrhenius.C = -1 * object[validation::keys.Ea].get<double>() / constants::boltzmann;
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          condensed_phase_arrhenius.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+        std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].get<std::string>();
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        requested_species.push_back(aerosol_phase_water);
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+
+        condensed_phase_arrhenius.aerosol_phase = aerosol_phase;
+        condensed_phase_arrhenius.aerosol_phase_water = aerosol_phase_water;
+        condensed_phase_arrhenius.products = products;
+        condensed_phase_arrhenius.reactants = reactants;
+        condensed_phase_arrhenius.unknown_properties = unknown_properties;
+      }
+
+      return { status, condensed_phase_arrhenius };
+    }
+
     std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species> existing_species)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -780,6 +887,16 @@ namespace open_atmos
             break;
           }
           reactions.arrhenius.push_back(arrhenius_parse.second);
+        }
+        else if (type == validation::keys.CondensedPhaseArrhenius_key)
+        {
+          auto condensed_phase_arrhenius_parse = ParseCondensedPhaseArrhenius(object, existing_species);
+          status = condensed_phase_arrhenius_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.condensed_phase_arrhenius.push_back(condensed_phase_arrhenius_parse.second);
         }
         else if (type == validation::keys.Troe_key)
         {

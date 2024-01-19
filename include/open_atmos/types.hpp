@@ -60,6 +60,33 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct CondensedPhaseArrhenius
+    {
+      /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
+      double A{ 1 };
+      /// @brief Unitless exponential factor
+      double B{ 0 };
+      /// @brief Activation threshold, expected to be the negative activation energy divided by the boltzman constant
+      ///        [-E_a / k_b), K]
+      double C{ 0 };
+      /// @brief A factor that determines temperature dependence [K]
+      double D{ 300 };
+      /// @brief A factor that determines pressure dependence [Pa-1]
+      double E{ 0 };
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief An identifier indicating the species label of aqueous phase water
+      std::string aerosol_phase_water;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Troe
     {
       /// @brief low-pressure pre-exponential factor
@@ -155,6 +182,7 @@ namespace open_atmos
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
+      std::vector<types::CondensedPhaseArrhenius> condensed_phase_arrhenius;
       std::vector<types::Troe> troe;
       std::vector<types::Branched> branched;
       std::vector<types::Tunneling> tunneling;
