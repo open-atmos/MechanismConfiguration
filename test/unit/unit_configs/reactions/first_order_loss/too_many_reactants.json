@@ -1,12 +1,15 @@
 {
   "version": "1.0.0",
-  "name": "Bad reaction component",
+  "name": "Too many reactants",
   "species": [
     {
       "name": "A"
     },
     {
       "name": "B"
+    },
+    {
+      "name": "C"
     }
   ],
   "phases": [
@@ -14,7 +17,8 @@
       "name": "gas",
       "species": [
         "A",
-        "B"
+        "B",
+        "C"
       ]
     }
   ],
@@ -24,7 +28,12 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "Species name": "C"
+          "species name": "C",
+          "coefficient": 1
+        },
+        {
+          "species name": "B",
+          "coefficient": 1
         }
       ]
     }

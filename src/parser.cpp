@@ -30,6 +30,7 @@ namespace open_atmos
         case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
         case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
         case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
+        case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
         default: return "Unknown";
       }
     }
@@ -952,16 +953,16 @@ namespace open_atmos
       status = ValidateSchema(object, validation::first_order_loss.required_keys, validation::first_order_loss.optional_keys);
       if (status == ConfigParseStatus::Success)
       {
-        std::vector<types::ReactionComponent> products{};
-        for (const auto& reactant : object[validation::keys.products])
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
         {
-          auto product_parse = ParseReactionComponent(reactant);
-          status = product_parse.first;
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
           if (status != ConfigParseStatus::Success)
           {
             break;
           }
-          products.push_back(product_parse.second);
+          reactants.push_back(reactant_parse.second);
         }
 
         if (object.contains(validation::keys.scaling_factor))
@@ -984,7 +985,7 @@ namespace open_atmos
         }
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : products)
+        for (const auto& spec : reactants)
         {
           requested_species.push_back(spec.species_name);
         }
@@ -1002,8 +1003,13 @@ namespace open_atmos
           status = ConfigParseStatus::UnknownPhase;
         }
 
+        if (status == ConfigParseStatus::Success && reactants.size() > 1)
+        {
+          status = ConfigParseStatus::TooManyReactionComponents;
+        }
+
         first_order_loss.gas_phase = gas_phase;
-        first_order_loss.products = products;
+        first_order_loss.reactants = reactants;
         first_order_loss.unknown_properties = unknown_properties;
       }
 

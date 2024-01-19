@@ -20,21 +20,13 @@
         "B",
         "C"
       ]
-    },
-    {
-      "name": "surface reacting phase",
-      "species": [
-        "A",
-        "B",
-        "C"
-      ]
     }
   ],
   "reactions": [
     {
       "type": "FIRST_ORDER_LOSS",
       "gas phase": "gas",
-      "products": [
+      "reactants": [
         {
           "species name": "C",
           "coefficient": 1
@@ -47,7 +39,7 @@
     {
       "type": "FIRST_ORDER_LOSS",
       "gas phase": "gas",
-      "products": [
+      "reactants": [
         {
           "species name": "C",
           "coefficient": 1

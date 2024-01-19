@@ -205,7 +205,7 @@
     {
       "type": "FIRST_ORDER_LOSS",
       "gas phase": "gas",
-      "products": [
+      "reactants": [
         {
           "species name": "C",
           "coefficient": 1

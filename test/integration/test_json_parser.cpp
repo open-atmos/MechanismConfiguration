@@ -19,6 +19,7 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.reactions.surface.size(), 1);
   EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
   EXPECT_EQ(mechanism.reactions.emission.size(), 1);
+  EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
 }
 
 TEST(JsonParser, ParserReportsBadFiles)

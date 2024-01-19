@@ -186,8 +186,8 @@ namespace open_atmos
     {
       /// @brief Scaling factor to apply to user-provided rate constants
       double scaling_factor_{ 1.0 };
-      /// @brief A list of products
-      std::vector<ReactionComponent> products;
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
       /// @brief An identifier, optional, uniqueness not enforced
       std::string name;
       /// @brief An identifier indicating which gas phase this reaction takes place in
