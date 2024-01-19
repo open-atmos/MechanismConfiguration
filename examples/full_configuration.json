@@ -193,7 +193,7 @@
     {
       "type": "EMISSION",
       "gas phase": "gas",
-      "reactants": [
+      "products": [
         {
           "species name": "B",
           "coefficient": 1

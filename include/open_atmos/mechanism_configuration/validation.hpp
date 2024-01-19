@@ -89,6 +89,10 @@ namespace open_atmos
       const std::string Photolysis_key = "PHOTOLYSIS";
       const std::string scaling_factor = "scaling factor";
 
+      // Emissions
+      const std::string Emission_key = "EMISSION";
+      // also scaling factor
+
     } keys;
 
     struct Configuration
@@ -158,6 +162,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } photolysis;
+
+    struct Emission
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } emission;
 
     struct Mechanism
     {
