@@ -34,7 +34,8 @@ namespace open_atmos
       PhaseRequiresUnknownSpecies,
       ReactionRequiresUnknownSpecies,
       UnknownPhase,
-      RequestedAerosolSpeciesNotIncludedInAerosolPhase
+      RequestedAerosolSpeciesNotIncludedInAerosolPhase,
+      TooManyReactionComponents
     };
     std::string configParseStatusToString(const ConfigParseStatus &status);
 

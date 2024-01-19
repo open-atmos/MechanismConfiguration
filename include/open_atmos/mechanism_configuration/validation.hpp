@@ -97,6 +97,18 @@ namespace open_atmos
       const std::string gas_phase_products = "gas-phase products";
       const std::string aerosol_phase = "aerosol phase";
 
+      // Photolysis
+      const std::string Photolysis_key = "PHOTOLYSIS";
+      const std::string scaling_factor = "scaling factor";
+
+      // Emissions
+      const std::string Emission_key = "EMISSION";
+      // also scaling factor
+
+      // First Order Loss
+      const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
+      // also scaling factor
+
     } keys;
 
     struct Configuration
@@ -166,6 +178,24 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.gas_phase_products, keys.gas_phase_reactant, keys.type, keys.gas_phase, keys.aerosol_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.reaction_probability };
     } surface;
+
+    struct Photolysis
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } photolysis;
+
+    struct Emission
+    {
+      const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } emission;
+
+    struct FirstOrderLoss
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } first_order_loss;
 
     struct Mechanism
     {

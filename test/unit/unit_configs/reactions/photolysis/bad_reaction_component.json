@@ -7,34 +7,31 @@
     },
     {
       "name": "B"
-    },
-    {
-      "name": "H2O_aq"
     }
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "gas",
       "species": [
         "A",
-        "B",
-        "H2O_aq"
+        "B"
       ]
     }
   ],
   "reactions": [
     {
-      "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_a",
+      "type": "PHOTOLYSIS",
+      "gas phase": "gas",
       "reactants": [
         {
-          "Species name": "A"
+          "species name": "A",
+          "Coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "B"
+          "species name": "B",
+          "coefficient": 0.2
         }
       ]
     }

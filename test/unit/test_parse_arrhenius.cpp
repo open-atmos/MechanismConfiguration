@@ -83,3 +83,10 @@ TEST(JsonParser, ArrheniusDetectsBadReactionComponent)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/arrhenius/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
+
+TEST(JsonParser, ArrheniusDetectsUnknownPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/arrhenius/missing_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+}

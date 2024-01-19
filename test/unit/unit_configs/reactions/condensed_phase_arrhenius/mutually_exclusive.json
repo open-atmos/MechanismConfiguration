@@ -14,7 +14,7 @@
   ],
   "phases": [
     {
-      "name": "gas",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",

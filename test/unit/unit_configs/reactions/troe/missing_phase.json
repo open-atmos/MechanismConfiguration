@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Unknown species",
+  "name": "Missing phase",
   "species": [
     {
       "name": "A"
@@ -9,24 +9,14 @@
       "name": "B"
     },
     {
-      "name": "H2O_aq"
+      "name": "C"
     }
   ],
-  "phases": [
-    {
-      "name": "aqueous aerosol",
-      "species": [
-        "A",
-        "B",
-        "H2O_aq"
-      ]
-    }
-  ],
+  "phases": [ ],
   "reactions": [
     {
-      "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "type": "TROE",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "A"

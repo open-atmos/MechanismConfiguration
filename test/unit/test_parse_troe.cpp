@@ -66,3 +66,10 @@ TEST(JsonParser, TroeDetectsBadReactionComponent)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
+
+TEST(JsonParser, TroeDetectsUnknownPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/missing_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+}

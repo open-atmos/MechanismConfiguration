@@ -179,6 +179,50 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct Photolysis
+    {
+      /// @brief Scaling factor to apply to user-provided rate constants
+      double scaling_factor_{ 1.0 };
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
+    struct Emission
+    {
+      /// @brief Scaling factor to apply to user-provided rate constants
+      double scaling_factor_{ 1.0 };
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
+    struct FirstOrderLoss
+    {
+      /// @brief Scaling factor to apply to user-provided rate constants
+      double scaling_factor_{ 1.0 };
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
@@ -187,6 +231,9 @@ namespace open_atmos
       std::vector<types::Branched> branched;
       std::vector<types::Tunneling> tunneling;
       std::vector<types::Surface> surface;
+      std::vector<types::Photolysis> photolysis;
+      std::vector<types::Emission> emission;
+      std::vector<types::FirstOrderLoss> first_order_loss;
     };
 
     struct Mechanism

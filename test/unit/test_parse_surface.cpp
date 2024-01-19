@@ -54,9 +54,16 @@ TEST(JsonParser, SurfaceDetectsBadReactionComponent)
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, SurfaceDetectsUnknownPhase)
+TEST(JsonParser, SurfaceDetectsUnknownAerosolPhase)
 {
   JsonParser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_aerosol_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+}
+
+TEST(JsonParser, SurfaceDetectsUnknownGasPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_gas_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
