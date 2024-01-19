@@ -182,8 +182,7 @@ namespace open_atmos
     {
       for (const auto& spec : requested_species)
       {
-        auto it =
-            std::find_if(existing_species.begin(), existing_species.end(), [&spec](const std::string& existing) { return existing == spec; });
+        auto it = std::find_if(existing_species.begin(), existing_species.end(), [&spec](const std::string& existing) { return existing == spec; });
 
         if (it == existing_species.end())
         {
@@ -432,7 +431,10 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
-    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(
+        const json& object,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
@@ -528,19 +530,20 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        auto phase_it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) {
-          return phase.name == aerosol_phase;
-        });
+        auto phase_it = std::find_if(
+            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) { return phase.name == aerosol_phase; });
 
-        if (phase_it != existing_phases.end()) {
+        if (phase_it != existing_phases.end())
+        {
           // check if all of the species for this reaction are actually in the aerosol phase
-          std::vector<std::string> aerosol_phase_species = {(*phase_it).species.begin(), (*phase_it).species.end()};
+          std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
           if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, aerosol_phase_species))
           {
             status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
           }
         }
-        else {
+        else
+        {
           status = ConfigParseStatus::UnknownPhase;
         }
 
@@ -554,7 +557,8 @@ namespace open_atmos
       return { status, condensed_phase_arrhenius };
     }
 
-    std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Troe>
+    ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Troe troe;
@@ -1020,7 +1024,8 @@ namespace open_atmos
       return { status, photolysis };
     }
 
-    std::pair<ConfigParseStatus, types::Emission> ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Emission>
+    ParseEmission(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Emission emission;
@@ -1071,8 +1076,7 @@ namespace open_atmos
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
-        auto it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
@@ -1086,7 +1090,8 @@ namespace open_atmos
       return { status, emission };
     }
 
-    std::pair<ConfigParseStatus, types::FirstOrderLoss> ParseFirstOrderLoss(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::FirstOrderLoss>
+    ParseFirstOrderLoss(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::FirstOrderLoss first_order_loss;
@@ -1137,8 +1142,7 @@ namespace open_atmos
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
-        auto it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
