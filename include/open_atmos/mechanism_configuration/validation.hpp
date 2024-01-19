@@ -56,11 +56,11 @@ namespace open_atmos
       const std::string aerosol_phase_water = "aerosol-phase water";
       // also these
       // aerosol phase
-      // A 
-      // B 
-      // C 
-      // D 
-      // E 
+      // A
+      // B
+      // C
+      // D
+      // E
       // Ea
 
       // Troe

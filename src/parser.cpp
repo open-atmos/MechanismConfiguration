@@ -190,8 +190,7 @@ namespace open_atmos
     {
       for (const auto& spec : requested_species)
       {
-        auto it =
-            std::find_if(existing_species.begin(), existing_species.end(), [&spec](const std::string& existing) { return existing == spec; });
+        auto it = std::find_if(existing_species.begin(), existing_species.end(), [&spec](const std::string& existing) { return existing == spec; });
 
         if (it == existing_species.end())
         {
@@ -455,12 +454,16 @@ namespace open_atmos
       return { status, arrhenius };
     }
 
+
     /// @brief Parses a condensed phase arrhenius reaction
     /// @param object A json object that should have information containing arrhenius parameters
     /// @param existing_species A list of species configured in a mechanism
     /// @param existing_phases A list of phases configured in a mechanism
     /// @return A pair indicating parsing success and a struct of Condensed Phase Arrhenius parameters
-    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+    std::pair<ConfigParseStatus, types::CondensedPhaseArrhenius> ParseCondensedPhaseArrhenius(
+        const json& object,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
@@ -556,19 +559,20 @@ namespace open_atmos
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
 
-        auto phase_it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) {
-          return phase.name == aerosol_phase;
-        });
+        auto phase_it = std::find_if(
+            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) { return phase.name == aerosol_phase; });
 
-        if (phase_it != existing_phases.end()) {
+        if (phase_it != existing_phases.end())
+        {
           // check if all of the species for this reaction are actually in the aerosol phase
-          std::vector<std::string> aerosol_phase_species = {(*phase_it).species.begin(), (*phase_it).species.end()};
+          std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
           if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, aerosol_phase_species))
           {
             status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
           }
         }
-        else {
+        else
+        {
           status = ConfigParseStatus::UnknownPhase;
         }
 
@@ -587,7 +591,8 @@ namespace open_atmos
     /// @param existing_species A list of species configured in a mechanism
     /// @param existing_phases A list of phases configured in a mechanism
     /// @return A pair indicating parsing success and a struct of Troe parameters
-    std::pair<ConfigParseStatus, types::Troe> ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::Troe>
+    ParseTroe(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::Troe troe;
