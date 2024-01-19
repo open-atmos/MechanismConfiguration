@@ -48,3 +48,10 @@ TEST(JsonParser, BranchedDetectsBadReactionComponent)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
+
+TEST(JsonParser, BranchedDetectsUnknownPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/missing_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+}

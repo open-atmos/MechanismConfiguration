@@ -54,3 +54,10 @@ TEST(JsonParser, TunnelingDetectsBadReactionComponent)
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
+
+TEST(JsonParser, TunnelingDetectsUnknownPhase)
+{
+  JsonParser parser;
+  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/missing_phase.json"));
+  EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+}
