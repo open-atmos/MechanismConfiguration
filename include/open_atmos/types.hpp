@@ -6,6 +6,8 @@
 
 #include <string>
 #include <unordered_map>
+#include <array>
+#include <vector>
 
 namespace open_atmos
 {
@@ -223,6 +225,32 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct AqueousEquilibrium
+    {
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief An identifier indicating the species label of aqueous phase water
+      std::string aerosol_phase_water;
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief Optional ion pairs
+      std::array<ReactionComponent, 2> ion_pair;
+      /// @brief Pre-exponential factor (s-1)
+      double A{ 1 };
+      /// @brief A constant
+      double C{ 0 };
+      /// @brief Reverse reation rate constant (s-1)
+      double k_reverse{ 0 };
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
@@ -234,6 +262,7 @@ namespace open_atmos
       std::vector<types::Photolysis> photolysis;
       std::vector<types::Emission> emission;
       std::vector<types::FirstOrderLoss> first_order_loss;
+      std::vector<types::AqueousEquilibrium> aqueous_equilibrium;
     };
 
     struct Mechanism

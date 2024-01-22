@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "name": "Valid aqueous equilibrium",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O_aq"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aerosol",
+      "species": [
+        "A",
+        "B",
+        "H2O_aq"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "AQUEOUS_EQUILIBRIUM",
+      "aerosol phase": "aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "A": 1.14e-2,
+      "C": 2300.0,
+      "k_reverse": 0.32,
+      "ion pair": {
+        "first": { "species name": "A"},
+        "second": { "species name": "B"}
+      },
+      "reactants": [
+        {
+          "species name": "A",
+          "coefficient": 2
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
+      "name": "my aqueous eq",
+      "__comment": "GIF is pronounced with a hard g"
+    },
+    {
+      "type": "AQUEOUS_EQUILIBRIUM",
+      "aerosol phase": "aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "k_reverse": 0.32,
+      "ion pair": {
+        "first": { "species name": "A"},
+        "second": { "species name": "B"}
+      },
+      "reactants": [
+        {
+          "species name": "A",
+          "coefficient": 2
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+}

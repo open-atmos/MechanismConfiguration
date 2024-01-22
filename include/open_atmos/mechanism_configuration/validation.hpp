@@ -109,13 +109,26 @@ namespace open_atmos
       const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
 
+      // Aqueous Equilibrium
+      const std::string AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
+      // also 
+      // aerosol phase
+      // aerosol-phase water
+      // A
+      // C
+      const std::string k_reverse = "k_reverse";
+      const std::string ion_pair = "ion pair";
+      // ion pair
+      const std::string first = "first";
+      const std::string second = "second";
+
     } keys;
 
-    struct Configuration
+    struct Mechanism
     {
       const std::vector<std::string> required_keys{ keys.version, keys.species, keys.phases, keys.reactions };
       const std::vector<std::string> optional_keys{ keys.name };
-    } configuration;
+    } mechanism;
 
     struct Species
     {
@@ -197,11 +210,16 @@ namespace open_atmos
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } first_order_loss;
 
-    struct Mechanism
+    struct AqueousEquilibrium
     {
-      const std::vector<std::string> required_keys{};
-      const std::vector<std::string> optional_keys{};
-    } mechanism;
+      const std::vector<std::string> required_keys{ keys.type, keys.reactants, keys.products, keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
+      const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.C, keys.ion_pair };
+    } aqueous_equilibrium;
 
+    struct IonPair
+    {
+      const std::vector<std::string> required_keys{ keys.first, keys.second };
+      const std::vector<std::string> optional_keys{};
+    } ion_pair;
   }  // namespace validation
 }  // namespace open_atmos
