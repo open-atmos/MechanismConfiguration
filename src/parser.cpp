@@ -1024,7 +1024,7 @@ namespace open_atmos
 
         if (object.contains(validation::keys.scaling_factor))
         {
-          photolysis.scaling_factor_ = object[validation::keys.scaling_factor].get<double>();
+          photolysis.scaling_factor = object[validation::keys.scaling_factor].get<double>();
         }
 
         if (object.contains(validation::keys.name))
@@ -1105,7 +1105,7 @@ namespace open_atmos
 
         if (object.contains(validation::keys.scaling_factor))
         {
-          emission.scaling_factor_ = object[validation::keys.scaling_factor].get<double>();
+          emission.scaling_factor = object[validation::keys.scaling_factor].get<double>();
         }
 
         if (object.contains(validation::keys.name))
@@ -1176,7 +1176,7 @@ namespace open_atmos
 
         if (object.contains(validation::keys.scaling_factor))
         {
-          first_order_loss.scaling_factor_ = object[validation::keys.scaling_factor].get<double>();
+          first_order_loss.scaling_factor = object[validation::keys.scaling_factor].get<double>();
         }
 
         if (object.contains(validation::keys.name))
@@ -1222,6 +1222,55 @@ namespace open_atmos
       }
 
       return { status, first_order_loss };
+    }
+
+    /// @brief Parses a wet deposition reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of First Order Loss parameters
+    std::pair<ConfigParseStatus, types::WetDeposition>
+    ParseWetDeposition(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::WetDeposition wet_deposition;
+
+      status = ValidateSchema(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        if (object.contains(validation::keys.scaling_factor))
+        {
+          wet_deposition.scaling_factor = object[validation::keys.scaling_factor].get<double>();
+        }
+
+        if (object.contains(validation::keys.name))
+        {
+          wet_deposition.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+
+        // check if aerosol phase exists
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        wet_deposition.aerosol_phase = aerosol_phase;
+        wet_deposition.unknown_properties = unknown_properties;
+      }
+
+      return { status, wet_deposition };
     }
 
     /// @brief Parses all reactions

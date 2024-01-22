@@ -114,7 +114,6 @@ namespace open_atmos
       // also
       // scaling factor
       // aerosol phase
-      // gas phase
 
     } keys;
 
@@ -206,7 +205,7 @@ namespace open_atmos
 
     struct WetDeposition
     {
-      const std::vector<std::string> required_keys{ keys.gas_phase, keys.aerosol_phase, keys.type };
+      const std::vector<std::string> required_keys{ keys.aerosol_phase, keys.type };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } wet_deposition;
 

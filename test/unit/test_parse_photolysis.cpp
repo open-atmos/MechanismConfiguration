@@ -14,7 +14,7 @@ TEST(JsonParser, CanParseValidPhotolysisReaction)
 
   EXPECT_EQ(mechanism.reactions.photolysis[0].gas_phase, "gas");
   EXPECT_EQ(mechanism.reactions.photolysis[0].name, "my photolysis");
-  EXPECT_EQ(mechanism.reactions.photolysis[0].scaling_factor_, 12.3);
+  EXPECT_EQ(mechanism.reactions.photolysis[0].scaling_factor, 12.3);
   EXPECT_EQ(mechanism.reactions.photolysis[0].reactants.size(), 1);
   EXPECT_EQ(mechanism.reactions.photolysis[0].reactants[0].species_name, "B");
   EXPECT_EQ(mechanism.reactions.photolysis[0].reactants[0].coefficient, 1);
@@ -25,7 +25,7 @@ TEST(JsonParser, CanParseValidPhotolysisReaction)
   EXPECT_EQ(mechanism.reactions.photolysis[0].unknown_properties["__comment"], "\"hi\"");
 
   EXPECT_EQ(mechanism.reactions.photolysis[1].gas_phase, "gas");
-  EXPECT_EQ(mechanism.reactions.photolysis[1].scaling_factor_, 1);
+  EXPECT_EQ(mechanism.reactions.photolysis[1].scaling_factor, 1);
   EXPECT_EQ(mechanism.reactions.photolysis[1].reactants.size(), 1);
   EXPECT_EQ(mechanism.reactions.photolysis[1].reactants[0].species_name, "B");
   EXPECT_EQ(mechanism.reactions.photolysis[1].reactants[0].coefficient, 1.2);
