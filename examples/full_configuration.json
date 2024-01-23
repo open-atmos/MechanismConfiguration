@@ -358,7 +358,6 @@
     },
     {
       "type": "WET_DEPOSITION",
-      "gas phase": "gas",
       "aerosol phase": "cloud",
       "name": "rxn cloud",
       "scaling factor": 12.3
