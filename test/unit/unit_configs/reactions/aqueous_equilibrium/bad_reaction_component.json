@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O_aq"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aerosol",
+      "species": [
+        "A",
+        "B",
+        "C",
+        "H2O_aq"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "AQUEOUS_EQUILIBRIUM",
+      "aerosol phase": "aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "k_reverse": 0.32,
+      "reactants": [
+        {
+          "Species name": "A",
+          "coefficient": 2
+        }
+      ],
+      "products": [
+        {
+          "Species name": "B",
+          "coefficient": 1
+        },
+        {
+          "Species name": "C",
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+}

@@ -101,6 +101,13 @@ namespace open_atmos
       const std::string Photolysis_key = "PHOTOLYSIS";
       const std::string scaling_factor = "scaling factor";
 
+      // Condensed Phae Photolysis
+      const std::string CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
+      // also 
+      // scaling factor
+      // aerosol phase
+      // aerosol-phase water
+
       // Emissions
       const std::string Emission_key = "EMISSION";
       // also scaling factor
@@ -119,13 +126,36 @@ namespace open_atmos
       // aserosol-phase species
       // B
 
+      // Aqueous Equilibrium
+      const std::string AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
+      // also 
+      // aerosol phase
+      // aerosol-phase water
+      // A
+      // C
+      const std::string k_reverse = "k_reverse";
+
+      // Wet Deposition
+      const std::string WetDeposition_key = "WET_DEPOSITION";
+      // also
+      // scaling factor
+      // aerosol phase
+
+      // Henry's Law Phase Transfer
+      const std::string HenrysLaw_key = "HL_PHASE_TRANSFER";
+      // also
+      // gas phase
+      // aerosol phase
+      // aerosol-phase water
+      // aerosol-phase species
+
     } keys;
 
-    struct Configuration
+    struct Mechanism
     {
       const std::vector<std::string> required_keys{ keys.version, keys.species, keys.phases, keys.reactions };
       const std::vector<std::string> optional_keys{ keys.name };
-    } configuration;
+    } mechanism;
 
     struct Species
     {
@@ -195,6 +225,12 @@ namespace open_atmos
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } photolysis;
 
+    struct CondensedPhasePhotolysis
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } condensed_phase_photolysis;
+
     struct Emission
     {
       const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
@@ -213,11 +249,22 @@ namespace open_atmos
       const std::vector<std::string> optional_keys{ keys.name };
     } simpol_phase_transfer;
 
-    struct Mechanism
+    struct WetDeposition
     {
-      const std::vector<std::string> required_keys{};
-      const std::vector<std::string> optional_keys{};
-    } mechanism;
+      const std::vector<std::string> required_keys{ keys.aerosol_phase, keys.type };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } wet_deposition;
 
+    struct HenrysLaw
+    {
+      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name };
+    } henrys_law;
+
+    struct AqueousEquilibrium
+    {
+      const std::vector<std::string> required_keys{ keys.type, keys.reactants, keys.products, keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
+      const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.C };
+    } aqueous_equilibrium;
   }  // namespace validation
 }  // namespace open_atmos

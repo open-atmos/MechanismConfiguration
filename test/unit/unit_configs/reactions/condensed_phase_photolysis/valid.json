@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Valid photolysis",
+  "name": "Valid surface",
   "species": [
     {
       "name": "A"
@@ -10,30 +10,27 @@
     },
     {
       "name": "C"
+    },
+    {
+      "name": "H2O_aq"
     }
   ],
   "phases": [
     {
-      "name": "gas",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",
-        "C"
-      ]
-    },
-    {
-      "name": "surface reacting phase",
-      "species": [
-        "A",
-        "B",
-        "C"
+        "C",
+        "H2O_aq"
       ]
     }
   ],
   "reactions": [
     {
-      "type": "PHOTOLYSIS",
-      "gas phase": "gas",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_aq",
       "__comment": "hi",
       "reactants": [
         {
@@ -47,12 +44,13 @@
           "coefficient": 1
         }
       ],
-      "name": "my photolysis",
+      "name": "my condensed phase photolysis",
       "scaling factor": 12.3
     },
     {
-      "type": "PHOTOLYSIS",
-      "gas phase": "gas",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_aq",
       "reactants": [
         {
           "species name": "B",
