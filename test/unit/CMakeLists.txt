@@ -17,6 +17,7 @@ create_standard_test(NAME parse_species SOURCES test_parse_species.cpp)
 create_standard_test(NAME parse_surface SOURCES test_parse_surface.cpp)
 create_standard_test(NAME parse_troe SOURCES test_parse_troe.cpp)
 create_standard_test(NAME parse_tunneling SOURCES test_parse_tunneling.cpp)
+create_standard_test(NAME parse_simpol_phase_transfer SOURCES test_parse_simpol_phase_transfer.cpp)
 
 ################################################################################
 # Copy test data

@@ -68,7 +68,8 @@
       "species": [
         "A",
         "B",
-        "C"
+        "C",
+        "ethanol"
       ]
     },
     {
@@ -116,7 +117,7 @@
         1.96E-03,
         -4.96E-01
       ],
-      "name": "my simpl"
+      "name": "my simpol"
     },
     {
       "type": "AQUEOUS_EQUILIBRIUM",
@@ -267,10 +268,7 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase reactant": {
-        "species name": "A",
-        "coefficient": 1
-      },
+      "gas-phase species": "A",
       "reaction probability": 2.0e-2,
       "gas-phase products": [
         {

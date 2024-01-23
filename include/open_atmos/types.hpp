@@ -166,7 +166,7 @@ namespace open_atmos
       /// @brief Reaction probability (0-1) [unitless]
       double reaction_probability{ 1.0 };
       /// @brief A list of reactants
-      ReactionComponent gas_phase_reactant;
+      ReactionComponent gas_phase_species;
       /// @brief A list of products
       std::vector<ReactionComponent> gas_phase_products;
       /// @brief An identifier, optional, uniqueness not enforced
@@ -223,6 +223,24 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct SimpolPhaseTransfer
+    {
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief The species in the gas phase participating in this reaction
+      ReactionComponent gas_phase_species;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief The species in the aerosol phase participating in this reaction
+      ReactionComponent aerosol_phase_species;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief The 4 SIMPOL parameters
+      std::array<double, 4> B;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
@@ -234,6 +252,7 @@ namespace open_atmos
       std::vector<types::Photolysis> photolysis;
       std::vector<types::Emission> emission;
       std::vector<types::FirstOrderLoss> first_order_loss;
+      std::vector<types::SimpolPhaseTransfer> simpol_phase_transfer;
     };
 
     struct Mechanism
