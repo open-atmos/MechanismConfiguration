@@ -1332,6 +1332,88 @@ namespace open_atmos
       return { status, first_order_loss };
     }
 
+    /// @brief Parses a first order loss reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of First Order Loss parameters
+    std::pair<ConfigParseStatus, types::HenrysLaw>
+    ParseHenrysLaw(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::HenrysLaw henrys_law;
+
+      status = ValidateSchema(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        std::string gas_phase_species = object[validation::keys.gas_phase_species].get<std::string>();
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+        std::string aerosol_phase_species = object[validation::keys.aerosol_phase_species].get<std::string>();
+        std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].get<std::string>();
+
+        if (object.contains(validation::keys.name))
+        {
+          henrys_law.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species;
+        requested_species.push_back(gas_phase_species);
+        requested_species.push_back(aerosol_phase_species);
+        requested_species.push_back(aerosol_phase_water);
+
+        std::vector<std::string> requested_aerosol_species;
+        requested_aerosol_species.push_back(aerosol_phase_species);
+        requested_aerosol_species.push_back(aerosol_phase_water);
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        auto phase_it = std::find_if(
+            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) { return phase.name == aerosol_phase; });
+
+        if (phase_it != existing_phases.end())
+        {
+          // check if all of the species for this reaction are actually in the aerosol phase
+          std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
+          if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_aerosol_species, aerosol_phase_species))
+          {
+            status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
+          }
+        }
+        else
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        henrys_law.gas_phase = gas_phase;
+        henrys_law.gas_phase_species = gas_phase_species;
+        henrys_law.aerosol_phase = aerosol_phase;
+        henrys_law.aerosol_phase_species = aerosol_phase_species;
+        henrys_law.aerosol_phase_water = aerosol_phase_water;
+        henrys_law.unknown_properties = unknown_properties;
+      }
+
+      return { status, henrys_law };
+    }
+
     /// @brief Parses all reactions
     /// @param objects A json object that should contain only valid reactions
     /// @param existing_species A list of spcecies configured for a mechanism
@@ -1445,6 +1527,16 @@ namespace open_atmos
             break;
           }
           reactions.first_order_loss.push_back(first_order_loss_parse.second);
+        }
+        else if (type == validation::keys.HenrysLaw_key)
+        {
+          auto henrys_law_parse = ParseHenrysLaw(object, existing_species, existing_phases);
+          status = henrys_law_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.henrys_law.push_back(henrys_law_parse.second);
         }
       }
 

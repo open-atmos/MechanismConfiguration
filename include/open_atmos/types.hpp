@@ -241,6 +241,24 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct HenrysLaw
+    {
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief An identifier indicating which gas phase species this reaction involves
+      std::string gas_phase_species;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief An identifier indicating the species label of aqueous phase water
+      std::string aerosol_phase_water;
+      /// @brief An identifier indicating which aerosol phase species this reaction involves
+      std::string aerosol_phase_species;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
@@ -249,6 +267,7 @@ namespace open_atmos
       std::vector<types::CondensedPhasePhotolysis> condensed_phase_photolysis;
       std::vector<types::Emission> emission;
       std::vector<types::FirstOrderLoss> first_order_loss;
+      std::vector<types::HenrysLaw> henrys_law;
       std::vector<types::Photolysis> photolysis;
       std::vector<types::Surface> surface;
       std::vector<types::Troe> troe;
