@@ -66,6 +66,7 @@ TEST(JsonParser, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
 TEST(JsonParser, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAerosolPhase)
 {
   JsonParser parser;
-  auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase.json"));
+  auto [status, mechanism] =
+      parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
