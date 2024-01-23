@@ -15,6 +15,10 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 2);
   EXPECT_EQ(mechanism.reactions.branched.size(), 1);
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius.size(), 2);
+  EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
+  EXPECT_EQ(mechanism.reactions.surface.size(), 1);
+  EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
+  EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis.size(), 1);
   EXPECT_EQ(mechanism.reactions.emission.size(), 1);
   EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
   EXPECT_EQ(mechanism.reactions.henrys_law.size(), 1);
