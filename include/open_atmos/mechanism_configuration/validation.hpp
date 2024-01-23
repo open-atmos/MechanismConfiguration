@@ -103,7 +103,7 @@ namespace open_atmos
 
       // Condensed Phae Photolysis
       const std::string CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
-      // also 
+      // also
       // scaling factor
       // aerosol phase
       // aerosol-phase water
