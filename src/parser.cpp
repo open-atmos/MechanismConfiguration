@@ -696,7 +696,9 @@ class SurfaceParser : public IReactionParser
       surface.gas_phase = object[validation::keys.gas_phase].get<std::string>();
       surface.aerosol_phase = aerosol_phase;
       surface.gas_phase_products = products;
-      surface.gas_phase_species = { .species_name = gas_phase_species, .coefficient = 1 };
+      types::ReactionComponent component;
+      component.species_name = gas_phase_species;
+      surface.gas_phase_species = component;
       surface.unknown_properties = GetComments(object, validation::surface.required_keys, validation::surface.optional_keys);
       reactions.surface.push_back(surface);
     }
@@ -1044,9 +1046,13 @@ class SimpolPhaseTransferParser : public IReactionParser
       }
 
       simpol_phase_transfer.gas_phase = gas_phase;
-      simpol_phase_transfer.gas_phase_species = { .species_name = gas_phase_species, .coefficient = 1 };
+      types::ReactionComponent gas_component;
+      gas_component.species_name = gas_phase_species;
+      simpol_phase_transfer.gas_phase_species = gas_component;
       simpol_phase_transfer.aerosol_phase = aerosol_phase;
-      simpol_phase_transfer.aerosol_phase_species = { .species_name = aerosol_phase_species, .coefficient = 1 };
+      types::ReactionComponent aerosol_component;
+      aerosol_component.species_name = aerosol_phase_species;
+      simpol_phase_transfer.aerosol_phase_species = aerosol_component;
       simpol_phase_transfer.unknown_properties =
           GetComments(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
       reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
