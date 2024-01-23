@@ -101,6 +101,13 @@ namespace open_atmos
       const std::string Photolysis_key = "PHOTOLYSIS";
       const std::string scaling_factor = "scaling factor";
 
+      // Condensed Phae Photolysis
+      const std::string CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
+      // also 
+      // scaling factor
+      // aerosol phase
+      // aerosol-phase water
+
       // Emissions
       const std::string Emission_key = "EMISSION";
       // also scaling factor
@@ -184,6 +191,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } photolysis;
+
+    struct CondensedPhasePhotolysis
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } condensed_phase_photolysis;
 
     struct Emission
     {
