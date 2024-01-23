@@ -16,8 +16,8 @@ TEST(JsonParser, CanParseValidSurfaceReaction)
   EXPECT_EQ(mechanism.reactions.surface[0].name, "my surface");
   EXPECT_EQ(mechanism.reactions.surface[0].aerosol_phase, "surface reacting phase");
   EXPECT_EQ(mechanism.reactions.surface[0].reaction_probability, 2.0e-2);
-  EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_reactant.species_name, "A");
-  EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_reactant.coefficient, 1);
+  EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_species.species_name, "A");
+  EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_species.coefficient, 1);
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products.size(), 2);
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products[0].species_name, "B");
   EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_products[0].coefficient, 1);
@@ -29,8 +29,8 @@ TEST(JsonParser, CanParseValidSurfaceReaction)
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase, "gas");
   EXPECT_EQ(mechanism.reactions.surface[1].aerosol_phase, "surface reacting phase");
   EXPECT_EQ(mechanism.reactions.surface[1].reaction_probability, 1.0);
-  EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_reactant.species_name, "A");
-  EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_reactant.coefficient, 1);
+  EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_species.species_name, "A");
+  EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_species.coefficient, 1);
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_products.size(), 2);
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_products[0].species_name, "B");
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_products[0].coefficient, 1);

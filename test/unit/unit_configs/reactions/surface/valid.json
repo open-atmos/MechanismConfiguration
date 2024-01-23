@@ -34,10 +34,7 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase reactant": {
-        "species name": "A",
-        "coefficient": 1
-      },
+      "gas-phase species": "A",
       "reaction probability": 2.0e-2,
       "gas-phase products": [
         {
@@ -56,10 +53,7 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase reactant": {
-        "species name": "A",
-        "coefficient": 1
-      },
+      "gas-phase species": "A",
       "gas-phase products": [
         {
           "species name": "B",

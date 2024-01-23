@@ -26,10 +26,7 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase reactant": {
-        "species name": "A",
-        "coefficient": 1
-      },
+      "gas-phase species": "A",
       "gas-phase products": [
         {
           "species name": "B",

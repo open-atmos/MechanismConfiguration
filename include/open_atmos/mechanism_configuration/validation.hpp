@@ -92,8 +92,8 @@ namespace open_atmos
 
       // Surface
       const std::string Surface_key = "SURFACE";
-      const std::string gas_phase_reactant = "gas-phase reactant";
       const std::string reaction_probability = "reaction probability";
+      const std::string gas_phase_species = "gas-phase species";
       const std::string gas_phase_products = "gas-phase products";
       const std::string aerosol_phase = "aerosol phase";
 
@@ -116,6 +116,16 @@ namespace open_atmos
       const std::string FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
 
+      // Simpol Phase Transfer
+      const std::string SimpolPhaseTransfer_key = "SIMPOL_PHASE_TRANSFER";
+      const std::string aerosol_phase_species = "aerosol-phase species";
+      // also
+      // gas phase
+      // gas-phase species
+      // aerosol phase
+      // aserosol-phase species
+      // B
+
       // Aqueous Equilibrium
       const std::string AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
       // also 
@@ -133,12 +143,11 @@ namespace open_atmos
 
       // Henry's Law Phase Transfer
       const std::string HenrysLaw_key = "HL_PHASE_TRANSFER";
-      const std::string gas_phase_species = "gas-phase species";
-      const std::string aerosol_phase_species = "aerosol-phase species";
       // also
       // gas phase
       // aerosol phase
       // aerosol-phase water
+      // aerosol-phase species
 
     } keys;
 
@@ -206,7 +215,7 @@ namespace open_atmos
 
     struct Surface
     {
-      const std::vector<std::string> required_keys{ keys.gas_phase_products, keys.gas_phase_reactant, keys.type, keys.gas_phase, keys.aerosol_phase };
+      const std::vector<std::string> required_keys{ keys.gas_phase_products, keys.gas_phase_species, keys.type, keys.gas_phase, keys.aerosol_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.reaction_probability };
     } surface;
 
@@ -233,6 +242,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } first_order_loss;
+
+    struct SimpolPhaseTransfer
+    {
+      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.B };
+      const std::vector<std::string> optional_keys{ keys.name };
+    } simpol_phase_transfer;
 
     struct WetDeposition
     {

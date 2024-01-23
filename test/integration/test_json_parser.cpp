@@ -21,6 +21,7 @@ TEST(JsonParser, ParsesFullConfiguration)
   EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis.size(), 1);
   EXPECT_EQ(mechanism.reactions.emission.size(), 1);
   EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
+  EXPECT_EQ(mechanism.reactions.simpol_phase_transfer.size(), 1);
   EXPECT_EQ(mechanism.reactions.aqueous_equilibrium.size(), 1);
   EXPECT_EQ(mechanism.reactions.henrys_law.size(), 1);
   EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);

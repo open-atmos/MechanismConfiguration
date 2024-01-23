@@ -917,12 +917,7 @@ namespace open_atmos
       status = ValidateSchema(object, validation::surface.required_keys, validation::surface.optional_keys);
       if (status == ConfigParseStatus::Success)
       {
-        auto reactant_parse = ParseReactionComponent(object[validation::keys.gas_phase_reactant]);
-        status = reactant_parse.first;
-        if (status != ConfigParseStatus::Success)
-        {
-          return { status, surface };
-        }
+        std::string gas_phase_species = object[validation::keys.gas_phase_species].get<std::string>();
 
         std::vector<types::ReactionComponent> products{};
         for (const auto& reactant : object[validation::keys.gas_phase_products])
@@ -960,12 +955,13 @@ namespace open_atmos
         {
           requested_species.push_back(spec.species_name);
         }
-        requested_species.push_back(reactant_parse.second.species_name);
+        requested_species.push_back(gas_phase_species);
 
         if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
         {
           status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
         }
+
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
         auto it =
@@ -978,7 +974,7 @@ namespace open_atmos
         surface.gas_phase = object[validation::keys.gas_phase].get<std::string>();
         surface.aerosol_phase = aerosol_phase;
         surface.gas_phase_products = products;
-        surface.gas_phase_reactant = reactant_parse.second;
+        surface.gas_phase_species = { .species_name = gas_phase_species, .coefficient = 1 };
         surface.unknown_properties = unknown_properties;
       }
 
@@ -1331,6 +1327,93 @@ namespace open_atmos
       }
 
       return { status, first_order_loss };
+    }
+
+    /// @brief Parses a SIMPOL phase transfer reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Surface parameters
+    std::pair<ConfigParseStatus, types::SimpolPhaseTransfer>
+    ParseSimpolPhaseTransfer(const json& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase> existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::SimpolPhaseTransfer simpol_phase_transfer;
+
+      status = ValidateSchema(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::string gas_phase_species = object[validation::keys.gas_phase_species].get<std::string>();
+        std::string aerosol_phase_species = object[validation::keys.aerosol_phase_species].get<std::string>();
+
+        if (object.contains(validation::keys.name))
+        {
+          simpol_phase_transfer.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::vector<std::string> requested_species {gas_phase_species, aerosol_phase_species};
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+        auto aerosol_it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
+        if (status == ConfigParseStatus::Success && aerosol_it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+        else {
+          auto phase = *aerosol_it;
+          auto spec_it = std::find_if(phase.species.begin(), phase.species.end(), [&aerosol_phase_species](const std::string& species){
+            return species == aerosol_phase_species;
+          });
+          if (spec_it == phase.species.end()) {
+            status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          }
+        }
+
+        std::string gas_phase = object[validation::keys.gas_phase].get<std::string>();
+        auto gas_it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        if (status == ConfigParseStatus::Success && gas_it == existing_phases.end())
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+        else {
+          auto phase = *gas_it;
+          auto spec_it = std::find_if(phase.species.begin(), phase.species.end(), [&gas_phase_species](const std::string& species){
+            return species == gas_phase_species;
+          });
+          if (spec_it == phase.species.end()) {
+            status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          }
+        }
+
+        if (object.contains(validation::keys.B) && object[validation::keys.B].is_array() && object[validation::keys.B].size() == 4) {
+          for(size_t i = 0; i < 4; ++i) {
+            simpol_phase_transfer.B[i] = object[validation::keys.B][i];
+          }
+        }
+
+        simpol_phase_transfer.gas_phase = gas_phase;
+        simpol_phase_transfer.gas_phase_species = { .species_name = gas_phase_species, .coefficient = 1 };
+        simpol_phase_transfer.aerosol_phase = aerosol_phase;
+        simpol_phase_transfer.aerosol_phase_species = { .species_name = aerosol_phase_species, .coefficient = 1 };
+        simpol_phase_transfer.unknown_properties = unknown_properties;
+      }
+
+      return { status, simpol_phase_transfer };
     }
 
     /// @brief Parses an aqueous equilibrium reaction
@@ -1688,6 +1771,17 @@ namespace open_atmos
             break;
           }
           reactions.first_order_loss.push_back(first_order_loss_parse.second);
+        }
+
+        else if (type == validation::keys.SimpolPhaseTransfer_key)
+        {
+          auto simpol_phase_transfer_parse = ParseSimpolPhaseTransfer(object, existing_species, existing_phases);
+          status = simpol_phase_transfer_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.simpol_phase_transfer.push_back(simpol_phase_transfer_parse.second);
         }
         else if (type == validation::keys.AqueousPhaseEquilibrium_key)
         {
