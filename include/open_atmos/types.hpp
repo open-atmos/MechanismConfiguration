@@ -4,12 +4,11 @@
 
 #pragma once
 
+#include <array>
+#include <optional>
 #include <string>
 #include <unordered_map>
-#include <array>
 #include <vector>
-#include <optional>
-
 
 namespace open_atmos
 {

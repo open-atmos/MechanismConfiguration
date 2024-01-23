@@ -128,7 +128,7 @@ namespace open_atmos
 
       // Aqueous Equilibrium
       const std::string AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
-      // also 
+      // also
       // aerosol phase
       // aerosol-phase water
       // A
@@ -245,7 +245,8 @@ namespace open_atmos
 
     struct SimpolPhaseTransfer
     {
-      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.B };
+      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species,
+                                                    keys.B };
       const std::vector<std::string> optional_keys{ keys.name };
     } simpol_phase_transfer;
 
@@ -257,13 +258,16 @@ namespace open_atmos
 
     struct HenrysLaw
     {
-      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water };
+      const std::vector<std::string> required_keys{
+        keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water
+      };
       const std::vector<std::string> optional_keys{ keys.name };
     } henrys_law;
 
     struct AqueousEquilibrium
     {
-      const std::vector<std::string> required_keys{ keys.type, keys.reactants, keys.products, keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
+      const std::vector<std::string> required_keys{ keys.type,          keys.reactants,           keys.products,
+                                                    keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
       const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.C };
     } aqueous_equilibrium;
   }  // namespace validation
