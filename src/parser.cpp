@@ -1079,8 +1079,10 @@ namespace open_atmos
     /// @param existing_species A list of species configured in a mechanism
     /// @param existing_phases A list of phases configured in a mechanism
     /// @return A pair indicating parsing success and a struct of Photolysis parameters
-    std::pair<ConfigParseStatus, types::CondensedPhasePhotolysis>
-    ParseCondensedPhasePhotolysis(const json& object, const std::vector<types::Species> existing_species, const std::vector<types::Phase> existing_phases)
+    std::pair<ConfigParseStatus, types::CondensedPhasePhotolysis> ParseCondensedPhasePhotolysis(
+        const json& object,
+        const std::vector<types::Species> existing_species,
+        const std::vector<types::Phase> existing_phases)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::CondensedPhasePhotolysis condensed_phase_photolysis;
