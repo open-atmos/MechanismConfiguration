@@ -11,7 +11,7 @@
   ],
   "phases": [
     {
-      "name": "gas",
+      "name": "aerosol",
       "species": [
         "A",
         "B"
@@ -20,16 +20,28 @@
   ],
   "reactions": [
     {
-      "type": "ARRHENIUS",
-      "gas phase": "gas",
+      "type": "AQUEOUS_EQUILIBRIUM",
+      "aerosol phase": "aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "k_reverse": 0.32,
+      "ion pair": {
+        "first": { "species name": "A"},
+        "second": { "species name": "B"}
+      },
       "reactants": [
         {
-          "species name": "A"
+          "species name": "A",
+          "coefficient": 2
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "C",
+          "coefficient": 1
         }
       ]
     }

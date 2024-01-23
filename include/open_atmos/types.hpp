@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <array>
 #include <vector>
+#include <optional>
+
 
 namespace open_atmos
 {
@@ -240,7 +242,7 @@ namespace open_atmos
       /// @brief A list of products
       std::vector<ReactionComponent> products;
       /// @brief Optional ion pairs
-      std::array<ReactionComponent, 2> ion_pair;
+      std::optional<std::array<ReactionComponent, 2>> ion_pair;
       /// @brief Pre-exponential factor (s-1)
       double A{ 1 };
       /// @brief A constant

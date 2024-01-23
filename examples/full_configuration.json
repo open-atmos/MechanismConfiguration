@@ -76,7 +76,10 @@
       "species": [
         "H2O2_aq",
         "H2O_aq",
-        "ethanol_aq"
+        "ethanol_aq",
+        "A",
+        "B",
+        "C"
       ]
     },
     {
@@ -120,7 +123,6 @@
     },
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "gas phase": "gas",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "A": 1.14e-2,

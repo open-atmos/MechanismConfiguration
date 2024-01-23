@@ -32,6 +32,7 @@ namespace open_atmos
         case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
         case ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase: return "RequestedAerosolSpeciesNotIncludedInAerosolPhase";
         case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
+        case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";
         default: return "Unknown";
       }
     }
@@ -137,7 +138,7 @@ namespace open_atmos
       // now, anything left must be standard comment starting with __
       for (auto& key : remaining)
       {
-        if (!key.starts_with("__"))
+        if (key.find("__") == std::string::npos)
         {
           std::cerr << "Non-standard key '" << key << "' found in object" << object << std::endl;
 
@@ -1325,22 +1326,21 @@ namespace open_atmos
           status = ConfigParseStatus::UnknownPhase;
         }
 
-        const auto& ion_pair_object = object[validation::keys.ion_pair];
-        status = ValidateSchema(ion_pair_object, validation::ion_pair.required_keys, validation::ion_pair.optional_keys);
-        if (status == ConfigParseStatus::Success) {
+        if (status == ConfigParseStatus::Success && object.contains(validation::keys.ion_pair)) {
+          const auto& ion_pair_object = object[validation::keys.ion_pair];
+          status = ValidateSchema(ion_pair_object, validation::ion_pair.required_keys, validation::ion_pair.optional_keys);
           auto first_parse = ParseReactionComponent(ion_pair_object[validation::keys.first]);
           if (first_parse.first != ConfigParseStatus::Success) {
             status = first_parse.first;
           }
           else {
-            aqueous_equilibrium.ion_pair[0] = first_parse.second;
-          }
-          auto second_parse = ParseReactionComponent(ion_pair_object[validation::keys.second]);
-          if (second_parse.first != ConfigParseStatus::Success) {
-            status = second_parse.first;
-          }
-          else {
-            aqueous_equilibrium.ion_pair[1] = second_parse.second;
+            auto second_parse = ParseReactionComponent(ion_pair_object[validation::keys.second]);
+            if (second_parse.first != ConfigParseStatus::Success) {
+              status = second_parse.first;
+            }
+            else {
+              aqueous_equilibrium.ion_pair = std::array<types::ReactionComponent, 2>{first_parse.second, second_parse.second};
+            }
           }
         }
 
