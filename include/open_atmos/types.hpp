@@ -195,6 +195,24 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct CondensedPhasePhotolysis
+    {
+      /// @brief Scaling factor to apply to user-provided rate constants
+      double scaling_factor_{ 1.0 };
+      /// @brief A list of reactants
+      std::vector<ReactionComponent> reactants;
+      /// @brief A list of products
+      std::vector<ReactionComponent> products;
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief An identifier indicating the species label of aqueous phase water
+      std::string aerosol_phase_water;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Emission
     {
       /// @brief Scaling factor to apply to user-provided rate constants
@@ -235,18 +253,38 @@ namespace open_atmos
       std::unordered_map<std::string, std::string> unknown_properties;
     };
 
+    struct HenrysLaw
+    {
+      /// @brief An identifier, optional, uniqueness not enforced
+      std::string name;
+      /// @brief An identifier indicating which gas phase this reaction takes place in
+      std::string gas_phase;
+      /// @brief An identifier indicating which gas phase species this reaction involves
+      std::string gas_phase_species;
+      /// @brief An identifier indicating which aerosol phase this reaction takes place in
+      std::string aerosol_phase;
+      /// @brief An identifier indicating the species label of aqueous phase water
+      std::string aerosol_phase_water;
+      /// @brief An identifier indicating which aerosol phase species this reaction involves
+      std::string aerosol_phase_species;
+      /// @brief Unknown properties, prefixed with two underscores (__)
+      std::unordered_map<std::string, std::string> unknown_properties;
+    };
+
     struct Reactions
     {
       std::vector<types::Arrhenius> arrhenius;
-      std::vector<types::CondensedPhaseArrhenius> condensed_phase_arrhenius;
-      std::vector<types::Troe> troe;
       std::vector<types::Branched> branched;
-      std::vector<types::Tunneling> tunneling;
-      std::vector<types::Surface> surface;
-      std::vector<types::Photolysis> photolysis;
+      std::vector<types::CondensedPhaseArrhenius> condensed_phase_arrhenius;
+      std::vector<types::CondensedPhasePhotolysis> condensed_phase_photolysis;
       std::vector<types::Emission> emission;
       std::vector<types::FirstOrderLoss> first_order_loss;
       std::vector<types::WetDeposition> wet_deposition;
+      std::vector<types::HenrysLaw> henrys_law;
+      std::vector<types::Photolysis> photolysis;
+      std::vector<types::Surface> surface;
+      std::vector<types::Troe> troe;
+      std::vector<types::Tunneling> tunneling;
     };
 
     struct Mechanism

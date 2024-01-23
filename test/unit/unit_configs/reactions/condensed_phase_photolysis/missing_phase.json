@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O_aq"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

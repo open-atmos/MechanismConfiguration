@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous aerosol",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_aq",
+      "reactants": [
+        {
+          "species name": "A",
+          "coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

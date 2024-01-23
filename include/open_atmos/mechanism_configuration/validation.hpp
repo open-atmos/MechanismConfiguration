@@ -101,6 +101,13 @@ namespace open_atmos
       const std::string Photolysis_key = "PHOTOLYSIS";
       const std::string scaling_factor = "scaling factor";
 
+      // Condensed Phae Photolysis
+      const std::string CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
+      // also 
+      // scaling factor
+      // aerosol phase
+      // aerosol-phase water
+
       // Emissions
       const std::string Emission_key = "EMISSION";
       // also scaling factor
@@ -114,6 +121,15 @@ namespace open_atmos
       // also
       // scaling factor
       // aerosol phase
+
+      // Henry's Law Phase Transfer
+      const std::string HenrysLaw_key = "HL_PHASE_TRANSFER";
+      const std::string gas_phase_species = "gas-phase species";
+      const std::string aerosol_phase_species = "aerosol-phase species";
+      // also
+      // gas phase
+      // aerosol phase
+      // aerosol-phase water
 
     } keys;
 
@@ -191,6 +207,12 @@ namespace open_atmos
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } photolysis;
 
+    struct CondensedPhasePhotolysis
+    {
+      const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
+    } condensed_phase_photolysis;
+
     struct Emission
     {
       const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
@@ -208,6 +230,12 @@ namespace open_atmos
       const std::vector<std::string> required_keys{ keys.aerosol_phase, keys.type };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
     } wet_deposition;
+
+    struct HenrysLaw
+    {
+      const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water };
+      const std::vector<std::string> optional_keys{ keys.name };
+    } henrys_law;
 
     struct Mechanism
     {
