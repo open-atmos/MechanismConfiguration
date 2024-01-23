@@ -128,10 +128,6 @@
       "A": 1.14e-2,
       "C": 2300.0,
       "k_reverse": 0.32,
-      "ion pair": {
-        "first": { "species name": "A"},
-        "second": { "species name": "B"}
-      },
       "reactants": [
         {
           "species name": "A",
@@ -211,10 +207,6 @@
       "reactants": [
         {
           "species name": "H2O2_aq",
-          "coefficient": 1
-        },
-        {
-          "species name": "H2O_aq",
           "coefficient": 1
         }
       ],
@@ -367,7 +359,6 @@
     },
     {
       "type": "WET_DEPOSITION",
-      "gas phase": "gas",
       "aerosol phase": "cloud",
       "name": "rxn cloud",
       "scaling factor": 12.3

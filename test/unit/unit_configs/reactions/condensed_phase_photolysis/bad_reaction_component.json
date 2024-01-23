@@ -1,43 +1,46 @@
 {
   "version": "1.0.0",
-  "name": "Unknown species",
+  "name": "Bad reaction component",
   "species": [
     {
       "name": "A"
     },
     {
       "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O_aq"
     }
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous aerosol",
       "species": [
         "A",
-        "B"
+        "B",
+        "C",
+        "H2O_aq"
       ]
     }
   ],
   "reactions": [
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
-      "k_reverse": 0.32,
       "reactants": [
         {
           "species name": "A",
-          "coefficient": 2
+          "Coefficient": 1.2
         }
       ],
       "products": [
         {
           "species name": "B",
-          "coefficient": 1
-        },
-        {
-          "species name": "C",
-          "coefficient": 1
+          "coefficient": 0.2
         }
       ]
     }

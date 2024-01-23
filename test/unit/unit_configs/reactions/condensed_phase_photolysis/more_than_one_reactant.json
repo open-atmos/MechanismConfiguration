@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Valid aqueous equilibrium",
+  "name": "more than one reactant",
   "species": [
     {
       "name": "A"
@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",
@@ -28,28 +28,21 @@
   ],
   "reactions": [
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
-      "k_reverse": 0.32,
-      "ion pair": {
-        "first": { "species name": "A"},
-        "second": { "species name": "B"}
-      },
       "reactants": [
         {
-          "species name": "A",
-          "coefficient": 2
+          "species name": "A"
+        },
+        {
+          "species name": "B"
         }
       ],
       "products": [
         {
-          "species name": "B",
-          "coefficient": 1
-        },
-        {
           "species name": "C",
-          "coefficient": 1
+          "coefficient": 0.2
         }
       ]
     }

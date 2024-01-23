@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Bad reaction component",
+  "name": "Missing condensed phase arrhenius aerosol phase water",
   "species": [
     {
       "name": "A"
@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",
@@ -28,24 +28,17 @@
   ],
   "reactions": [
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
-      "aerosol-phase water": "H2O_aq",
-      "k_reverse": 0.32,
+      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "aerosol phase": "aqueous aerosol",
+      "aerosol-phase water": "H2O_a",
       "reactants": [
         {
-          "Species name": "A",
-          "coefficient": 2
+          "species name": "A"
         }
       ],
       "products": [
         {
-          "Species name": "B",
-          "coefficient": 1
-        },
-        {
-          "Species name": "C",
-          "coefficient": 1
+          "species name": "C"
         }
       ]
     }

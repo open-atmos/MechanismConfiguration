@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Valid aqueous equilibrium",
+  "name": "Valid surface",
   "species": [
     {
       "name": "A"
@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous aerosol",
       "species": [
         "A",
         "B",
@@ -28,50 +28,39 @@
   ],
   "reactions": [
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
-      "A": 1.14e-2,
-      "C": 2300.0,
-      "k_reverse": 0.32,
+      "__comment": "hi",
       "reactants": [
-        {
-          "species name": "A",
-          "coefficient": 2
-        }
-      ],
-      "products": [
         {
           "species name": "B",
           "coefficient": 1
-        },
+        }
+      ],
+      "products": [
         {
           "species name": "C",
           "coefficient": 1
         }
       ],
-      "name": "my aqueous eq",
-      "__comment": "GIF is pronounced with a hard g"
+      "name": "my condensed phase photolysis",
+      "scaling factor": 12.3
     },
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
-      "k_reverse": 0.32,
       "reactants": [
         {
-          "species name": "A",
-          "coefficient": 2
+          "species name": "B",
+          "coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "B",
-          "coefficient": 1
-        },
-        {
           "species name": "C",
-          "coefficient": 1
+          "coefficient": 0.2
         }
       ]
     }

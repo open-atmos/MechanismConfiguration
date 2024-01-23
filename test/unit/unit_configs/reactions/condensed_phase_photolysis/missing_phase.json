@@ -18,24 +18,19 @@
   "phases": [ ],
   "reactions": [
     {
-      "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
-      "k_reverse": 0.32,
       "reactants": [
         {
-          "species name": "A",
-          "coefficient": 2
+          "species name": "B",
+          "coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "B",
-          "coefficient": 1
-        },
-        {
           "species name": "C",
-          "coefficient": 1
+          "coefficient": 0.2
         }
       ]
     }
