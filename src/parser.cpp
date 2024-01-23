@@ -32,6 +32,7 @@ namespace open_atmos
         case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
         case ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase: return "RequestedAerosolSpeciesNotIncludedInAerosolPhase";
         case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
+        case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";
         default: return "Unknown";
       }
     }
@@ -137,7 +138,7 @@ namespace open_atmos
       // now, anything left must be standard comment starting with __
       for (auto& key : remaining)
       {
-        if (!key.starts_with("__"))
+        if (key.find("__") == std::string::npos)
         {
           std::cerr << "Non-standard key '" << key << "' found in object" << object << std::endl;
 
@@ -1332,6 +1333,117 @@ namespace open_atmos
       return { status, first_order_loss };
     }
 
+    /// @brief Parses an aqueous equilibrium reaction
+    /// @param object A json object that should have information containing arrhenius parameters
+    /// @param existing_species A list of species configured in a mechanism
+    /// @param existing_phases A list of phases configured in a mechanism
+    /// @return A pair indicating parsing success and a struct of Condensed Phase Arrhenius parameters
+    std::pair<ConfigParseStatus, types::AqueousEquilibrium> ParseAqueousEquilibrium(
+        const json& object,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
+    {
+      ConfigParseStatus status = ConfigParseStatus::Success;
+      types::AqueousEquilibrium aqueous_equilibrium;
+
+      status = ValidateSchema(object, validation::aqueous_equilibrium.required_keys, validation::aqueous_equilibrium.optional_keys);
+      if (status == ConfigParseStatus::Success)
+      {
+        std::vector<types::ReactionComponent> products{};
+        for (const auto& product : object[validation::keys.products])
+        {
+          auto product_parse = ParseReactionComponent(product);
+          status = product_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          products.push_back(product_parse.second);
+        }
+
+        std::vector<types::ReactionComponent> reactants{};
+        for (const auto& reactant : object[validation::keys.reactants])
+        {
+          auto reactant_parse = ParseReactionComponent(reactant);
+          status = reactant_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactants.push_back(reactant_parse.second);
+        }
+
+        if (object.contains(validation::keys.A))
+        {
+          aqueous_equilibrium.A = object[validation::keys.A].get<double>();
+        }
+        if (object.contains(validation::keys.C))
+        {
+          aqueous_equilibrium.C = object[validation::keys.C].get<double>();
+        }
+
+        aqueous_equilibrium.k_reverse = object[validation::keys.k_reverse].get<double>();
+
+        if (object.contains(validation::keys.name))
+        {
+          aqueous_equilibrium.name = object[validation::keys.name].get<std::string>();
+        }
+
+        auto comments = GetComments(object, validation::aqueous_equilibrium.required_keys, validation::aqueous_equilibrium.optional_keys);
+
+        std::unordered_map<std::string, std::string> unknown_properties;
+        for (const auto& key : comments)
+        {
+          std::string val = object[key].dump();
+          unknown_properties[key] = val;
+        }
+
+        std::string aerosol_phase = object[validation::keys.aerosol_phase].get<std::string>();
+        std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].get<std::string>();
+
+        std::vector<std::string> requested_species;
+        for (const auto& spec : products)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : reactants)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        requested_species.push_back(aerosol_phase_water);
+
+        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        {
+          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+        }
+
+        auto phase_it = std::find_if(
+            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) { return phase.name == aerosol_phase; });
+
+        if (phase_it != existing_phases.end())
+        {
+          // check if all of the species for this reaction are actually in the aerosol phase
+          std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
+          if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, aerosol_phase_species))
+          {
+            status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
+          }
+        }
+        else
+        {
+          status = ConfigParseStatus::UnknownPhase;
+        }
+
+        aqueous_equilibrium.aerosol_phase = aerosol_phase;
+        aqueous_equilibrium.aerosol_phase_water = aerosol_phase_water;
+        aqueous_equilibrium.products = products;
+        aqueous_equilibrium.reactants = reactants;
+        aqueous_equilibrium.unknown_properties = unknown_properties;
+      }
+
+      return { status, aqueous_equilibrium };
+    }
+
     /// @brief Parses a wet deposition reaction
     /// @param object A json object that should have information containing arrhenius parameters
     /// @param existing_species A list of species configured in a mechanism
@@ -1577,6 +1689,16 @@ namespace open_atmos
           }
           reactions.first_order_loss.push_back(first_order_loss_parse.second);
         }
+        else if (type == validation::keys.AqueousPhaseEquilibrium_key)
+        {
+          auto aqueous_equilibrium_parse = ParseAqueousEquilibrium(object, existing_species, existing_phases);
+          status = aqueous_equilibrium_parse.first;
+          if (status != ConfigParseStatus::Success)
+          {
+            break;
+          }
+          reactions.aqueous_equilibrium.push_back(aqueous_equilibrium_parse.second);
+        }
         else if (type == validation::keys.WetDeposition_key)
         {
           auto wet_deposition_parse = ParseWetDeposition(object, existing_species, existing_phases);
@@ -1638,7 +1760,7 @@ namespace open_atmos
       ConfigParseStatus status;
       types::Mechanism mechanism;
 
-      status = ValidateSchema(object, validation::configuration.required_keys, validation::configuration.optional_keys);
+      status = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
 
       if (status != ConfigParseStatus::Success)
       {
