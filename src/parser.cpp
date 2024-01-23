@@ -412,12 +412,9 @@ class CondensedPhaseArrheniusParser : public IReactionParser
       condensed_phase_arrhenius.reactants = reactants;
       condensed_phase_arrhenius.unknown_properties =
           GetComments(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.condensed_phase_arrhenius.push_back(condensed_phase_arrhenius);
     }
+
     return status;
   }
 };
@@ -504,12 +501,9 @@ class TroeParser : public IReactionParser
       troe.products = products;
       troe.reactants = reactants;
       troe.unknown_properties = GetComments(object, validation::troe.required_keys, validation::troe.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.troe.push_back(troe);
     }
+
     return status;
   }
 };
@@ -574,12 +568,9 @@ class BranchedParser : public IReactionParser
       branched.alkoxy_products = alkoxy_products;
       branched.reactants = reactants;
       branched.unknown_properties = GetComments(object, validation::branched.required_keys, validation::branched.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.branched.push_back(branched);
     }
+
     return status;
   }
 };
@@ -646,12 +637,9 @@ class TunnelingParser : public IReactionParser
       tunneling.products = products;
       tunneling.reactants = reactants;
       tunneling.unknown_properties = GetComments(object, validation::tunneling.required_keys, validation::tunneling.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.tunneling.push_back(tunneling);
     }
+
     return status;
   }
 };
@@ -710,12 +698,9 @@ class SurfaceParser : public IReactionParser
       surface.gas_phase_products = products;
       surface.gas_phase_species = { .species_name = gas_phase_species, .coefficient = 1 };
       surface.unknown_properties = GetComments(object, validation::surface.required_keys, validation::surface.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.surface.push_back(surface);
     }
+
     return status;
   }
 };
@@ -779,12 +764,9 @@ class PhotolysisParser : public IReactionParser
       photolysis.products = products;
       photolysis.reactants = reactants;
       photolysis.unknown_properties = GetComments(object, validation::photolysis.required_keys, validation::photolysis.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.photolysis.push_back(photolysis);
     }
+
     return status;
   }
 };
@@ -864,12 +846,9 @@ class CondensedPhasePhotolysisParser : public IReactionParser
       condensed_phase_photolysis.reactants = reactants;
       condensed_phase_photolysis.unknown_properties =
           GetComments(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.condensed_phase_photolysis.push_back(condensed_phase_photolysis);
     }
+
     return status;
   }
 };
@@ -922,12 +901,9 @@ class EmissionParser : public IReactionParser
       emission.gas_phase = gas_phase;
       emission.products = products;
       emission.unknown_properties = GetComments(object, validation::emission.required_keys, validation::emission.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.emission.push_back(emission);
     }
+
     return status;
   }
 };
@@ -986,12 +962,9 @@ class FirstOrderLossParser : public IReactionParser
       first_order_loss.reactants = reactants;
       first_order_loss.unknown_properties =
           GetComments(object, validation::first_order_loss.required_keys, validation::first_order_loss.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.first_order_loss.push_back(first_order_loss);
     }
+
     return status;
   }
 };
@@ -1076,12 +1049,9 @@ class SimpolPhaseTransferParser : public IReactionParser
       simpol_phase_transfer.aerosol_phase_species = { .species_name = aerosol_phase_species, .coefficient = 1 };
       simpol_phase_transfer.unknown_properties =
           GetComments(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
     }
+
     return status;
   }
 };
@@ -1162,12 +1132,9 @@ class AqueousEquilibriumParser : public IReactionParser
       aqueous_equilibrium.reactants = reactants;
       aqueous_equilibrium.unknown_properties =
           GetComments(object, validation::aqueous_equilibrium.required_keys, validation::aqueous_equilibrium.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.aqueous_equilibrium.push_back(aqueous_equilibrium);
     }
+
     return status;
   }
 };
@@ -1209,12 +1176,9 @@ class WetDepositionParser : public IReactionParser
 
       wet_deposition.aerosol_phase = aerosol_phase;
       wet_deposition.unknown_properties = GetComments(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.wet_deposition.push_back(wet_deposition);
     }
+
     return status;
   }
 };
@@ -1288,10 +1252,6 @@ class HenrysLawParser : public IReactionParser
       henrys_law.aerosol_phase_species = aerosol_phase_species;
       henrys_law.aerosol_phase_water = aerosol_phase_water;
       henrys_law.unknown_properties = GetComments(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.henrys_law.push_back(henrys_law);
     }
 
@@ -1379,10 +1339,6 @@ class ArrheniusParser : public IReactionParser
       arrhenius.products = products;
       arrhenius.reactants = reactants;
       arrhenius.unknown_properties = GetComments(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
-    }
-
-    if (status == ConfigParseStatus::Success)
-    {
       reactions.arrhenius.push_back(arrhenius);
     }
 
