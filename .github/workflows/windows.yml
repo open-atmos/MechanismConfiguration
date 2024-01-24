@@ -18,11 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Run CMake
-      run: cmake -S . -B build -A ${{ matrix.architecture }}
-      if: matrix.build_type == 'Release'
-    - name: Run CMake
-      run: cmake -S . -B build -A ${{ matrix.architecture }}
-      if: matrix.build_type == 'Debug'
+      run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
     - name: Run tests

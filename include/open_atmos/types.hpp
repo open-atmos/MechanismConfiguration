@@ -33,7 +33,7 @@ namespace open_atmos
     struct ReactionComponent
     {
       std::string species_name;
-      double coefficient;
+      double coefficient { 1.0 };
       /// @brief Unknown properties, prefixed with two underscores (__)
       std::unordered_map<std::string, std::string> unknown_properties;
     };
