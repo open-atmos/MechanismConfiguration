@@ -27,5 +27,5 @@ namespace open_atmos
         default: return "Unknown";
       }
     }
-  }
-}
+  }  // namespace mechanism_configuration
+}  // namespace open_atmos

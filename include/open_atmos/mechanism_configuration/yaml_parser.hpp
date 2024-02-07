@@ -4,11 +4,12 @@
 
 #pragma once
 
+#include <yaml-cpp/yaml.h>
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <open_atmos/mechanism_configuration/parse_status.hpp>
-#include <yaml-cpp/yaml.h>
 #include <open_atmos/types.hpp>
 #include <string>
 #include <unordered_map>

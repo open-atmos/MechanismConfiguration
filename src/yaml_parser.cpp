@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <open_atmos/constants.hpp>
-#include <open_atmos/mechanism_configuration/yaml_parser.hpp>
 #include <open_atmos/mechanism_configuration/validation.hpp>
 #include <open_atmos/mechanism_configuration/version.hpp>
+#include <open_atmos/mechanism_configuration/yaml_parser.hpp>
 
 namespace open_atmos
 {
