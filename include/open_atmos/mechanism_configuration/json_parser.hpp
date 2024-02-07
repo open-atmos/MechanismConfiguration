@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <open_atmos/mechanism_configuration/parse_status.hpp>
 #include <open_atmos/types.hpp>
 #include <string>
 #include <unordered_map>
@@ -18,28 +19,6 @@ namespace open_atmos
 {
   namespace mechanism_configuration
   {
-    enum class ConfigParseStatus
-    {
-      Success,
-      None,
-      InvalidKey,
-      UnknownKey,
-      InvalidFilePath,
-      ObjectTypeNotFound,
-      RequiredKeyNotFound,
-      MutuallyExclusiveOption,
-      InvalidVersion,
-      DuplicateSpeciesDetected,
-      DuplicatePhasesDetected,
-      PhaseRequiresUnknownSpecies,
-      ReactionRequiresUnknownSpecies,
-      UnknownPhase,
-      RequestedAerosolSpeciesNotIncludedInAerosolPhase,
-      TooManyReactionComponents,
-      InvalidIonPair
-    };
-    std::string configParseStatusToString(const ConfigParseStatus &status);
-
     class JsonParser
     {
      public:

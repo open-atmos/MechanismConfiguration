@@ -9,7 +9,7 @@ target_compile_features(mechanism_configuration PUBLIC cxx_std_17)
 
 target_sources(mechanism_configuration
   PRIVATE
-    parser.cpp
+    parse_status.cpp
 )
 
 target_include_directories(mechanism_configuration
@@ -18,4 +18,26 @@ target_include_directories(mechanism_configuration
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(mechanism_configuration PUBLIC nlohmann_json::nlohmann_json)
+if(ENABLE_JSON)
+  target_sources(mechanism_configuration
+    PRIVATE
+      json_parser.cpp
+  )
+
+  target_link_libraries(mechanism_configuration 
+    PUBLIC 
+      nlohmann_json::nlohmann_json
+  )
+endif()
+
+if(ENABLE_YAML)
+  target_sources(mechanism_configuration
+    PRIVATE
+      yaml_parser.cpp
+  )
+
+  target_link_libraries(mechanism_configuration 
+    PUBLIC 
+      yaml-cpp::yaml-cpp
+  )
+endif()

@@ -18,8 +18,21 @@ endif()
 ################################################################################
 # nlohmann::json
 
-FetchContent_Declare(json
-    GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG v3.11.2
-)
-FetchContent_MakeAvailable(json)
+if(ENABLE_JSON)
+  FetchContent_Declare(json
+      GIT_REPOSITORY https://github.com/nlohmann/json.git
+      GIT_TAG v3.11.2
+  )
+  FetchContent_MakeAvailable(json)
+endif()
+
+################################################################################
+# yaml-cpp
+
+if(ENABLE_YAML)
+  FetchContent_Declare(yaml
+      GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+      GIT_TAG 0.8.0
+  )
+  FetchContent_MakeAvailable(yaml)
+endif()

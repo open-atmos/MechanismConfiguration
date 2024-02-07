@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <open_atmos/mechanism_configuration/json_parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
