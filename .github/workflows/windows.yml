@@ -22,7 +22,6 @@ jobs:
     - name: Run CMake
       run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D ENABLE_JSON=${{ matrix.enable_json }} -D ENABLE_YAML=${{ matrix.enable_yaml }}
     - name: Build
-    - name: Build
       run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
     - name: Run tests
       run: |
