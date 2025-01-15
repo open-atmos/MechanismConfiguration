@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Unknown species",
+  "name": "Bad reaction component",
   "species": [
     {
       "name": "A"
@@ -20,17 +20,16 @@
   ],
   "reactions": [
     {
-      "__my comment": {},
-      "type": "TROE",
+      "type": "TUNNELING",
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A"
+          "Species name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "species name": "B"
         }
       ]
     }

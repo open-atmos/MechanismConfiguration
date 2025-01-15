@@ -20,7 +20,7 @@ namespace open_atmos
 {
   namespace mechanism_configuration
   {
-    class YamlParser
+    class Parser
     {
      public:
       /// @brief Reads a configuration from a YAML node

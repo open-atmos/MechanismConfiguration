@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidPhases)
+TEST(Parser, CanParseValidPhases)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/phases/valid_phases.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::Success);
@@ -28,33 +28,33 @@ TEST(JsonParser, CanParseValidPhases)
   EXPECT_EQ(mechanism.phases[1].unknown_properties["__other2"], "\"key2\"");
 }
 
-TEST(JsonParser, DetectsDuplicatePhases)
+TEST(Parser, DetectsDuplicatePhases)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/phases/duplicate_phases.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
 }
 
-TEST(JsonParser, DetectsMissingRequiredKeys)
+TEST(Parser, DetectsMissingRequiredKeys)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/phases/missing_required_key.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, DetectsInvalidKeys)
+TEST(Parser, DetectsInvalidKeys)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/phases/invalid_key.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::InvalidKey);
 }
 
-TEST(JsonParser, DetectsPhaseRequestingUnknownSpecies)
+TEST(Parser, DetectsPhaseRequestingUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/phases/unknown_species.json"));
 
   EXPECT_EQ(status, ConfigParseStatus::PhaseRequiresUnknownSpecies);

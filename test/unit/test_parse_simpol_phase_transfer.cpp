@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidSimpolPhaseTransferReaction)
+TEST(Parser, CanParseValidSimpolPhaseTransferReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -35,37 +35,37 @@ TEST(JsonParser, CanParseValidSimpolPhaseTransferReaction)
   EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[1].B[3], -4.96e-1);
 }
 
-TEST(JsonParser, SimpolPhaseTransferDetectsUnknownSpecies)
+TEST(Parser, SimpolPhaseTransferDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, SimpolPhaseTransferDetectsUnknownAerosolPhase)
+TEST(Parser, SimpolPhaseTransferDetectsUnknownAerosolPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
 
-TEST(JsonParser, SimpolPhaseTransferDetectsUnknownGasPhase)
+TEST(Parser, SimpolPhaseTransferDetectsUnknownGasPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
 
-TEST(JsonParser, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
+TEST(Parser, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAerosolPhase)
+TEST(Parser, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAerosolPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] =
       parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);

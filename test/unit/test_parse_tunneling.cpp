@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidTunnelingReaction)
+TEST(Parser, CanParseValidTunnelingReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -41,23 +41,23 @@ TEST(JsonParser, CanParseValidTunnelingReaction)
   EXPECT_EQ(mechanism.reactions.tunneling[1].products[1].unknown_properties.size(), 0);
 }
 
-TEST(JsonParser, TunnelingDetectsUnknownSpecies)
+TEST(Parser, TunnelingDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, TunnelingDetectsBadReactionComponent)
+TEST(Parser, TunnelingDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, TunnelingDetectsUnknownPhase)
+TEST(Parser, TunnelingDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/tunneling/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }

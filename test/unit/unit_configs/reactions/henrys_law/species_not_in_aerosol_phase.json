@@ -27,7 +27,7 @@
   ],
   "reactions": [
     {
-      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "type": "HL_PHASE_TRANSFER",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "reactants": [
@@ -55,7 +55,7 @@
       "__solver_param": 0.1
     },
     {
-      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "type": "HL_PHASE_TRANSFER",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "reactants": [
@@ -83,7 +83,7 @@
       "name": "my arrhenius2"
     },
     {
-      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "type": "HL_PHASE_TRANSFER",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase water": "H2O_aq",
       "reactants": [

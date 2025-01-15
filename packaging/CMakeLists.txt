@@ -22,24 +22,12 @@ install(
 )
 
 
-if(ENABLE_JSON)
-  install(
-    TARGETS 
-      nlohmann_json 
-    EXPORT 
-      mechanism_configuration_Exports
-  )
-endif()
-
-if(ENABLE_YAML)
-  install(
-    TARGETS 
-      yaml-cpp 
-    EXPORT 
-      mechanism_configuration_Exports
-  )
-endif()
-
+install(
+  TARGETS 
+    yaml-cpp 
+  EXPORT 
+    mechanism_configuration_Exports
+)
 
 # install the cmake config files
 set(cmake_config_install_location ${INSTALL_PREFIX}/cmake)

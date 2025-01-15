@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidHenrysLawReaction)
+TEST(Parser, CanParseValidHenrysLawReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/henrys_law/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -30,30 +30,30 @@ TEST(JsonParser, CanParseValidHenrysLawReaction)
   EXPECT_EQ(mechanism.reactions.henrys_law[1].unknown_properties.size(), 0);
 }
 
-TEST(JsonParser, HenrysLawDetectsUnknownSpecies)
+TEST(Parser, HenrysLawDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/henrys_law/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, HenrysLawDetectsUnknownPhase)
+TEST(Parser, HenrysLawDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/henrys_law/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
 
-TEST(JsonParser, HenrysLawDetectsUnknownAerosolPhaseWater)
+TEST(Parser, HenrysLawDetectsUnknownAerosolPhaseWater)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(Parser, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
 }
