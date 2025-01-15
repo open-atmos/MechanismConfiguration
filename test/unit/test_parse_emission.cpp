@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidEmissionReaction)
+TEST(Parser, CanParseValidEmissionReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/emission/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -28,23 +28,23 @@ TEST(JsonParser, CanParseValidEmissionReaction)
   EXPECT_EQ(mechanism.reactions.emission[1].products[0].coefficient, 1);
 }
 
-TEST(JsonParser, EmissionDetectsUnknownSpecies)
+TEST(Parser, EmissionDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/emission/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, EmissionDetectsBadReactionComponent)
+TEST(Parser, EmissionDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/emission/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, EmissionDetectsUnknownPhase)
+TEST(Parser, EmissionDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/emission/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }

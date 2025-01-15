@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidBranchedReaction)
+TEST(Parser, CanParseValidBranchedReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -35,23 +35,23 @@ TEST(JsonParser, CanParseValidBranchedReaction)
   EXPECT_EQ(mechanism.reactions.branched[0].unknown_properties["__comment"], "\"thing\"");
 }
 
-TEST(JsonParser, BranchedDetectsUnknownSpecies)
+TEST(Parser, BranchedDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, BranchedDetectsBadReactionComponent)
+TEST(Parser, BranchedDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, BranchedDetectsUnknownPhase)
+TEST(Parser, BranchedDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }

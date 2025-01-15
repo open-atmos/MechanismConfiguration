@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidFirstOrderLossReaction)
+TEST(Parser, CanParseValidFirstOrderLossReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -28,30 +28,30 @@ TEST(JsonParser, CanParseValidFirstOrderLossReaction)
   EXPECT_EQ(mechanism.reactions.first_order_loss[1].reactants[0].coefficient, 1);
 }
 
-TEST(JsonParser, FirstOrderLossDetectsUnknownSpecies)
+TEST(Parser, FirstOrderLossDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, FirstOrderLossDetectsBadReactionComponent)
+TEST(Parser, FirstOrderLossDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, FirstOrderLossDetectsUnknownPhase)
+TEST(Parser, FirstOrderLossDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
 
-TEST(JsonParser, FirstOrderLossDetectsMoreThanOneSpecies)
+TEST(Parser, FirstOrderLossDetectsMoreThanOneSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/too_many_reactants.json"));
   EXPECT_EQ(status, ConfigParseStatus::TooManyReactionComponents);
 }

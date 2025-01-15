@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidWetDepositionReaction)
+TEST(Parser, CanParseValidWetDepositionReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/wet_deposition/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -23,9 +23,9 @@ TEST(JsonParser, CanParseValidWetDepositionReaction)
   EXPECT_EQ(mechanism.reactions.wet_deposition[1].scaling_factor, 1);
 }
 
-TEST(JsonParser, WetDepositionDetectsUnknownPhase)
+TEST(Parser, WetDepositionDetectsUnknownPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/wet_deposition/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }

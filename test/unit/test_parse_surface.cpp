@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidSurfaceReaction)
+TEST(Parser, CanParseValidSurfaceReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -40,30 +40,30 @@ TEST(JsonParser, CanParseValidSurfaceReaction)
   EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_products[1].coefficient, 1);
 }
 
-TEST(JsonParser, SurfaceDetectsUnknownSpecies)
+TEST(Parser, SurfaceDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, SurfaceDetectsBadReactionComponent)
+TEST(Parser, SurfaceDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, SurfaceDetectsUnknownAerosolPhase)
+TEST(Parser, SurfaceDetectsUnknownAerosolPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
 
-TEST(JsonParser, SurfaceDetectsUnknownGasPhase)
+TEST(Parser, SurfaceDetectsUnknownGasPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_gas_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }

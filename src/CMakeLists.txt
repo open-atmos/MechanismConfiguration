@@ -18,26 +18,13 @@ target_include_directories(mechanism_configuration
     $<INSTALL_INTERFACE:include>
 )
 
-if(ENABLE_JSON)
-  target_sources(mechanism_configuration
-    PRIVATE
-      json_parser.cpp
-  )
 
-  target_link_libraries(mechanism_configuration 
-    PUBLIC 
-      nlohmann_json::nlohmann_json
-  )
-endif()
+target_sources(mechanism_configuration
+  PRIVATE
+    parser.cpp
+)
 
-if(ENABLE_YAML)
-  target_sources(mechanism_configuration
-    PRIVATE
-      yaml_parser.cpp
-  )
-
-  target_link_libraries(mechanism_configuration 
-    PUBLIC 
-      yaml-cpp::yaml-cpp
-  )
-endif()
+target_link_libraries(mechanism_configuration 
+  PUBLIC 
+    yaml-cpp::yaml-cpp
+)

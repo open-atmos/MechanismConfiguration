@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/json_parser.hpp>
+#include <open_atmos/mechanism_configuration/parser.hpp>
 
 using namespace open_atmos::mechanism_configuration;
 
-TEST(JsonParser, CanParseValidCondensedPhaseArrheniusReaction)
+TEST(Parser, CanParseValidCondensedPhaseArrheniusReaction)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/valid.json"));
   EXPECT_EQ(status, ConfigParseStatus::Success);
 
@@ -29,7 +29,7 @@ TEST(JsonParser, CanParseValidCondensedPhaseArrheniusReaction)
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].products[1].species_name, "C");
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].products[1].coefficient, 0.3);
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].unknown_properties.size(), 1);
-  EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].unknown_properties["__solver_param"], "0.1");
+  EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].unknown_properties["__solver_param"], "\"0.1\"");
 
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].name, "my arrhenius2");
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].aerosol_phase, "aqueous aerosol");
@@ -66,44 +66,44 @@ TEST(JsonParser, CanParseValidCondensedPhaseArrheniusReaction)
   EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].products[0].coefficient, 1);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsUnknownSpecies)
+TEST(Parser, CondensedPhaseArrheniusDetectsUnknownSpecies)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/unknown_species.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
+TEST(Parser, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive.json"));
   EXPECT_EQ(status, ConfigParseStatus::MutuallyExclusiveOption);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsBadReactionComponent)
+TEST(Parser, CondensedPhaseArrheniusDetectsBadReactionComponent)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+TEST(Parser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water.json"));
   EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(Parser, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
 }
 
-TEST(JsonParser, CondensedPhaseArrheniusDetectsMissingPhase)
+TEST(Parser, CondensedPhaseArrheniusDetectsMissingPhase)
 {
-  JsonParser parser;
+  Parser parser;
   auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_phase.json"));
   EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
 }
