@@ -1,0 +1,24 @@
+name: Bad reaction component
+phases:
+- name: aqueous aerosol
+  species:
+  - A
+  - B
+  - C
+  - H2O_aq
+reactions:
+- aerosol phase: aqueous aerosol
+  aerosol-phase water: H2O_aq
+  products:
+  - coefficient: 0.2
+    species name: B
+  reactants:
+  - Coefficient: 1.2
+    species name: A
+  type: CONDENSED_PHASE_PHOTOLYSIS
+species:
+- name: A
+- name: B
+- name: C
+- name: H2O_aq
+version: 1.0.0

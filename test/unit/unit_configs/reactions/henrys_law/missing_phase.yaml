@@ -1,0 +1,15 @@
+name: Missing phase
+phases: []
+reactions:
+- aerosol phase: aqueous aerosol
+  aerosol-phase species: H2O2_aq
+  aerosol-phase water: H2O_aq
+  gas phase: gas
+  gas-phase species: H2O2
+  name: my henry's law
+  type: HL_PHASE_TRANSFER
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0
