@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <open_atmos/mechanism_configuration/parse_status.hpp>
+#include <open_atmos/mechanism_configuration/utils.hpp>
 #include <open_atmos/types.hpp>
 #include <string>
 #include <unordered_map>

@@ -22,6 +22,13 @@ target_include_directories(mechanism_configuration
 target_sources(mechanism_configuration
   PRIVATE
     parser.cpp
+    utils.cpp
+    validation.cpp
+    condensed_phase_arrhenius_parser.cpp
+    troe_parser.cpp
+    branched_parser.cpp
+    tunneling_parser.cpp
+    surface_parser.cpp
 )
 
 target_link_libraries(mechanism_configuration 
