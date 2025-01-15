@@ -31,7 +31,14 @@ TEST(Parser, CanParseValidTroeReaction)
     EXPECT_EQ(mechanism.reactions.troe[0].products[0].species_name, "C");
     EXPECT_EQ(mechanism.reactions.troe[0].products[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "{\"a\": \"1.0\"}");
+    if (extension == ".json")
+    {
+      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "{\"a\": \"1.0\"}");
+    }
+    else
+    {
+      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "\"a\": \"1.0\"");
+    }
 
     EXPECT_EQ(mechanism.reactions.troe[1].name, "my troe");
     EXPECT_EQ(mechanism.reactions.troe[1].gas_phase, "gas");
