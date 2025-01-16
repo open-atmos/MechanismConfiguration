@@ -168,7 +168,6 @@ namespace open_atmos
       // aerosol phase
       // aerosol-phase water
       // aerosol-phase species
-
     };
 
     struct Mechanism

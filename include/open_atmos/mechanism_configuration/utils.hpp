@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include <open_atmos/mechanism_configuration/parse_status.hpp>
-#include <open_atmos/types.hpp>
-#include <open_atmos/mechanism_configuration/validation.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include <iostream>
+#include <open_atmos/mechanism_configuration/parse_status.hpp>
+#include <open_atmos/mechanism_configuration/validation.hpp>
+#include <open_atmos/types.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <yaml-cpp/yaml.h>
 
 namespace open_atmos
 {
@@ -34,10 +34,12 @@ namespace open_atmos
 
     ConfigParseStatus
     ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
-    
+
     std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species);
+    std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(
+        const YAML::Node& objects,
+        const std::vector<types::Species> existing_species);
 
     std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 

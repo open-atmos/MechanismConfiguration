@@ -1,7 +1,7 @@
 #include <open_atmos/constants.hpp>
-#include <open_atmos/mechanism_configuration/utils.hpp>
 #include <open_atmos/mechanism_configuration/parser.hpp>
 #include <open_atmos/mechanism_configuration/parser_types.hpp>
+#include <open_atmos/mechanism_configuration/utils.hpp>
 
 namespace open_atmos
 {
