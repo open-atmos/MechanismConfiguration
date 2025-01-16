@@ -22,9 +22,7 @@ message(STATUS "CMake build configuration for ${PROJECT_NAME} (${CMAKE_BUILD_TYP
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
-option(ENABLE_TESTS "Build the tests" ON)
-option(ENABLE_JSON "Include JSON support" ON)
-option(ENABLE_YAML "Include YAML support" ON)
+option(OPEN_ATMOS_ENABLE_TESTS "Build the tests" ON)
 
 ################################################################################
 # Dependencies
@@ -32,14 +30,14 @@ option(ENABLE_YAML "Include YAML support" ON)
 include(cmake/dependencies.cmake)
 
 ################################################################################
-# micm targets and documentation
+# project source code
 
 add_subdirectory(src)
 
 ################################################################################
 # Tests
 
-if(PROJECT_IS_TOP_LEVEL AND ENABLE_TESTS)
+if(PROJECT_IS_TOP_LEVEL AND OPEN_ATMOS_ENABLE_TESTS)
   enable_testing()
   add_subdirectory(test)
 

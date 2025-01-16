@@ -1,0 +1,22 @@
+name: Mutually Exclusive
+phases:
+- name: aqueous aerosol
+  species:
+  - A
+  - B
+  - H2O_aq
+reactions:
+- C: 10
+  Ea: 0.5
+  aerosol phase: aqueous aerosol
+  aerosol-phase water: H2O_aq
+  products:
+  - species name: B
+  reactants:
+  - species name: A
+  type: CONDENSED_PHASE_ARRHENIUS
+species:
+- name: A
+- name: B
+- name: H2O_aq
+version: 1.0.0

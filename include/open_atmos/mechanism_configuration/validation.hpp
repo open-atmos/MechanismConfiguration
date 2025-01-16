@@ -11,6 +11,26 @@ namespace open_atmos
 {
   namespace validation
   {
+    extern struct Keys keys;
+    extern struct Mechanism mechanism;
+    extern struct Species species;
+    extern struct Phase phase;
+    extern struct ReactionComponent reaction_component;
+    extern struct Arrhenius arrhenius;
+    extern struct CondensedPhaseArrhenius condensed_phase_arrhenius;
+    extern struct Troe troe;
+    extern struct Branched branched;
+    extern struct Tunneling tunneling;
+    extern struct Surface surface;
+    extern struct Photolysis photolysis;
+    extern struct CondensedPhasePhotolysis condensed_phase_photolysis;
+    extern struct Emission emission;
+    extern struct FirstOrderLoss first_order_loss;
+    extern struct SimpolPhaseTransfer simpol_phase_transfer;
+    extern struct WetDeposition wet_deposition;
+    extern struct HenrysLaw henrys_law;
+    extern struct AqueousEquilibrium aqueous_equilibrium;
+
     struct Keys
     {
       // Shared, but also Mechanism
@@ -149,13 +169,13 @@ namespace open_atmos
       // aerosol-phase water
       // aerosol-phase species
 
-    } keys;
+    };
 
     struct Mechanism
     {
       const std::vector<std::string> required_keys{ keys.version, keys.species, keys.phases, keys.reactions };
       const std::vector<std::string> optional_keys{ keys.name };
-    } mechanism;
+    };
 
     struct Species
     {
@@ -167,31 +187,31 @@ namespace open_atmos
                                                     keys.henrys_law_constant_exponential_factor,
                                                     keys.n_star,
                                                     keys.density };
-    } species;
+    };
 
     struct Phase
     {
       const std::vector<std::string> required_keys{ keys.name, keys.species };
       const std::vector<std::string> optional_keys{};
-    } phase;
+    };
 
     struct ReactionComponent
     {
       const std::vector<std::string> required_keys{ keys.species_name };
       const std::vector<std::string> optional_keys{ keys.coefficient };
-    } reaction_component;
+    };
 
     struct Arrhenius
     {
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
-    } arrhenius;
+    };
 
     struct CondensedPhaseArrhenius
     {
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
       const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
-    } condensed_phase_arrhenius;
+    };
 
     struct Troe
     {
@@ -199,62 +219,62 @@ namespace open_atmos
       const std::vector<std::string> optional_keys{
         keys.name, keys.k0_A, keys.k0_B, keys.k0_C, keys.kinf_A, keys.kinf_B, keys.kinf_C, keys.Fc, keys.N
       };
-    } troe;
+    };
 
     struct Branched
     {
       const std::vector<std::string> required_keys{ keys.nitrate_products, keys.alkoxy_products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.X, keys.Y, keys.a0, keys.n };
-    } branched;
+    };
 
     struct Tunneling
     {
       const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.B, keys.C };
-    } tunneling;
+    };
 
     struct Surface
     {
       const std::vector<std::string> required_keys{ keys.gas_phase_products, keys.gas_phase_species, keys.type, keys.gas_phase, keys.aerosol_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.reaction_probability };
-    } surface;
+    };
 
     struct Photolysis
     {
       const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-    } photolysis;
+    };
 
     struct CondensedPhasePhotolysis
     {
       const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-    } condensed_phase_photolysis;
+    };
 
     struct Emission
     {
       const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-    } emission;
+    };
 
     struct FirstOrderLoss
     {
       const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-    } first_order_loss;
+    };
 
     struct SimpolPhaseTransfer
     {
       const std::vector<std::string> required_keys{ keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species,
                                                     keys.B };
       const std::vector<std::string> optional_keys{ keys.name };
-    } simpol_phase_transfer;
+    };
 
     struct WetDeposition
     {
       const std::vector<std::string> required_keys{ keys.aerosol_phase, keys.type };
       const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-    } wet_deposition;
+    };
 
     struct HenrysLaw
     {
@@ -262,13 +282,13 @@ namespace open_atmos
         keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water
       };
       const std::vector<std::string> optional_keys{ keys.name };
-    } henrys_law;
+    };
 
     struct AqueousEquilibrium
     {
       const std::vector<std::string> required_keys{ keys.type,          keys.reactants,           keys.products,
                                                     keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
       const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.C };
-    } aqueous_equilibrium;
+    };
   }  // namespace validation
 }  // namespace open_atmos

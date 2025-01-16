@@ -1,0 +1,16 @@
+name: Missing phase
+phases: []
+reactions:
+- aerosol phase: aqueous aerosol
+  aerosol-phase water: H2O_aq
+  products:
+  - species name: C
+  reactants:
+  - species name: A
+  type: CONDENSED_PHASE_ARRHENIUS
+species:
+- name: A
+- name: B
+- name: C
+- name: H2O_aq
+version: 1.0.0
