@@ -30,7 +30,7 @@ option(OPEN_ATMOS_ENABLE_TESTS "Build the tests" ON)
 include(cmake/dependencies.cmake)
 
 ################################################################################
-# micm targets and documentation
+# project source code
 
 add_subdirectory(src)
 
