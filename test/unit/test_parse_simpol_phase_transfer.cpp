@@ -78,7 +78,8 @@ TEST(Parser, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension);
+    auto [status, mechanism] =
+        parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension);
     EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
   }
 }

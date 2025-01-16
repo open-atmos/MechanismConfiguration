@@ -5,10 +5,10 @@
 #include <yaml-cpp/yaml.h>
 
 #include <open_atmos/constants.hpp>
-#include <open_atmos/mechanism_configuration/validation.hpp>
-#include <open_atmos/mechanism_configuration/version.hpp>
 #include <open_atmos/mechanism_configuration/parser.hpp>
 #include <open_atmos/mechanism_configuration/parser_types.hpp>
+#include <open_atmos/mechanism_configuration/validation.hpp>
+#include <open_atmos/mechanism_configuration/version.hpp>
 
 namespace open_atmos
 {

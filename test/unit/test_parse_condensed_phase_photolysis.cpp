@@ -90,7 +90,8 @@ TEST(Parser, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAerosolP
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension);
+    auto [status, mechanism] =
+        parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension);
     EXPECT_EQ(status, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
   }
 }

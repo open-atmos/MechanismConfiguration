@@ -1,7 +1,7 @@
 #include <open_atmos/constants.hpp>
 #include <open_atmos/mechanism_configuration/parser.hpp>
-#include <open_atmos/mechanism_configuration/utils.hpp>
 #include <open_atmos/mechanism_configuration/parser_types.hpp>
+#include <open_atmos/mechanism_configuration/utils.hpp>
 
 namespace open_atmos
 {
@@ -31,8 +31,8 @@ namespace open_atmos
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
 
-        auto it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
+        auto it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
         if (status == ConfigParseStatus::Success && it == existing_phases.end())
         {
           status = ConfigParseStatus::UnknownPhase;
