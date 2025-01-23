@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidAqueousEquilibriumReaction)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/valid") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/valid") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium.size(), 2);
 
@@ -50,33 +51,33 @@ TEST(Parser, CanParseValidAqueousEquilibriumReaction)
 
 TEST(Parser, AqueousEquilibriumDetectsUnknownSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, AqueousEquilibriumDetectsBadReactionComponent)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/bad_reaction_component") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/bad_reaction_component") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, AqueousEquilibriumDetectsUnknownPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/missing_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/missing_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }

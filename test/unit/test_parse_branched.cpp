@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidBranchedReaction)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/valid") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/branched/valid") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.branched.size(), 1);
 
@@ -41,33 +42,33 @@ TEST(Parser, CanParseValidBranchedReaction)
 
 TEST(Parser, BranchedDetectsUnknownSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/unknown_species") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/branched/unknown_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, BranchedDetectsBadReactionComponent)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/bad_reaction_component") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/branched/bad_reaction_component") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, BranchedDetectsUnknownPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/branched/missing_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/branched/missing_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }

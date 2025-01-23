@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidTroeReaction)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/valid") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/valid") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.troe.size(), 2);
 
@@ -66,33 +67,33 @@ TEST(Parser, CanParseValidTroeReaction)
 
 TEST(Parser, TroeDetectsUnknownSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/unknown_species") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/unknown_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, TroeDetectsBadReactionComponent)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/bad_reaction_component") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/bad_reaction_component") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, TroeDetectsUnknownPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/troe/missing_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/missing_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }

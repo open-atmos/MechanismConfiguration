@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidSurfaceReaction)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/valid") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/valid") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.surface.size(), 2);
 
@@ -46,44 +47,44 @@ TEST(Parser, CanParseValidSurfaceReaction)
 
 TEST(Parser, SurfaceDetectsUnknownSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/unknown_species") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/unknown_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, SurfaceDetectsBadReactionComponent)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/bad_reaction_component") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/bad_reaction_component") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, SurfaceDetectsUnknownAerosolPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_aerosol_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/missing_aerosol_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, SurfaceDetectsUnknownGasPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/surface/missing_gas_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/missing_gas_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }

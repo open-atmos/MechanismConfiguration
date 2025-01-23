@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidFirstOrderLossReaction)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/valid") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/first_order_loss/valid") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 2);
 
@@ -34,44 +35,44 @@ TEST(Parser, CanParseValidFirstOrderLossReaction)
 
 TEST(Parser, FirstOrderLossDetectsUnknownSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/unknown_species") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/first_order_loss/unknown_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, FirstOrderLossDetectsBadReactionComponent)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/bad_reaction_component") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/first_order_loss/bad_reaction_component") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, FirstOrderLossDetectsUnknownPhase)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/missing_phase") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::UnknownPhase);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/first_order_loss/missing_phase") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, FirstOrderLossDetectsMoreThanOneSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/reactions/first_order_loss/too_many_reactants") + extension);
-    EXPECT_EQ(status, ConfigParseStatus::TooManyReactionComponents);
+    auto parsed = parser.Parse(std::string("unit_configs/reactions/first_order_loss/too_many_reactants") + extension);
+    EXPECT_FALSE(parsed);
   }
 }

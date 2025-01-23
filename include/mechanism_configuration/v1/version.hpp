@@ -2,8 +2,10 @@
 #pragma once
 
 #ifdef __cplusplus
-namespace mechanism_configuration
+namespace open_atmos
 {
+  namespace v1
+  {
 extern "C" {
 #endif
 
@@ -29,6 +31,7 @@ extern "C" {
   }
 
 #ifdef __cplusplus
+}
 }
 }
 #endif

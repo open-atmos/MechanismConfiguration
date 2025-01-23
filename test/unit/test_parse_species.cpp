@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <open_atmos/mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
 
-using namespace open_atmos::mechanism_configuration;
+using namespace mechanism_configuration;
 
 TEST(Parser, CanParseValidSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/valid_species") + extension);
-
-    EXPECT_EQ(status, ConfigParseStatus::Success);
+    auto parsed = parser.Parse(std::string("unit_configs/species/valid_species") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
 
     EXPECT_EQ(mechanism.species[0].name, "A");
@@ -41,36 +41,33 @@ TEST(Parser, CanParseValidSpecies)
 
 TEST(Parser, DetectsDuplicateSpecies)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/duplicate_species") + extension);
-
-    EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
+    auto parsed = parser.Parse(std::string("unit_configs/species/duplicate_species") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, DetectsMissingRequiredKeys)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/missing_required_key") + extension);
-
-    EXPECT_EQ(status, ConfigParseStatus::RequiredKeyNotFound);
+    auto parsed = parser.Parse(std::string("unit_configs/species/missing_required_key") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
 
 TEST(Parser, DetectsInvalidKeys)
 {
-  Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto [status, mechanism] = parser.Parse(std::string("unit_configs/species/invalid_key") + extension);
-
-    EXPECT_EQ(status, ConfigParseStatus::InvalidKey);
+    auto parsed = parser.Parse(std::string("unit_configs/species/invalid_key") + extension);
+    EXPECT_FALSE(parsed);
   }
 }
