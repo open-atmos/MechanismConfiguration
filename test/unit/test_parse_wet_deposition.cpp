@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidWetDepositionReaction)
+TEST(ParserBase, CanParseValidWetDepositionReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -28,7 +28,7 @@ TEST(Parser, CanParseValidWetDepositionReaction)
   }
 }
 
-TEST(Parser, WetDepositionDetectsUnknownPhase)
+TEST(ParserBase, WetDepositionDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

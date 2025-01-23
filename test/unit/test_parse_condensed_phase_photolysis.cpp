@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidCondensedPhasePhotolysisReaction)
+TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -41,7 +41,7 @@ TEST(Parser, CanParseValidCondensedPhasePhotolysisReaction)
   }
 }
 
-TEST(Parser, CondensedPhasePhotolysisDetectsUnknownSpecies)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -52,7 +52,7 @@ TEST(Parser, CondensedPhasePhotolysisDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, CondensedPhasePhotolysisDetectsBadReactionComponent)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -63,7 +63,7 @@ TEST(Parser, CondensedPhasePhotolysisDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, CondensedPhasePhotolysisDetectsUnknownPhase)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -74,7 +74,7 @@ TEST(Parser, CondensedPhasePhotolysisDetectsUnknownPhase)
   }
 }
 
-TEST(Parser, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
+TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -85,7 +85,7 @@ TEST(Parser, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
   }
 }
 
-TEST(Parser, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -96,7 +96,7 @@ TEST(Parser, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAerosolP
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

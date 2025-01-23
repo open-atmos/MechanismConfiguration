@@ -1,50 +1,74 @@
 #pragma once
 
-#include <yaml-cpp/yaml.h>
-
-#include <filesystem>
-#include <iostream>
-#include <optional>
-#include <string>
+#include <mechanism_configuration/parser_base.hpp>
+#include <mechanism_configuration/v0/parser.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <memory>
+#include <vector>
 
 namespace mechanism_configuration
 {
-  using GlobalMechanism = ::mechanism_configuration::Mechanism;
-
-  template<typename MechanismType>
-  class Parser
+  class UniversalParser
   {
    public:
-    virtual ~Parser() = default;
-
-    /// @brief Reads a configuration and returns a mechanism
-    /// @param source A YAML node, file path, or string representing a file path
-    /// @return An optional containing the parsed mechanism
-    template<typename T>
-    std::optional<MechanismType> Parse(const T& source)
-    {
-      YAML::Node node = LoadNode(source);
-      auto result = TryParse(node);
-      if (result)
-      {
-        auto mechanism = dynamic_cast<MechanismType*>(result->get());
-        if (mechanism)
-        {
-          return *mechanism;  // Dereference the casted pointer
-        }
-      }
-      return std::nullopt;
+    UniversalParser() {
+      RegisterParser(std::make_unique<ParserWrapperImpl<v0::types::Mechanism>>(
+          std::make_unique<v0::Parser>()));
+      RegisterParser(std::make_unique<ParserWrapperImpl<v1::types::Mechanism>>(
+          std::make_unique<v1::Parser>()));
     }
 
-    /// @brief Tries to read a configuration and returns a mechanism
+    /// @brief Attempts to parse the input using the registered parsers
     /// @param source A YAML node, file path, or string representing a file path
-    /// @return An optional containing the parsed mechanism wrapped in a unique pointer
-    virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) = 0;
+    /// @return A unique pointer to the parsed mechanism, or nullptr if no parser succeeded
+    template<typename T>
+    std::optional<std::unique_ptr<GlobalMechanism>> Parse(const T& source)
+    {
+      YAML::Node node = LoadNode(source);
 
-   protected:
-    /// @brief Helper to load YAML node from a file path, string, or YAML::Node
-    /// @param source A file path, string, or YAML::Node
-    /// @return A YAML node
+      for (const auto& parser : parsers_)
+      {
+        auto result = parser->TryParse(node);
+        if (result)
+        {
+          return result;  // Return the successfully parsed mechanism
+        }
+      }
+      return nullptr;
+    }
+
+   private:
+    // Type-erased wrapper for Parsers of different mechanism types
+    class ParserWrapper
+    {
+     public:
+      virtual ~ParserWrapper() = default;
+      virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) = 0;
+    };
+
+    template<typename MechanismType>
+    class ParserWrapperImpl : public ParserWrapper
+    {
+     public:
+      explicit ParserWrapperImpl(std::unique_ptr<::mechanism_configuration::ParserBase<MechanismType>> parser)
+          : parser_(std::move(parser)) {}
+
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) override
+      {
+        return parser_->TryParse(node);
+      }
+
+     private:
+      std::unique_ptr<::mechanism_configuration::ParserBase<MechanismType>> parser_;
+    };
+
+    /// @brief Registers a new parser
+    /// @param parser A unique pointer to a parser
+    void RegisterParser(std::unique_ptr<ParserWrapper> parser)
+    {
+      parsers_.emplace_back(std::move(parser));
+    }
+
     template<typename T>
     YAML::Node LoadNode(const T& source)
     {
@@ -54,7 +78,6 @@ namespace mechanism_configuration
       }
       else if constexpr (std::is_same_v<std::decay_t<T>, std::string> || std::is_same_v<std::decay_t<T>, std::filesystem::path>)
       {
-        // check if the file exists
         if (std::filesystem::exists(source))
         {
           return YAML::LoadFile(source);
@@ -66,6 +89,8 @@ namespace mechanism_configuration
         static_assert(always_false<T>::value, "Unsupported type for LoadNode");
       }
     }
+
+    std::vector<std::unique_ptr<ParserWrapper>> parsers_;
 
    private:
     // Helper for static_assert to provide meaningful error messages

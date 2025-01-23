@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidPhases)
+TEST(ParserBase, CanParseValidPhases)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -32,7 +32,7 @@ TEST(Parser, CanParseValidPhases)
   }
 }
 
-TEST(Parser, DetectsDuplicatePhases)
+TEST(ParserBase, DetectsDuplicatePhases)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -43,7 +43,7 @@ TEST(Parser, DetectsDuplicatePhases)
   }
 }
 
-TEST(Parser, DetectsMissingRequiredKeys)
+TEST(ParserBase, DetectsMissingRequiredKeys)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -54,7 +54,7 @@ TEST(Parser, DetectsMissingRequiredKeys)
   }
 }
 
-TEST(Parser, DetectsInvalidKeys)
+TEST(ParserBase, DetectsInvalidKeys)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -65,7 +65,7 @@ TEST(Parser, DetectsInvalidKeys)
   }
 }
 
-TEST(Parser, DetectsPhaseRequestingUnknownSpecies)
+TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

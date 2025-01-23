@@ -10,6 +10,7 @@ target_compile_features(mechanism_configuration PUBLIC cxx_std_17)
 target_sources(mechanism_configuration
   PRIVATE
     parse_status.cpp
+    # parser.cpp
 )
 
 target_include_directories(mechanism_configuration

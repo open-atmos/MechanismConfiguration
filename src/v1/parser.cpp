@@ -6,6 +6,8 @@
 
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
+#include <mechanism_configuration/v1/utils.hpp>
+
 
 namespace mechanism_configuration
 {
@@ -68,7 +70,6 @@ namespace mechanism_configuration
       mechanism->species = species_parsing.second;
       mechanism->phases = phases_parsing.second;
       mechanism->reactions = reactions_parsing.second;
-
 
       if (status == ConfigParseStatus::Success)
       {

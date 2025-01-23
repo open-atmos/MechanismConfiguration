@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidCondensedPhaseArrheniusReaction)
+TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(Parser, CanParseValidCondensedPhaseArrheniusReaction)
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsUnknownSpecies)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -82,7 +82,7 @@ TEST(Parser, CondensedPhaseArrheniusDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -93,7 +93,7 @@ TEST(Parser, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsBadReactionComponent)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -104,7 +104,7 @@ TEST(Parser, CondensedPhaseArrheniusDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -115,7 +115,7 @@ TEST(Parser, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -126,7 +126,7 @@ TEST(Parser, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPh
   }
 }
 
-TEST(Parser, CondensedPhaseArrheniusDetectsMissingPhase)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

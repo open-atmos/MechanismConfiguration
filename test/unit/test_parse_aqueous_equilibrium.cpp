@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidAqueousEquilibriumReaction)
+TEST(ParserBase, CanParseValidAqueousEquilibriumReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -49,7 +49,7 @@ TEST(Parser, CanParseValidAqueousEquilibriumReaction)
   }
 }
 
-TEST(Parser, AqueousEquilibriumDetectsUnknownSpecies)
+TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -60,7 +60,7 @@ TEST(Parser, AqueousEquilibriumDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, AqueousEquilibriumDetectsBadReactionComponent)
+TEST(ParserBase, AqueousEquilibriumDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(Parser, AqueousEquilibriumDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, AqueousEquilibriumDetectsUnknownPhase)
+TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

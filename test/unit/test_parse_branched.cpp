@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidBranchedReaction)
+TEST(ParserBase, CanParseValidBranchedReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -40,7 +40,7 @@ TEST(Parser, CanParseValidBranchedReaction)
   }
 }
 
-TEST(Parser, BranchedDetectsUnknownSpecies)
+TEST(ParserBase, BranchedDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -51,7 +51,7 @@ TEST(Parser, BranchedDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, BranchedDetectsBadReactionComponent)
+TEST(ParserBase, BranchedDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -62,7 +62,7 @@ TEST(Parser, BranchedDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, BranchedDetectsUnknownPhase)
+TEST(ParserBase, BranchedDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

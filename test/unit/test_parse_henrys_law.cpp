@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidHenrysLawReaction)
+TEST(ParserBase, CanParseValidHenrysLawReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -35,7 +35,7 @@ TEST(Parser, CanParseValidHenrysLawReaction)
   }
 }
 
-TEST(Parser, HenrysLawDetectsUnknownSpecies)
+TEST(ParserBase, HenrysLawDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -46,7 +46,7 @@ TEST(Parser, HenrysLawDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, HenrysLawDetectsUnknownPhase)
+TEST(ParserBase, HenrysLawDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -57,7 +57,7 @@ TEST(Parser, HenrysLawDetectsUnknownPhase)
   }
 }
 
-TEST(Parser, HenrysLawDetectsUnknownAerosolPhaseWater)
+TEST(ParserBase, HenrysLawDetectsUnknownAerosolPhaseWater)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -68,7 +68,7 @@ TEST(Parser, HenrysLawDetectsUnknownAerosolPhaseWater)
   }
 }
 
-TEST(Parser, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

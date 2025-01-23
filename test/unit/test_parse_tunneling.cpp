@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidTunnelingReaction)
+TEST(ParserBase, CanParseValidTunnelingReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -46,7 +46,7 @@ TEST(Parser, CanParseValidTunnelingReaction)
   }
 }
 
-TEST(Parser, TunnelingDetectsUnknownSpecies)
+TEST(ParserBase, TunnelingDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -57,7 +57,7 @@ TEST(Parser, TunnelingDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, TunnelingDetectsBadReactionComponent)
+TEST(ParserBase, TunnelingDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -68,7 +68,7 @@ TEST(Parser, TunnelingDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, TunnelingDetectsUnknownPhase)
+TEST(ParserBase, TunnelingDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

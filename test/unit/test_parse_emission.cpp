@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidEmissionReaction)
+TEST(ParserBase, CanParseValidEmissionReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -33,7 +33,7 @@ TEST(Parser, CanParseValidEmissionReaction)
   }
 }
 
-TEST(Parser, EmissionDetectsUnknownSpecies)
+TEST(ParserBase, EmissionDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -44,7 +44,7 @@ TEST(Parser, EmissionDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, EmissionDetectsBadReactionComponent)
+TEST(ParserBase, EmissionDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -55,7 +55,7 @@ TEST(Parser, EmissionDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, EmissionDetectsUnknownPhase)
+TEST(ParserBase, EmissionDetectsUnknownPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

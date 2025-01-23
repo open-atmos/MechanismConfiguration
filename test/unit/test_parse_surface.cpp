@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(Parser, CanParseValidSurfaceReaction)
+TEST(ParserBase, CanParseValidSurfaceReaction)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -45,7 +45,7 @@ TEST(Parser, CanParseValidSurfaceReaction)
   }
 }
 
-TEST(Parser, SurfaceDetectsUnknownSpecies)
+TEST(ParserBase, SurfaceDetectsUnknownSpecies)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -56,7 +56,7 @@ TEST(Parser, SurfaceDetectsUnknownSpecies)
   }
 }
 
-TEST(Parser, SurfaceDetectsBadReactionComponent)
+TEST(ParserBase, SurfaceDetectsBadReactionComponent)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -67,7 +67,7 @@ TEST(Parser, SurfaceDetectsBadReactionComponent)
   }
 }
 
-TEST(Parser, SurfaceDetectsUnknownAerosolPhase)
+TEST(ParserBase, SurfaceDetectsUnknownAerosolPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -78,7 +78,7 @@ TEST(Parser, SurfaceDetectsUnknownAerosolPhase)
   }
 }
 
-TEST(Parser, SurfaceDetectsUnknownGasPhase)
+TEST(ParserBase, SurfaceDetectsUnknownGasPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
