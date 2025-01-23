@@ -43,6 +43,8 @@ namespace mechanism_configuration
 
     std::vector<v1::types::ReactionComponent> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object, ConfigParseStatus& status);
 
+    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+
     template<typename T>
     bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
     {
