@@ -24,6 +24,7 @@ namespace mechanism_configuration
         std::map<std::string, double> optional_numerical_properties;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
+        bool third_body{ false };
       };
 
       struct Phase
@@ -344,6 +345,7 @@ namespace mechanism_configuration
         std::vector<Species> species;
         std::vector<Phase> phases;
         Reactions reactions;
+        double relative_tolerance{ 1e-6 };
       };
 
     }  // namespace types

@@ -3,6 +3,17 @@
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
+TEST(ParserBase, ParsesFullV0Configuration)
+{
+  mechanism_configuration::UniversalParser parser;
+  std::vector<std::string> extensions = { ".yaml", ".json" };
+  for (auto& extension : extensions)
+  {
+    std::string path = "examples/v0/full_configuration" + extension;
+    auto parsed = parser.Parse(path);
+    EXPECT_FALSE(parsed);
+  }
+}
 
 TEST(ParserBase, ParsesFullV1Configuration)
 {

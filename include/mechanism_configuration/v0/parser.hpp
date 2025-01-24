@@ -4,10 +4,10 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/v0/types.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parser_base.hpp>
+#include <filesystem>
 
 namespace mechanism_configuration
 {
@@ -17,10 +17,23 @@ namespace mechanism_configuration
 
     class Parser : public ::mechanism_configuration::ParserBase<V0Mechanism>
     {
+      const std::string DEFAULT_CONFIG_FILE_JSON = "config.json";
+      const std::string DEFAULT_CONFIG_FILE_YAML = "config.yaml";
+      const std::string CAMP_FILES = "camp-files";
+      const std::string CAMP_DATA = "camp-data";
+      const std::string TYPE = "type";
+
      public:
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source){
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path);
+
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::string& config_path) {
+        return TryParse(std::filesystem::path(config_path));
+      }
+
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source) override {
+        // version 0 must be given a file
         return std::nullopt;
-      };
+      }
     };
   }  // namespace v0
 }  // namespace mechanism_configuration

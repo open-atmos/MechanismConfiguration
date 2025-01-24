@@ -1,6 +1,6 @@
 ################################################################################
 # version
-configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/open_atmos/mechanism_configuration/version.hpp @ONLY)
+configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configuration/version.hpp @ONLY)
 
 add_library(mechanism_configuration)
 add_library(open_atmos::mechanism_configuration ALIAS mechanism_configuration)

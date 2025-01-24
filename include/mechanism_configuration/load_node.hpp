@@ -15,6 +15,12 @@ namespace mechanism_configuration
   {
   };
 
+  template <typename T>
+  constexpr bool IsStringOrPath()
+  {
+      return std::is_same_v<std::decay_t<T>, std::string> || std::is_same_v<std::decay_t<T>, std::filesystem::path>;
+  }
+
   /// @brief Helper to load YAML node from a file path, string, or YAML::Node
   /// @param source A file path, string, or YAML::Node
   /// @return A YAML node
@@ -25,12 +31,15 @@ namespace mechanism_configuration
     {
       return source;
     }
-    else if constexpr (std::is_same_v<std::decay_t<T>, std::string> || std::is_same_v<std::decay_t<T>, std::filesystem::path>)
+    else if constexpr (IsStringOrPath<T>())
     {
       // check if the file exists
       if (std::filesystem::exists(source))
       {
         return YAML::LoadFile(source);
+      }
+      else {
+        std::cerr << "File does not exist: " << source << std::endl;
       }
       return YAML::Node();
     }

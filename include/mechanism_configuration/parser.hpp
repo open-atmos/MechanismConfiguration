@@ -1,9 +1,9 @@
 #pragma once
 
-#include <mechanism_configuration/parser_base.hpp>
 #include <mechanism_configuration/load_node.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
+#include <mechanism_configuration/parser_base.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v0/parser.hpp>
 #include <memory>
 #include <vector>
 
@@ -12,11 +12,9 @@ namespace mechanism_configuration
   class UniversalParser
   {
    public:
-    UniversalParser() {
-      RegisterParser(std::make_unique<ParserWrapperImpl<v0::types::Mechanism>>(
-          std::make_unique<v0::Parser>()));
-      RegisterParser(std::make_unique<ParserWrapperImpl<v1::types::Mechanism>>(
-          std::make_unique<v1::Parser>()));
+    UniversalParser()
+    {
+      RegisterParser(std::make_unique<ParserWrapperImpl<v1::types::Mechanism>>(std::make_unique<v1::Parser>()));
     }
 
     /// @brief Attempts to parse the input using the registered parsers
@@ -25,6 +23,15 @@ namespace mechanism_configuration
     template<typename T>
     std::optional<std::unique_ptr<GlobalMechanism>> Parse(const T& source)
     {
+      if constexpr (IsStringOrPath<T>())
+      {
+        // version 0 can only take a string or file path
+        auto result = ::mechanism_configuration::v0::Parser().TryParse(source);
+        if (result)
+        {
+          return result;
+        }
+      }
       YAML::Node node = LoadNode(source);
 
       for (const auto& parser : parsers_)
@@ -52,7 +59,9 @@ namespace mechanism_configuration
     {
      public:
       explicit ParserWrapperImpl(std::unique_ptr<::mechanism_configuration::ParserBase<MechanismType>> parser)
-          : parser_(std::move(parser)) {}
+          : parser_(std::move(parser))
+      {
+      }
 
       std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) override
       {
