@@ -35,7 +35,7 @@ namespace mechanism_configuration
           return result;
         }
       }
-      return nullptr;
+      return std::nullopt;
     }
 
    private:
