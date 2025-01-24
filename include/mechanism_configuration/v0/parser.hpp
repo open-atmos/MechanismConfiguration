@@ -18,7 +18,9 @@ namespace mechanism_configuration
     class Parser : public ::mechanism_configuration::ParserBase<V0Mechanism>
     {
      public:
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source){};
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source){
+        return std::nullopt;
+      };
     };
   }  // namespace v0
 }  // namespace mechanism_configuration

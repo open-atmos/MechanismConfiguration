@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mechanism_configuration/parser_base.hpp>
+#include <mechanism_configuration/load_node.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 #include <memory>
@@ -31,7 +32,7 @@ namespace mechanism_configuration
         auto result = parser->TryParse(node);
         if (result)
         {
-          return result;  // Return the successfully parsed mechanism
+          return result;
         }
       }
       return nullptr;
@@ -69,34 +70,6 @@ namespace mechanism_configuration
       parsers_.emplace_back(std::move(parser));
     }
 
-    template<typename T>
-    YAML::Node LoadNode(const T& source)
-    {
-      if constexpr (std::is_same_v<std::decay_t<T>, YAML::Node>)
-      {
-        return source;
-      }
-      else if constexpr (std::is_same_v<std::decay_t<T>, std::string> || std::is_same_v<std::decay_t<T>, std::filesystem::path>)
-      {
-        if (std::filesystem::exists(source))
-        {
-          return YAML::LoadFile(source);
-        }
-        return YAML::Node();
-      }
-      else
-      {
-        static_assert(always_false<T>::value, "Unsupported type for LoadNode");
-      }
-    }
-
     std::vector<std::unique_ptr<ParserWrapper>> parsers_;
-
-   private:
-    // Helper for static_assert to provide meaningful error messages
-    template<typename>
-    struct always_false : std::false_type
-    {
-    };
   };
 }  // namespace mechanism_configuration
