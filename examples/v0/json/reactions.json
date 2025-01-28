@@ -7,15 +7,15 @@
         {
           "type": "PHOTOLYSIS",
           "scaling factor": 1,
-          "MUSICA name": "NO2",
+          "MUSICA name": "foo",
           "reactants": {
-            "NO2": {}
+            "foo": {}
           },
           "products": {
-            "NO": {
+            "buz": {
               "yield": 1
             },
-            "O": {
+            "bar": {
               "yield": 1
             }
           }
@@ -28,10 +28,10 @@
           "D": 300,
           "E": 0,
           "reactants": {
-            "O": {
+            "bar": {
               "qty": 1
             },
-            "O2": {
+            "quuz": {
               "qty": 1
             },
             "M": {
@@ -39,7 +39,7 @@
             }
           },
           "products": {
-            "O3": {
+            "baz": {
               "yield": 1
             },
             "M": {
@@ -58,15 +58,15 @@
           "Fc": 0.6,
           "N": 1,
           "reactants": {
-            "O": {
+            "bar": {
               "qty": 1
             },
-            "NO2": {
+            "foo": {
               "qty": 1
             }
           },
           "products": {
-            "NO3": {
+            "baz": {
               "yield": 1
             }
           }
@@ -74,8 +74,8 @@
         {
           "type": "EMISSION",
           "scaling factor": 1,
-          "MUSICA name": "NO",
-          "species": "NO"
+          "MUSICA name": "buz",
+          "species": "buz"
         },
         {
           "type": "FIRST_ORDER_LOSS",

@@ -15,6 +15,8 @@ TEST(ParserBase, ParsesFullv0Configuration)
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
     v0::types::Mechanism mechanism = *parsed;
+    EXPECT_EQ(mechanism.name, "music box interactive configuration");
+    EXPECT_EQ(mechanism.species.size(), 9);
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);

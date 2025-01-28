@@ -47,6 +47,18 @@ namespace mechanism_configuration
 
     const std::string PROBABILITY = "reaction probability";
 
+    const std::string A = "A";
+    const std::string B = "B";
+    const std::string C = "C";
+
+    const std::string K0_A = "k0_A";
+    const std::string K0_B = "k0_B";
+    const std::string K0_C = "k0_C";
+    const std::string KINF_A = "kinf_A";
+    const std::string KINF_B = "kinf_B";
+    const std::string KINF_C = "kinf_C";
+    const std::string FC = "Fc";
+
     bool ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
     {
       YAML::Emitter out;
@@ -142,6 +154,7 @@ namespace mechanism_configuration
         std::cerr << "Invalid schema for mechanism" << std::endl;
         return false;
       }
+      mechanism->name = object[NAME].as<std::string>();
       std::vector<YAML::Node> objects;
       for (const auto& element : object[REACTIONS])
       {
@@ -407,7 +420,7 @@ namespace mechanism_configuration
 
     bool ParseTernaryChemicalActivation(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" }))
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { K0_A, K0_B, K0_C, KINF_A, KINF_B, KINF_C, FC, N }))
       {
         std::cerr << "Invalid schema for Ternary Chemical Activation" << std::endl;
         return false;
@@ -427,41 +440,41 @@ namespace mechanism_configuration
       }
 
       types::TernaryChemicalActivation parameters;
-      if (object["k0_A"])
+      if (object[K0_A])
       {
-        parameters.k0_A = object["k0_A"].as<double>();
+        parameters.k0_A = object[K0_A].as<double>();
       }
       // Account for the conversion of reactant concentrations (including M) to molecules cm-3
       parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
-      if (object["k0_B"])
+      if (object[K0_B])
       {
-        parameters.k0_B = object["k0_B"].as<double>();
+        parameters.k0_B = object[K0_B].as<double>();
       }
-      if (object["k0_C"])
+      if (object[K0_C])
       {
-        parameters.k0_C = object["k0_C"].as<double>();
+        parameters.k0_C = object[K0_C].as<double>();
       }
-      if (object["kinf_A"])
+      if (object[KINF_A])
       {
-        parameters.kinf_A = object["kinf_A"].as<double>();
+        parameters.kinf_A = object[KINF_A].as<double>();
       }
       // Account for terms in denominator and exponent that include [M] but not other reactants
       parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 2);
-      if (object["kinf_B"])
+      if (object[KINF_B])
       {
-        parameters.kinf_B = object["kinf_B"].as<double>();
+        parameters.kinf_B = object[KINF_B].as<double>();
       }
-      if (object["kinf_C"])
+      if (object[KINF_C])
       {
-        parameters.kinf_C = object["kinf_C"].as<double>();
+        parameters.kinf_C = object[KINF_C].as<double>();
       }
-      if (object["Fc"])
+      if (object[FC])
       {
-        parameters.Fc = object["Fc"].as<double>();
+        parameters.Fc = object[FC].as<double>();
       }
-      if (object["N"])
+      if (object[N])
       {
-        parameters.N = object["N"].as<double>();
+        parameters.N = object[N].as<double>();
       }
 
       parameters.reactants = reactants;
@@ -517,7 +530,7 @@ namespace mechanism_configuration
 
     bool ParseTunneling(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "A", "B", "C" }))
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { A, B, C }))
       {
         // print out a serizlied version of the object
         YAML::Emitter out;
@@ -541,19 +554,19 @@ namespace mechanism_configuration
       }
 
       types::Tunneling parameters;
-      if (object["A"])
+      if (object[A])
       {
-        parameters.A = object["A"].as<double>();
+        parameters.A = object[A].as<double>();
       }
       // Account for the conversion of reactant concentrations to molecules cm-3
       parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
-      if (object["B"])
+      if (object[B])
       {
-        parameters.B = object["B"].as<double>();
+        parameters.B = object[B].as<double>();
       }
-      if (object["C"])
+      if (object[C])
       {
-        parameters.C = object["C"].as<double>();
+        parameters.C = object[C].as<double>();
       }
 
       parameters.reactants = reactants;
