@@ -8,6 +8,7 @@
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parser_base.hpp>
 #include <filesystem>
+#include <iostream>
 
 namespace mechanism_configuration
 {
@@ -24,13 +25,14 @@ namespace mechanism_configuration
       const std::string TYPE = "type";
 
      public:
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path);
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path) override;
 
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::string& config_path) {
+      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::string& config_path) override {
         return TryParse(std::filesystem::path(config_path));
       }
 
       std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source) override {
+        std::cerr << "Version 0 can only parse from a filepath" << std::endl;
         // version 0 must be given a file
         return std::nullopt;
       }

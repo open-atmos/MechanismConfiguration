@@ -4,12 +4,49 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/conversions.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 
 namespace mechanism_configuration
 {
   namespace v0
   {
+    // required keys
+    const std::string NAME = "name";
+    const std::string TYPE = "type";
+
+    const std::string VALUE = "value";
+
+    const std::string REACTIONS = "reactions";
+
+    const std::string TRACER_TYPE = "tracer type";
+    const std::string ABS_TOLERANCE = "absolute tolerance";
+    const std::string DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
+    const std::string MOL_WEIGHT = "molecular weight [kg mol-1]";
+    const std::string THIRD_BODY = "THIRD_BODY";
+
+    const std::string REACTANTS = "reactants";
+    const std::string PRODUCTS = "products";
+    const std::string MUSICA_NAME = "MUSICA name";
+    const std::string SCALING_FACTOR = "scaling factor";
+    const std::string GAS_PHASE_REACTANT = "gas-phase reactant";
+    const std::string GAS_PHASE_PRODUCTS = "gas-phase products";
+
+    const std::string QTY = "qty";
+    const std::string YIELD = "yield";
+
+    const std::string SPECIES = "species";
+
+    const std::string ALKOXY_PRODUCTS = "alkoxy products";
+    const std::string NITRATE_PRODUCTS = "nitrate products";
+    const std::string X = "X";
+    const std::string Y = "Y";
+    const std::string A0 = "a0";
+    const std::string N = "n";
+
+    const std::string PROBABILITY = "reaction probability";
+
     bool ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
     {
       YAML::Emitter out;
@@ -87,359 +124,550 @@ namespace mechanism_configuration
 
     bool ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (! ValidateSchema(object, { "value", "type" }, {})) {
+      if (!ValidateSchema(object, { VALUE, TYPE }, {}))
+      {
         std::cerr << "Invalid schema for relative tolerance" << std::endl;
         return false;
       }
-      mechanism->relative_tolerance = object["value"].as<double>();
+      mechanism->relative_tolerance = object[VALUE].as<double>();
       return true;
     }
 
-    // void ParseMechanism(const YAML::Node& object)
-    // {
-    //   ValidateSchema(object, { "name", "reactions", "type" }, {});
-    //   std::vector<YAML::Node> objects;
-    //   for (const auto& element : object["reactions"])
-    //   {
-    //     objects.push_back(element);
-    //   }
-    //   ParseMechanismArray(objects);
-    // }
+    bool ParseMechanismArray(std::unique_ptr<types::Mechanism>& mechanism, const std::vector<YAML::Node>& objects);
 
-    // std::vector<Species> ParseReactants(const YAML::Node& object)
-    // {
-    //   const std::string QTY = "qty";
-    //   std::vector<Species> reactants;
+    bool ParseMechanism(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { NAME, REACTIONS, TYPE }, {}))
+      {
+        std::cerr << "Invalid schema for mechanism" << std::endl;
+        return false;
+      }
+      std::vector<YAML::Node> objects;
+      for (const auto& element : object[REACTIONS])
+      {
+        objects.push_back(element);
+      }
 
-    //   for (auto it = object.begin(); it != object.end(); ++it)
-    //   {
-    //     auto key = it->first.as<std::string>();
-    //     auto value = it->second;
+      if (!ParseMechanismArray(mechanism, objects))
+      {
+        std::cerr << "Failed to parse mechanism array" << std::endl;
+        return false;
+      }
 
-    //     std::size_t qty = 1;
-    //     ValidateSchema(value, {}, { "qty" });
-    //     if (value[QTY])
-    //       qty = value[QTY].as<std::size_t>();
-    //     for (std::size_t i = 0; i < qty; ++i)
-    //       reactants.push_back(species_[key]);
-    //   }
-    //   return reactants;
-    // }
+      return true;
+    }
 
-    // std::vector<std::pair<Species, double>> ParseProducts(const YAML::Node& object)
-    // {
-    //   const std::string YIELD = "yield";
+    bool ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants)
+    {
+      for (auto it = object.begin(); it != object.end(); ++it)
+      {
+        auto key = it->first.as<std::string>();
+        auto value = it->second;
 
-    //   constexpr double DEFAULT_YIELD = 1.0;
-    //   std::vector<std::pair<Species, double>> products;
-    //   for (auto it = object.begin(); it != object.end(); ++it)
-    //   {
-    //     auto key = it->first.as<std::string>();
-    //     auto value = it->second;
+        double qty = 1;
+        if (!ValidateSchema(value, {}, { QTY }))
+        {
+          std::cerr << "Invalid schema for reactants" << std::endl;
+          return false;
+        }
+        if (value[QTY])
+          qty = value[QTY].as<std::size_t>();
+        types::ReactionComponent reactant = { .species_name = key, .coefficient = qty };
+        reactants.push_back(reactant);
+      }
 
-    //     ValidateSchema(value, {}, { "yield" });
-    //     auto species = species_[key];
-    //     if (value[YIELD])
-    //     {
-    //       double yield = value[YIELD].as<double>();
-    //       products.push_back(std::make_pair(species, yield));
-    //     }
-    //     else
-    //     {
-    //       products.push_back(std::make_pair(species, DEFAULT_YIELD));
-    //     }
-    //   }
-    //   return products;
-    // }
+      return true;
+    }
 
-    // void ParsePhotolysis(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
-    //   const std::string MUSICA_NAME = "MUSICA name";
-    //   const std::string SCALING_FACTOR = "scaling factor";
+    bool ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products)
+    {
+      constexpr double DEFAULT_YIELD = 1.0;
+      for (auto it = object.begin(); it != object.end(); ++it)
+      {
+        auto key = it->first.as<std::string>();
+        auto value = it->second;
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR });
+        if (!ValidateSchema(value, {}, { YIELD }))
+        {
+          std::cerr << "Invalid schema for products" << std::endl;
+          return false;
+        }
+        types::ReactionComponent product = { .species_name = key, .coefficient = 1 };
+        if (value[YIELD])
+        {
+          double yield = value[YIELD].as<double>();
+          product.coefficient = yield;
+        }
+        products.push_back(product);
+      }
+      return true;
+    }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
-    //   double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
+    bool ParsePhotolysis(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR }))
+      {
+        std::cerr << "Invalid schema for photolysis" << std::endl;
+        return false;
+      }
 
-    //   std::string name = "PHOTO." + object[MUSICA_NAME].as<std::string>();
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
 
-    //   user_defined_rate_arr_.push_back(UserDefinedRateConstant({ .label_ = name, .scaling_factor_ = scaling_factor }));
+      double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
 
-    //   std::unique_ptr<UserDefinedRateConstant> rate_ptr =
-    //       std::make_unique<UserDefinedRateConstant>(UserDefinedRateConstantParameters{ .label_ = name, .scaling_factor_ = scaling_factor });
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      std::string name = "PHOTO." + object[MUSICA_NAME].as<std::string>();
+      types::UserDefined user_defined = { .name = name, .scaling_factor = scaling_factor, .reactants = reactants, .products = products };
+      mechanism->reactions.user_defined.push_back(user_defined);
 
-    // void ParseArrhenius(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
+      return true;
+    }
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS }, { "A", "B", "C", "D", "E", "Ea", "MUSICA name" });
+    bool ParseEmission(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, SPECIES, MUSICA_NAME }, { SCALING_FACTOR, PRODUCTS }))
+      {
+        std::cerr << "Invalid schema for emission" << std::endl;
+        return false;
+      }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
+      std::string species = object[SPECIES].as<std::string>();
+      YAML::Node products_object{};
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      products.push_back({ .species_name = species, .coefficient = 1.0 });
+      double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
 
-    //   ArrheniusRateConstantParameters parameters;
-    //   if (object["A"])
-    //   {
-    //     parameters.A_ = object["A"].as<double>();
-    //   }
-    //   parameters.A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 1);
-    //   if (object["B"])
-    //   {
-    //     parameters.B_ = object["B"].as<double>();
-    //   }
-    //   if (object["C"])
-    //   {
-    //     parameters.C_ = object["C"].as<double>();
-    //   }
-    //   if (object["D"])
-    //   {
-    //     parameters.D_ = object["D"].as<double>();
-    //   }
-    //   if (object["E"])
-    //   {
-    //     parameters.E_ = object["E"].as<double>();
-    //   }
-    //   if (object["Ea"])
-    //   {
-    //     if (parameters.C_ != 0)
-    //     {
-    //       throw std::system_error{ make_error_code(MicmConfigErrc::MutuallyExclusiveOption),
-    //                                "Ea is specified when C is also specified for an Arrhenius reaction. Pick one." };
-    //     }
-    //     // Calculate 'C' using 'Ea'
-    //     parameters.C_ = -1 * object["Ea"].as<double>() / constants::BOLTZMANN_CONSTANT;
-    //   }
-    //   arrhenius_rate_arr_.push_back(ArrheniusRateConstant(parameters));
-    //   std::unique_ptr<ArrheniusRateConstant> rate_ptr = std::make_unique<ArrheniusRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      std::string name = "EMIS." + object[MUSICA_NAME].as<std::string>();
+      types::UserDefined user_defined = { .name = name, .scaling_factor = scaling_factor, .reactants = reactants, .products = products };
+      mechanism->reactions.user_defined.push_back(user_defined);
 
-    // void ParseTroe(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
+      return true;
+    }
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" });
+    bool ParseFirstOrderLoss(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, SPECIES, MUSICA_NAME }, { SCALING_FACTOR }))
+      {
+        std::cerr << "Invalid schema for first order loss" << std::endl;
+        return false;
+      }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
+      std::string species = object[SPECIES].as<std::string>();
+      YAML::Node products_object{};
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      products.push_back({ .species_name = species, .coefficient = 1.0 });
+      double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
 
-    //   TroeRateConstantParameters parameters;
-    //   if (object["k0_A"])
-    //   {
-    //     parameters.k0_A_ = object["k0_A"].as<double>();
-    //   }
-    //   // Account for the conversion of reactant concentrations (including M) to molecules cm-3
-    //   parameters.k0_A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size());
-    //   if (object["k0_B"])
-    //   {
-    //     parameters.k0_B_ = object["k0_B"].as<double>();
-    //   }
-    //   if (object["k0_C"])
-    //   {
-    //     parameters.k0_C_ = object["k0_C"].as<double>();
-    //   }
-    //   if (object["kinf_A"])
-    //   {
-    //     parameters.kinf_A_ = object["kinf_A"].as<double>();
-    //   }
-    //   // Account for terms in denominator and exponent that include [M] but not other reactants
-    //   parameters.kinf_A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 1);
-    //   if (object["kinf_B"])
-    //   {
-    //     parameters.kinf_B_ = object["kinf_B"].as<double>();
-    //   }
-    //   if (object["kinf_C"])
-    //   {
-    //     parameters.kinf_C_ = object["kinf_C"].as<double>();
-    //   }
-    //   if (object["Fc"])
-    //   {
-    //     parameters.Fc_ = object["Fc"].as<double>();
-    //   }
-    //   if (object["N"])
-    //   {
-    //     parameters.N_ = object["N"].as<double>();
-    //   }
-    //   troe_rate_arr_.push_back(TroeRateConstant(parameters));
-    //   std::unique_ptr<TroeRateConstant> rate_ptr = std::make_unique<TroeRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      std::string name = "LOSS." + object[MUSICA_NAME].as<std::string>();
+      types::UserDefined user_defined = { .name = name, .scaling_factor = scaling_factor, .reactants = reactants, .products = products };
+      mechanism->reactions.user_defined.push_back(user_defined);
 
-    // void ParseTernaryChemicalActivation(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
+      return true;
+    }
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" });
+    bool ParseArrhenius(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "A", "B", "C", "D", "E", "Ea", MUSICA_NAME }))
+      {
+        std::cerr << "Invalid schema for Arrhenius" << std::endl;
+        return false;
+      }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
 
-    //   TernaryChemicalActivationRateConstantParameters parameters;
-    //   if (object["k0_A"])
-    //   {
-    //     parameters.k0_A_ = object["k0_A"].as<double>();
-    //   }
-    //   // Account for the conversion of reactant concentrations (including M) to molecules cm-3
-    //   parameters.k0_A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 1);
-    //   if (object["k0_B"])
-    //   {
-    //     parameters.k0_B_ = object["k0_B"].as<double>();
-    //   }
-    //   if (object["k0_C"])
-    //   {
-    //     parameters.k0_C_ = object["k0_C"].as<double>();
-    //   }
-    //   if (object["kinf_A"])
-    //   {
-    //     parameters.kinf_A_ = object["kinf_A"].as<double>();
-    //   }
-    //   // Account for terms in denominator and exponent that include [M] but not other reactants
-    //   parameters.kinf_A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 2);
-    //   if (object["kinf_B"])
-    //   {
-    //     parameters.kinf_B_ = object["kinf_B"].as<double>();
-    //   }
-    //   if (object["kinf_C"])
-    //   {
-    //     parameters.kinf_C_ = object["kinf_C"].as<double>();
-    //   }
-    //   if (object["Fc"])
-    //   {
-    //     parameters.Fc_ = object["Fc"].as<double>();
-    //   }
-    //   if (object["N"])
-    //   {
-    //     parameters.N_ = object["N"].as<double>();
-    //   }
+      types::Arrhenius parameters;
+      if (object["A"])
+      {
+        parameters.A = object["A"].as<double>();
+      }
+      parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+      if (object["B"])
+      {
+        parameters.B = object["B"].as<double>();
+      }
+      if (object["C"])
+      {
+        parameters.C = object["C"].as<double>();
+      }
+      if (object["D"])
+      {
+        parameters.D = object["D"].as<double>();
+      }
+      if (object["E"])
+      {
+        parameters.E = object["E"].as<double>();
+      }
+      if (object["Ea"])
+      {
+        if (parameters.C != 0)
+        {
+          std::cerr << "Ea is specified when C is also specified for an Arrhenius reaction. Pick one." << std::endl;
+          return false;
+        }
+        // Calculate 'C' using 'Ea'
+        parameters.C = -1 * object["Ea"].as<double>() / constants::boltzmann;
+      }
 
-    //   ternary_rate_arr_.push_back(TernaryChemicalActivationRateConstant(parameters));
-    //   std::unique_ptr<TernaryChemicalActivationRateConstant> rate_ptr = std::make_unique<TernaryChemicalActivationRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      parameters.reactants = reactants;
+      parameters.products = products;
 
-    // void ParseBranched(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string ALKOXY_PRODUCTS = "alkoxy products";
-    //   const std::string NITRATE_PRODUCTS = "nitrate products";
-    //   const std::string X = "X";
-    //   const std::string Y = "Y";
-    //   const std::string A0 = "a0";
-    //   const std::string N = "n";
+      mechanism->reactions.arrhenius.push_back(parameters);
 
-    //   ValidateSchema(object, { "type", REACTANTS, ALKOXY_PRODUCTS, NITRATE_PRODUCTS, X, Y, A0, N }, {});
+      return true;
+    }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto alkoxy_products = ParseProducts(object[ALKOXY_PRODUCTS]);
-    //   auto nitrate_products = ParseProducts(object[NITRATE_PRODUCTS]);
+    bool ParseTroe(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" }))
+      {
+        std::cerr << "Invalid schema for Troe" << std::endl;
+        return false;
+      }
 
-    //   BranchedRateConstantParameters parameters;
-    //   parameters.X_ = object[X].as<double>();
-    //   // Account for the conversion of reactant concentrations to molecules cm-3
-    //   parameters.X_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 1);
-    //   parameters.Y_ = object[Y].as<double>();
-    //   parameters.a0_ = object[A0].as<double>();
-    //   parameters.n_ = object[N].as<int>();
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
 
-    //   // Alkoxy branch
-    //   parameters.branch_ = BranchedRateConstantParameters::Branch::Alkoxy;
-    //   branched_rate_arr_.push_back(BranchedRateConstant(parameters));
-    //   std::unique_ptr<BranchedRateConstant> rate_ptr = std::make_unique<BranchedRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, alkoxy_products, std::move(rate_ptr), gas_phase_));
+      types::Troe parameters;
+      if (object["k0_A"])
+      {
+        parameters.k0_A = object["k0_A"].as<double>();
+      }
+      // Account for the conversion of reactant concentrations (including M) to molecules cm-3
+      parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size());
+      if (object["k0_B"])
+      {
+        parameters.k0_B = object["k0_B"].as<double>();
+      }
+      if (object["k0_C"])
+      {
+        parameters.k0_C = object["k0_C"].as<double>();
+      }
+      if (object["kinf_A"])
+      {
+        parameters.kinf_A = object["kinf_A"].as<double>();
+      }
+      // Account for terms in denominator and exponent that include [M] but not other reactants
+      parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+      if (object["kinf_B"])
+      {
+        parameters.kinf_B = object["kinf_B"].as<double>();
+      }
+      if (object["kinf_C"])
+      {
+        parameters.kinf_C = object["kinf_C"].as<double>();
+      }
+      if (object["Fc"])
+      {
+        parameters.Fc = object["Fc"].as<double>();
+      }
+      if (object["N"])
+      {
+        parameters.N = object["N"].as<double>();
+      }
 
-    //   // Nitrate branch
-    //   parameters.branch_ = BranchedRateConstantParameters::Branch::Nitrate;
-    //   branched_rate_arr_.push_back(BranchedRateConstant(parameters));
-    //   rate_ptr = std::make_unique<BranchedRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, nitrate_products, std::move(rate_ptr), gas_phase_));
-    // }
+      parameters.reactants = reactants;
+      parameters.products = products;
+      mechanism->reactions.troe.push_back(parameters);
 
-    // void ParseTunneling(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
+      return true;
+    }
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS }, { "A", "B", "C" });
+    bool ParseTernaryChemicalActivation(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" }))
+      {
+        std::cerr << "Invalid schema for Ternary Chemical Activation" << std::endl;
+        return false;
+      }
 
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
 
-    //   TunnelingRateConstantParameters parameters;
-    //   if (object["A"])
-    //   {
-    //     parameters.A_ = object["A"].as<double>();
-    //   }
-    //   // Account for the conversion of reactant concentrations to molecules cm-3
-    //   parameters.A_ *= std::pow(MOLES_M3_TO_MOLECULES_CM3, reactants.size() - 1);
-    //   if (object["B"])
-    //   {
-    //     parameters.B_ = object["B"].as<double>();
-    //   }
-    //   if (object["C"])
-    //   {
-    //     parameters.C_ = object["C"].as<double>();
-    //   }
+      types::TernaryChemicalActivation parameters;
+      if (object["k0_A"])
+      {
+        parameters.k0_A = object["k0_A"].as<double>();
+      }
+      // Account for the conversion of reactant concentrations (including M) to molecules cm-3
+      parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+      if (object["k0_B"])
+      {
+        parameters.k0_B = object["k0_B"].as<double>();
+      }
+      if (object["k0_C"])
+      {
+        parameters.k0_C = object["k0_C"].as<double>();
+      }
+      if (object["kinf_A"])
+      {
+        parameters.kinf_A = object["kinf_A"].as<double>();
+      }
+      // Account for terms in denominator and exponent that include [M] but not other reactants
+      parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 2);
+      if (object["kinf_B"])
+      {
+        parameters.kinf_B = object["kinf_B"].as<double>();
+      }
+      if (object["kinf_C"])
+      {
+        parameters.kinf_C = object["kinf_C"].as<double>();
+      }
+      if (object["Fc"])
+      {
+        parameters.Fc = object["Fc"].as<double>();
+      }
+      if (object["N"])
+      {
+        parameters.N = object["N"].as<double>();
+      }
 
-    //   tunneling_rate_arr_.push_back(TunnelingRateConstant(parameters));
-    //   std::unique_ptr<TunnelingRateConstant> rate_ptr = std::make_unique<TunnelingRateConstant>(parameters);
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      parameters.reactants = reactants;
+      parameters.products = products;
+      mechanism->reactions.ternary_chemical_activation.push_back(parameters);
 
-    // void ParseEmission(const YAML::Node& object)
-    // {
-    //   const std::string SPECIES = "species";
-    //   const std::string MUSICA_NAME = "MUSICA name";
-    //   const std::string PRODUCTS = "products";
-    //   const std::string SCALING_FACTOR = "scaling factor";
+      return true;
+    }
 
-    //   ValidateSchema(object, { "type", SPECIES, MUSICA_NAME }, { SCALING_FACTOR, PRODUCTS });
+    bool ParseBranched(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, ALKOXY_PRODUCTS, NITRATE_PRODUCTS, X, Y, A0, N }, {}))
+      {
+        std::cerr << "Invalid schema for branched" << std::endl;
+        return false;
+      }
 
-    //   std::string species = object["species"].as<std::string>();
-    //   YAML::Node reactants_object{};
-    //   YAML::Node products_object{};
-    //   products_object[species]["yield"] = 1.0;
-    //   auto reactants = ParseReactants(reactants_object);
-    //   auto products = ParseProducts(products_object);
-    //   double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> alkoxy_products;
+      std::vector<types::ReactionComponent> nitrate_products;
 
-    //   std::string name = "EMIS." + object[MUSICA_NAME].as<std::string>();
-    //   user_defined_rate_arr_.push_back(UserDefinedRateConstant({ .label_ = name, .scaling_factor_ = scaling_factor }));
-    //   std::unique_ptr<UserDefinedRateConstant> rate_ptr =
-    //       std::make_unique<UserDefinedRateConstant>(UserDefinedRateConstantParameters{ .label_ = name, .scaling_factor_ = scaling_factor });
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[ALKOXY_PRODUCTS], alkoxy_products))
+      {
+        std::cerr << "Failed to parse alkoxy products" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[NITRATE_PRODUCTS], nitrate_products))
+      {
+        std::cerr << "Failed to parse nitrate products" << std::endl;
+        return false;
+      }
 
-    // void ParseFirstOrderLoss(const YAML::Node& object)
-    // {
-    //   const std::string SPECIES = "species";
-    //   const std::string MUSICA_NAME = "MUSICA name";
-    //   const std::string SCALING_FACTOR = "scaling factor";
+      types::Branched parameters;
+      parameters.X = object[X].as<double>();
+      // Account for the conversion of reactant concentrations to molecules cm-3
+      parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+      parameters.Y = object[Y].as<double>();
+      parameters.a0 = object[A0].as<double>();
+      parameters.n = object[N].as<int>();
 
-    //   ValidateSchema(object, { "type", SPECIES, MUSICA_NAME }, { SCALING_FACTOR });
+      parameters.reactants = reactants;
+      parameters.alkoxy_products = alkoxy_products;
+      parameters.nitrate_products = nitrate_products;
 
-    //   std::string species = object["species"].as<std::string>();
-    //   YAML::Node reactants_object{};
-    //   YAML::Node products_object{};
-    //   reactants_object[species] = {};
-    //   auto reactants = ParseReactants(reactants_object);
-    //   auto products = ParseProducts(products_object);
-    //   double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
+      mechanism->reactions.branched.push_back(parameters);
+      return true;
+    }
 
-    //   std::string name = "LOSS." + object[MUSICA_NAME].as<std::string>();
-    //   user_defined_rate_arr_.push_back(UserDefinedRateConstant({ .label_ = name, .scaling_factor_ = scaling_factor }));
-    //   std::unique_ptr<UserDefinedRateConstant> rate_ptr =
-    //       std::make_unique<UserDefinedRateConstant>(UserDefinedRateConstantParameters{ .label_ = name, .scaling_factor_ = scaling_factor });
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
+    bool ParseTunneling(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "A", "B", "C" }))
+      {
+        // print out a serizlied version of the object
+        YAML::Emitter out;
+        out << object;
+        std::cerr << out.c_str() << std::endl;
+        std::cerr << "Invalid schema for tunneling" << std::endl;
+        return false;
+      }
+
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
+
+      types::Tunneling parameters;
+      if (object["A"])
+      {
+        parameters.A = object["A"].as<double>();
+      }
+      // Account for the conversion of reactant concentrations to molecules cm-3
+      parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+      if (object["B"])
+      {
+        parameters.B = object["B"].as<double>();
+      }
+      if (object["C"])
+      {
+        parameters.C = object["C"].as<double>();
+      }
+
+      parameters.reactants = reactants;
+      parameters.products = products;
+      mechanism->reactions.tunneling.push_back(parameters);
+
+      return true;
+    }
+
+    bool ParseSurface(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, GAS_PHASE_PRODUCTS, GAS_PHASE_REACTANT, MUSICA_NAME }, { PROBABILITY }))
+      {
+        std::cerr << "Invalid schema for surface" << std::endl;
+        return false;
+      }
+
+      std::string species_name = object[GAS_PHASE_REACTANT].as<std::string>();
+
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+
+      reactants.push_back({ .species_name = species_name, .coefficient = 1.0 });
+
+      if (!ParseProducts(object[GAS_PHASE_PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
+
+      types::Surface parameters;
+
+      parameters.gas_phase_species = reactants[0];
+      parameters.gas_phase_products = products;
+
+      if (object[PROBABILITY])
+      {
+        parameters.reaction_probability = object[PROBABILITY].as<double>();
+      }
+
+      std::string name = "SURF." + object[MUSICA_NAME].as<std::string>();
+      parameters.name = name;
+
+      mechanism->reactions.surface.push_back(parameters);
+
+      return true;
+    }
+
+    bool ParseMechanismArray(std::unique_ptr<types::Mechanism>& mechanism, const std::vector<YAML::Node>& objects)
+    {
+      for (const auto& object : objects)
+      {
+        std::string type = object[TYPE].as<std::string>();
+
+        bool success = true;
+
+        if (type == "MECHANISM")
+        {
+          success = ParseMechanism(mechanism, object);
+        }
+        else if (type == "PHOTOLYSIS")
+        {
+          success = ParsePhotolysis(mechanism, object);
+        }
+        else if (type == "EMISSION")
+        {
+          success = ParseEmission(mechanism, object);
+        }
+        else if (type == "FIRST_ORDER_LOSS")
+        {
+          success = ParseFirstOrderLoss(mechanism, object);
+        }
+        else if (type == "ARRHENIUS")
+        {
+          success = ParseArrhenius(mechanism, object);
+        }
+        else if (type == "TROE")
+        {
+          success = ParseTroe(mechanism, object);
+        }
+        else if (type == "TERNARY_CHEMICAL_ACTIVATION")
+        {
+          success = ParseTernaryChemicalActivation(mechanism, object);
+        }
+        else if (type == "BRANCHED" || type == "WENNBERG_NO_RO2")
+        {
+          success = ParseBranched(mechanism, object);
+        }
+        else if (type == "TUNNELING" || type == "WENNBERG_TUNNELING")
+        {
+          success = ParseTunneling(mechanism, object);
+        }
+        else if (type == "SURFACE")
+        {
+          success = ParseSurface(mechanism, object);
+        }
+        //   else if (type == "USER_DEFINED")
+        //   {
+        //     ParseUserDefined(object);
+        //   }
+        //   else
+        //   {
+        //     throw std::system_error{ make_error_code(MicmConfigErrc::UnknownKey), type };
+        //   }
+
+        if (!success)
+        {
+          std::cerr << "Failed to parse mechanism array" << std::endl;
+          return false;
+        }
+      }
+
+      return true;
+    }
 
     // void ParseUserDefined(const YAML::Node& object)
     // {
@@ -448,7 +676,7 @@ namespace mechanism_configuration
     //   const std::string MUSICA_NAME = "MUSICA name";
     //   const std::string SCALING_FACTOR = "scaling factor";
 
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR });
+    //   ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR });
 
     //   auto reactants = ParseReactants(object[REACTANTS]);
     //   auto products = ParseProducts(object[PRODUCTS]);
@@ -458,36 +686,6 @@ namespace mechanism_configuration
     //   user_defined_rate_arr_.push_back(UserDefinedRateConstant({ .label_ = name, .scaling_factor_ = scaling_factor }));
     //   std::unique_ptr<UserDefinedRateConstant> rate_ptr =
     //       std::make_unique<UserDefinedRateConstant>(UserDefinedRateConstantParameters{ .label_ = name, .scaling_factor_ = scaling_factor });
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
-
-    // void ParseSurface(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "gas-phase reactant";
-    //   const std::string PRODUCTS = "gas-phase products";
-    //   const std::string MUSICA_NAME = "MUSICA name";
-    //   const std::string PROBABILITY = "reaction probability";
-
-    //   ValidateSchema(object, { "type", REACTANTS, PRODUCTS, MUSICA_NAME }, { PROBABILITY });
-
-    //   std::string species_name = object[REACTANTS].as<std::string>();
-    //   YAML::Node reactants_object{};
-    //   reactants_object[species_name] = {};
-
-    //   auto reactants = ParseReactants(reactants_object);
-    //   auto products = ParseProducts(object[PRODUCTS]);
-
-    //   Species reactant_species = Species("");
-    //   reactant_species = species_[species_name];
-    //   SurfaceRateConstantParameters parameters{ .label_ = "SURF." + object[MUSICA_NAME].as<std::string>(), .species_ = reactant_species };
-
-    //   if (object[PROBABILITY])
-    //   {
-    //     parameters.reaction_probability_ = object[PROBABILITY].as<double>();
-    //   }
-
-    //   surface_rate_arr_.push_back(SurfaceRateConstant(parameters));
-    //   std::unique_ptr<SurfaceRateConstant> rate_ptr = std::make_unique<SurfaceRateConstant>(parameters);
     //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
     // }
 
@@ -517,16 +715,6 @@ namespace mechanism_configuration
     /// @param optional_keys The optional keys
     bool ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      // required keys
-      const std::string NAME = "name";
-      const std::string TYPE = "type";
-
-      const std::string TRACER_TYPE = "tracer type";
-      const std::string ABS_TOLERANCE = "absolute tolerance";
-      const std::string DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
-      const std::string MOL_WEIGHT = "molecular weight [kg mol-1]";
-      const std::string THIRD_BODY = "THIRD_BODY";
-
       if (!ValidateSchema(object, { NAME, TYPE }, { TRACER_TYPE, ABS_TOLERANCE, DIFFUSION_COEFF, MOL_WEIGHT }))
       {
         return false;
@@ -566,7 +754,6 @@ namespace mechanism_configuration
 
     bool ParseSpeciesArray(std::unique_ptr<types::Mechanism>& mechanism, const std::vector<YAML::Node>& objects)
     {
-      const std::string TYPE = "type";
       for (const auto& object : objects)
       {
         std::string type = object[TYPE].as<std::string>();
@@ -580,7 +767,8 @@ namespace mechanism_configuration
         }
         else if (type == "RELATIVE_TOLERANCE")
         {
-          if (! ParseRelativeTolerance(mechanism, object)) {
+          if (!ParseRelativeTolerance(mechanism, object))
+          {
             return false;
           }
         }
@@ -590,13 +778,12 @@ namespace mechanism_configuration
 
     std::optional<std::unique_ptr<GlobalMechanism>> Parser::TryParse(const std::filesystem::path& config_path)
     {
-      return std::nullopt;
-
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
       // Look for CAMP config path
       if (!std::filesystem::exists(config_path))
       {
         std::cerr << "File does not exist: " << config_path << std::endl;
+        return std::nullopt;
       }
 
       std::filesystem::path config_dir;
@@ -697,23 +884,27 @@ namespace mechanism_configuration
         }
       }
 
-      // Parse species object array
       if (!ParseSpeciesArray(mechanism, species_objects))
       {
         std::cerr << "Failed to parse species array" << std::endl;
         return std::nullopt;
       }
 
-      //   // Assign the parsed 'Species' to 'Phase'
-      //   std::vector<Species> species_arr;
-      //   for (const auto& [name, species] : species_)
-      //   {
-      //     species_arr.push_back(species);
-      //   }
-      //   gas_phase_ = Phase(species_arr);
+      // all species in version 0 are in the gas phase
+      types::Phase gas_phase;
+      gas_phase.name = "GAS";
+      for (auto& species : mechanism->species)
+      {
+        gas_phase.species.push_back(species.name);
+      }
 
-      //   // Parse mechanism object array
-      //   ParseMechanismArray(mechanism_objects);
+      if (!ParseMechanismArray(mechanism, mechanism_objects))
+      {
+        std::cerr << "Failed to parse mechanism array" << std::endl;
+        return std::nullopt;
+      }
+
+      return std::unique_ptr<GlobalMechanism>(std::move(mechanism));
     }
 
   }  // namespace v0
@@ -760,62 +951,5 @@ namespace mechanism_configuration
 //   /// @param config_path Path to a the CAMP configuration directory or file
 
 //  private:
-
-//   void ParseMechanismArray(const std::vector<YAML::Node>& objects)
-//   {
-//     for (const auto& object : objects)
-//     {
-//       std::string type = object[TYPE].as<std::string>();
-
-//       if (type == "MECHANISM")
-//       {
-//         ParseMechanism(object);
-//       }
-//       else if (type == "PHOTOLYSIS")
-//       {
-//         ParsePhotolysis(object);
-//       }
-//       else if (type == "EMISSION")
-//       {
-//         ParseEmission(object);
-//       }
-//       else if (type == "FIRST_ORDER_LOSS")
-//       {
-//         ParseFirstOrderLoss(object);
-//       }
-//       else if (type == "ARRHENIUS")
-//       {
-//         ParseArrhenius(object);
-//       }
-//       else if (type == "TROE")
-//       {
-//         ParseTroe(object);
-//       }
-//       else if (type == "TERNARY_CHEMICAL_ACTIVATION")
-//       {
-//         ParseTernaryChemicalActivation(object);
-//       }
-//       else if (type == "BRANCHED" || type == "WENNBERG_NO_RO2")
-//       {
-//         ParseBranched(object);
-//       }
-//       else if (type == "TUNNELING" || type == "WENNBERG_TUNNELING")
-//       {
-//         ParseTunneling(object);
-//       }
-//       else if (type == "SURFACE")
-//       {
-//         ParseSurface(object);
-//       }
-//       else if (type == "USER_DEFINED")
-//       {
-//         ParseUserDefined(object);
-//       }
-//       else
-//       {
-//         throw std::system_error{ make_error_code(MicmConfigErrc::UnknownKey), type };
-//       }
-//     }
-//   }
 
 // };

@@ -2,11 +2,10 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/load_node.hpp>
-
 #include <filesystem>
 #include <iostream>
+#include <mechanism_configuration/load_node.hpp>
+#include <mechanism_configuration/mechanism.hpp>
 #include <optional>
 #include <string>
 
@@ -26,7 +25,22 @@ namespace mechanism_configuration
     template<typename T>
     std::optional<MechanismType> Parse(const T& source)
     {
+      if constexpr (IsStringOrPath<T>())
+      {
+        // version 0 can only take a string or file path
+        auto result = TryParse(source);
+        if (result)
+        {
+          auto mechanism = dynamic_cast<MechanismType*>(result->get());
+          if (mechanism)
+          {
+            return *mechanism;
+          }
+        }
+      }
+
       YAML::Node node = LoadNode(source);
+
       auto result = TryParse(node);
       if (result)
       {
@@ -39,9 +53,10 @@ namespace mechanism_configuration
       return std::nullopt;
     }
 
-    /// @brief Tries to read a configuration and returns a mechanism
-    /// @param source A YAML node, file path, or string representing a file path
-    /// @return An optional containing the parsed mechanism wrapped in a unique pointer
     virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) = 0;
+
+    // These are only required for the version 0 parser
+    virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path) { return std::nullopt; };
+    virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::string& config_path) { return std::nullopt; };
   };
 }  // namespace mechanism_configuration

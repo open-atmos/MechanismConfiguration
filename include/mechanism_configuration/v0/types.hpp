@@ -60,37 +60,6 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products
         std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct CondensedPhaseArrhenius
-      {
-        /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
-        double A{ 1 };
-        /// @brief Unitless exponential factor
-        double B{ 0 };
-        /// @brief Activation threshold, expected to be the negative activation energy divided by the boltzman constant
-        ///        [-E_a / k_b), K]
-        double C{ 0 };
-        /// @brief A factor that determines temperature dependence [K]
-        double D{ 300 };
-        /// @brief A factor that determines pressure dependence [Pa-1]
-        double E{ 0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -117,10 +86,31 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products
         std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
+      struct TernaryChemicalActivation
+      {
+        /// @brief low-pressure pre-exponential factor
+        double k0_A = 1.0;
+        /// @brief low-pressure temperature-scaling parameter
+        double k0_B = 0.0;
+        /// @brief low-pressure exponential factor
+        double k0_C = 0.0;
+        /// @brief high-pressure pre-exponential factor
+        double kinf_A = 1.0;
+        /// @brief high-pressure temperature-scaling parameter
+        double kinf_B = 0.0;
+        /// @brief high-pressure exponential factor
+        double kinf_C = 0.0;
+        /// @brief TernaryChemicalActivation F_c parameter
+        double Fc = 0.6;
+        /// @brief TernaryChemicalActivation N parameter
+        double N = 1.0;
+        std::vector<ReactionComponent> reactants;
+        /// @brief A list of products
+        std::vector<ReactionComponent> products;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -141,10 +131,6 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> nitrate_products;
         /// @brief A list of alkoxy products
         std::vector<ReactionComponent> alkoxy_products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -161,10 +147,6 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products
         std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -179,15 +161,11 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> gas_phase_products;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
-      struct Photolysis
+      struct UserDefined
       {
         /// @brief Scaling factor to apply to user-provided rate constants
         double scaling_factor{ 1.0 };
@@ -197,125 +175,6 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct CondensedPhasePhotolysis
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor_{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct Emission
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor{ 1.0 };
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct FirstOrderLoss
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-      struct AqueousEquilibrium
-      {
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief Pre-exponential factor (s-1)
-        double A{ 1 };
-        /// @brief A constant
-        double C{ 0 };
-        /// @brief Reverse reation rate constant (s-1)
-        double k_reverse{ 0 };
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct WetDeposition
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor{ 1.0 };
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct HenrysLaw
-      {
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief An identifier indicating which gas phase species this reaction involves
-        std::string gas_phase_species;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
-        /// @brief An identifier indicating which aerosol phase species this reaction involves
-        std::string aerosol_phase_species;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct SimpolPhaseTransfer
-      {
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief The species in the gas phase participating in this reaction
-        ReactionComponent gas_phase_species;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief The species in the aerosol phase participating in this reaction
-        ReactionComponent aerosol_phase_species;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief The 4 SIMPOL parameters
-        std::array<double, 4> B;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -324,17 +183,10 @@ namespace mechanism_configuration
       {
         std::vector<Arrhenius> arrhenius;
         std::vector<Branched> branched;
-        std::vector<CondensedPhaseArrhenius> condensed_phase_arrhenius;
-        std::vector<CondensedPhasePhotolysis> condensed_phase_photolysis;
-        std::vector<Emission> emission;
-        std::vector<FirstOrderLoss> first_order_loss;
-        std::vector<SimpolPhaseTransfer> simpol_phase_transfer;
-        std::vector<AqueousEquilibrium> aqueous_equilibrium;
-        std::vector<WetDeposition> wet_deposition;
-        std::vector<HenrysLaw> henrys_law;
-        std::vector<Photolysis> photolysis;
+        std::vector<UserDefined> user_defined;
         std::vector<Surface> surface;
         std::vector<Troe> troe;
+        std::vector<TernaryChemicalActivation> ternary_chemical_activation;
         std::vector<Tunneling> tunneling;
       };
 
