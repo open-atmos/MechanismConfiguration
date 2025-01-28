@@ -50,6 +50,9 @@ namespace mechanism_configuration
     const std::string A = "A";
     const std::string B = "B";
     const std::string C = "C";
+    const std::string D = "D";
+    const std::string E = "E";
+    const std::string Ea = "Ea";
 
     const std::string K0_A = "k0_A";
     const std::string K0_B = "k0_B";
@@ -292,7 +295,7 @@ namespace mechanism_configuration
 
     bool ParseArrhenius(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "A", "B", "C", "D", "E", "Ea", MUSICA_NAME }))
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { A, B, C, D, E, Ea, MUSICA_NAME }))
       {
         std::cerr << "Invalid schema for Arrhenius" << std::endl;
         return false;
@@ -312,28 +315,28 @@ namespace mechanism_configuration
       }
 
       types::Arrhenius parameters;
-      if (object["A"])
+      if (object[A])
       {
-        parameters.A = object["A"].as<double>();
+        parameters.A = object[A].as<double>();
       }
       parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
-      if (object["B"])
+      if (object[B])
       {
-        parameters.B = object["B"].as<double>();
+        parameters.B = object[B].as<double>();
       }
-      if (object["C"])
+      if (object[C])
       {
-        parameters.C = object["C"].as<double>();
+        parameters.C = object[C].as<double>();
       }
-      if (object["D"])
+      if (object[D])
       {
-        parameters.D = object["D"].as<double>();
+        parameters.D = object[D].as<double>();
       }
-      if (object["E"])
+      if (object[E])
       {
-        parameters.E = object["E"].as<double>();
+        parameters.E = object[E].as<double>();
       }
-      if (object["Ea"])
+      if (object[Ea])
       {
         if (parameters.C != 0)
         {
@@ -341,7 +344,7 @@ namespace mechanism_configuration
           return false;
         }
         // Calculate 'C' using 'Ea'
-        parameters.C = -1 * object["Ea"].as<double>() / constants::boltzmann;
+        parameters.C = -1 * object[Ea].as<double>() / constants::boltzmann;
       }
 
       parameters.reactants = reactants;
@@ -354,7 +357,7 @@ namespace mechanism_configuration
 
     bool ParseTroe(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { "k0_A", "k0_B", "k0_C", "kinf_A", "kinf_B", "kinf_C", "Fc", "N" }))
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS }, { K0_A, K0_B, K0_C, KINF_A, KINF_B, KINF_C, FC, N }))
       {
         std::cerr << "Invalid schema for Troe" << std::endl;
         return false;
@@ -374,41 +377,41 @@ namespace mechanism_configuration
       }
 
       types::Troe parameters;
-      if (object["k0_A"])
+      if (object[K0_A])
       {
-        parameters.k0_A = object["k0_A"].as<double>();
+        parameters.k0_A = object[K0_A].as<double>();
       }
       // Account for the conversion of reactant concentrations (including M) to molecules cm-3
       parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size());
-      if (object["k0_B"])
+      if (object[K0_B])
       {
-        parameters.k0_B = object["k0_B"].as<double>();
+        parameters.k0_B = object[K0_B].as<double>();
       }
-      if (object["k0_C"])
+      if (object[K0_C])
       {
-        parameters.k0_C = object["k0_C"].as<double>();
+        parameters.k0_C = object[K0_C].as<double>();
       }
-      if (object["kinf_A"])
+      if (object[KINF_A])
       {
-        parameters.kinf_A = object["kinf_A"].as<double>();
+        parameters.kinf_A = object[KINF_A].as<double>();
       }
       // Account for terms in denominator and exponent that include [M] but not other reactants
       parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
-      if (object["kinf_B"])
+      if (object[KINF_B])
       {
-        parameters.kinf_B = object["kinf_B"].as<double>();
+        parameters.kinf_B = object[KINF_B].as<double>();
       }
-      if (object["kinf_C"])
+      if (object[KINF_C])
       {
-        parameters.kinf_C = object["kinf_C"].as<double>();
+        parameters.kinf_C = object[KINF_C].as<double>();
       }
-      if (object["Fc"])
+      if (object[FC])
       {
-        parameters.Fc = object["Fc"].as<double>();
+        parameters.Fc = object[FC].as<double>();
       }
-      if (object["N"])
+      if (object[N])
       {
-        parameters.N = object["N"].as<double>();
+        parameters.N = object[N].as<double>();
       }
 
       parameters.reactants = reactants;
@@ -617,7 +620,8 @@ namespace mechanism_configuration
 
     bool ParseUserDefined(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR })) {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR }))
+      {
         std::cerr << "Invalid schema for user defined" << std::endl;
         return false;
       }
@@ -697,10 +701,11 @@ namespace mechanism_configuration
         {
           success = ParseUserDefined(mechanism, object);
         }
-        //   else
-        //   {
-        //     throw std::system_error{ make_error_code(MicmConfigErrc::UnknownKey), type };
-        //   }
+        else
+        {
+          std::cerr << "Unknown mechanism type: " << type << std::endl;
+          return false;
+        }
 
         if (!success)
         {
