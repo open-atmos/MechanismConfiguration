@@ -602,6 +602,36 @@ namespace mechanism_configuration
       return true;
     }
 
+    bool ParseUserDefined(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
+      if (!ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR })) {
+        std::cerr << "Invalid schema for user defined" << std::endl;
+        return false;
+      }
+
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      if (!ParseReactants(object[REACTANTS], reactants))
+      {
+        std::cerr << "Failed to parse reactants" << std::endl;
+        return false;
+      }
+      if (!ParseProducts(object[PRODUCTS], products))
+      {
+        std::cerr << "Failed to parse products" << std::endl;
+        return false;
+      }
+
+      double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
+
+      std::string name = "USER." + object[MUSICA_NAME].as<std::string>();
+
+      types::UserDefined user_defined = { .name = name, .scaling_factor = scaling_factor, .reactants = reactants, .products = products };
+      mechanism->reactions.user_defined.push_back(user_defined);
+
+      return true;
+    }
+
     bool ParseMechanismArray(std::unique_ptr<types::Mechanism>& mechanism, const std::vector<YAML::Node>& objects)
     {
       for (const auto& object : objects)
@@ -650,10 +680,10 @@ namespace mechanism_configuration
         {
           success = ParseSurface(mechanism, object);
         }
-        //   else if (type == "USER_DEFINED")
-        //   {
-        //     ParseUserDefined(object);
-        //   }
+        else if (type == "USER_DEFINED")
+        {
+          success = ParseUserDefined(mechanism, object);
+        }
         //   else
         //   {
         //     throw std::system_error{ make_error_code(MicmConfigErrc::UnknownKey), type };
@@ -669,50 +699,6 @@ namespace mechanism_configuration
       return true;
     }
 
-    // void ParseUserDefined(const YAML::Node& object)
-    // {
-    //   const std::string REACTANTS = "reactants";
-    //   const std::string PRODUCTS = "products";
-    //   const std::string MUSICA_NAME = "MUSICA name";
-    //   const std::string SCALING_FACTOR = "scaling factor";
-
-    //   ValidateSchema(object, { TYPE, REACTANTS, PRODUCTS, MUSICA_NAME }, { SCALING_FACTOR });
-
-    //   auto reactants = ParseReactants(object[REACTANTS]);
-    //   auto products = ParseProducts(object[PRODUCTS]);
-    //   double scaling_factor = object[SCALING_FACTOR] ? object[SCALING_FACTOR].as<double>() : 1.0;
-
-    //   std::string name = "USER." + object[MUSICA_NAME].as<std::string>();
-    //   user_defined_rate_arr_.push_back(UserDefinedRateConstant({ .label_ = name, .scaling_factor_ = scaling_factor }));
-    //   std::unique_ptr<UserDefinedRateConstant> rate_ptr =
-    //       std::make_unique<UserDefinedRateConstant>(UserDefinedRateConstantParameters{ .label_ = name, .scaling_factor_ = scaling_factor });
-    //   processes_.push_back(Process(reactants, products, std::move(rate_ptr), gas_phase_));
-    // }
-
-    // // Utility functions to check types and perform conversions
-    // bool IsBool(const std::string& value)
-    // {
-    //   return (value == "true" || value == "false");
-    // }
-
-    // bool IsInt(const std::string& value)
-    // {
-    //   std::istringstream iss(value);
-    //   int result;
-    //   return (iss >> result >> std::ws).eof();  // Check if the entire string is an integer
-    // }
-
-    // bool IsFloat(const std::string& value)
-    // {
-    //   std::istringstream iss(value);
-    //   float result;
-    //   return (iss >> result >> std::ws).eof();  // Check if the entire string is a float
-    // }
-
-    /// @brief Search for nonstandard keys. Only nonstandard keys starting with __ are allowed. Others are considered typos
-    /// @param object the object whose keys need to be validated
-    /// @param required_keys The required keys
-    /// @param optional_keys The optional keys
     bool ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       if (!ValidateSchema(object, { NAME, TYPE }, { TRACER_TYPE, ABS_TOLERANCE, DIFFUSION_COEFF, MOL_WEIGHT }))
@@ -909,47 +895,3 @@ namespace mechanism_configuration
 
   }  // namespace v0
 }  // namespace mechanism_configuration
-
-// Solver parameters
-// class ConfigReaderPolicy
-// {
-//   using YAML::Node = YAML::Node;
-
-//  public:
-//   std::map<std::string, Species> species_;
-
-//   std::vector<UserDefinedRateConstant> user_defined_rate_arr_;
-//   std::vector<ArrheniusRateConstant> arrhenius_rate_arr_;
-//   std::vector<TroeRateConstant> troe_rate_arr_;
-//   std::vector<TernaryChemicalActivationRateConstant> ternary_rate_arr_;
-//   std::vector<BranchedRateConstant> branched_rate_arr_;
-//   std::vector<TunnelingRateConstant> tunneling_rate_arr_;
-//   std::vector<SurfaceRateConstant> surface_rate_arr_;
-
-//   // Specific for solver parameters
-//   Phase gas_phase_;
-//   std::unordered_map<std::string, Phase> phases_;
-//   std::vector<Process> processes_;
-//   RosenbrockSolverParameters parameters_;
-//   double relative_tolerance_;
-
-//   // Common YAML
-
-//   // Error string
-//   std::stringstream last_json_object_;
-
-//   // Constructor
-
-//   ConfigReaderPolicy(const RosenbrockSolverParameters& parameters)
-//       : parameters_(parameters)
-//   {
-//   }
-
-//   // Functions
-
-//   /// @brief Parse configures
-//   /// @param config_path Path to a the CAMP configuration directory or file
-
-//  private:
-
-// };

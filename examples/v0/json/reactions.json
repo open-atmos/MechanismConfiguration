@@ -175,6 +175,17 @@
           },
           "reaction probability": 0.5,
           "MUSICA name": "kbar"
+        },
+        {
+          "type": "USER_DEFINED",
+          "MUSICA name": "bar",
+          "reactants": { 
+            "foo" : { "qty": 2 }
+          },
+          "products": {
+            "bar" : { }
+          }, 
+          "scaling factor": 2.5
         }
       ]
     }

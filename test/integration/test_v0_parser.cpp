@@ -15,7 +15,7 @@ TEST(ParserBase, ParsesFullv0Configuration)
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
     v0::types::Mechanism mechanism = *parsed;
-    EXPECT_EQ(mechanism.reactions.user_defined.size(), 3);
+    EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
     EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);
