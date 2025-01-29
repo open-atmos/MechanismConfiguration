@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/arrhenius/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -74,7 +74,7 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/arrhenius/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -85,7 +85,7 @@ TEST(ParserBase, ArrheniusDetectsMutuallyExclusiveOptions)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/arrhenius/mutually_exclusive") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/mutually_exclusive") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -96,7 +96,7 @@ TEST(ParserBase, ArrheniusDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/arrhenius/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -107,7 +107,7 @@ TEST(ParserBase, ArrheniusDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/arrhenius/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

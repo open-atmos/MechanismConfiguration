@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidAqueousEquilibriumReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/aqueous_equilibrium/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -55,7 +55,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -66,7 +66,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/aqueous_equilibrium/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -77,7 +77,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/aqueous_equilibrium/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/aqueous_equilibrium/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

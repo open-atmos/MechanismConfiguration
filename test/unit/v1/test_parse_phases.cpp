@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidPhases)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/phases/valid_phases") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/valid_phases") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
@@ -38,7 +38,7 @@ TEST(ParserBase, DetectsDuplicatePhases)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/phases/duplicate_phases") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/duplicate_phases") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -49,7 +49,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/phases/missing_required_key") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/missing_required_key") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -60,7 +60,7 @@ TEST(ParserBase, DetectsInvalidKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/phases/invalid_key") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/invalid_key") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -71,7 +71,7 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/phases/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }

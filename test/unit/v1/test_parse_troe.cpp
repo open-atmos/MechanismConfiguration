@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidTroeReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -71,7 +71,7 @@ TEST(ParserBase, TroeDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -82,7 +82,7 @@ TEST(ParserBase, TroeDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -93,7 +93,7 @@ TEST(ParserBase, TroeDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/troe/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

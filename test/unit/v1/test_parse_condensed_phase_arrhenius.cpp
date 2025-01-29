@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -77,7 +77,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -88,7 +88,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -99,7 +99,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -110,7 +110,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -121,7 +121,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAeros
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -132,7 +132,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_arrhenius/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

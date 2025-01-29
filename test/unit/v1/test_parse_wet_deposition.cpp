@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidWetDepositionReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/wet_deposition/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/wet_deposition/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -34,7 +34,7 @@ TEST(ParserBase, WetDepositionDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/wet_deposition/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/wet_deposition/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidSurfaceReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/surface/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -51,7 +51,7 @@ TEST(ParserBase, SurfaceDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/surface/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -62,7 +62,7 @@ TEST(ParserBase, SurfaceDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/surface/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -73,7 +73,7 @@ TEST(ParserBase, SurfaceDetectsUnknownAerosolPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/missing_aerosol_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/surface/missing_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -84,7 +84,7 @@ TEST(ParserBase, SurfaceDetectsUnknownGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/surface/missing_gas_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/surface/missing_gas_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

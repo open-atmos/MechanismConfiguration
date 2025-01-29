@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidSimpolPhaseTransferReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -46,7 +46,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -57,7 +57,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -68,7 +68,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -79,7 +79,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -91,7 +91,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAeroso
   for (auto& extension : extensions)
   {
     auto parsed =
-        parser.Parse(std::string("unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase") + extension);
+        parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

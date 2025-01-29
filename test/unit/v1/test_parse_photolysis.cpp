@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/photolysis/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/photolysis/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -45,7 +45,7 @@ TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/photolysis/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/photolysis/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -56,7 +56,7 @@ TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/photolysis/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/photolysis/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -67,7 +67,7 @@ TEST(ParserBase, PhotolysisDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/photolysis/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/photolysis/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -78,7 +78,7 @@ TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/photolysis/more_than_one_reactant") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/photolysis/more_than_one_reactant") + extension);
     EXPECT_FALSE(parsed);
   }
 }

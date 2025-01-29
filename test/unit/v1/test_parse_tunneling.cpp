@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidTunnelingReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/tunneling/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/tunneling/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -52,7 +52,7 @@ TEST(ParserBase, TunnelingDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/tunneling/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/tunneling/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -63,7 +63,7 @@ TEST(ParserBase, TunnelingDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/tunneling/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/tunneling/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -74,7 +74,7 @@ TEST(ParserBase, TunnelingDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/tunneling/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/tunneling/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/henrys_law/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/henrys_law/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -41,7 +41,7 @@ TEST(ParserBase, HenrysLawDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/henrys_law/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/henrys_law/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -52,7 +52,7 @@ TEST(ParserBase, HenrysLawDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/henrys_law/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/henrys_law/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -63,7 +63,7 @@ TEST(ParserBase, HenrysLawDetectsUnknownAerosolPhaseWater)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/henrys_law/missing_aerosol_phase_water") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/henrys_law/missing_aerosol_phase_water") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -74,7 +74,7 @@ TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/henrys_law/species_not_in_aerosol_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/henrys_law/species_not_in_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }

@@ -10,7 +10,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/valid") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/valid") + extension);
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
 
@@ -47,7 +47,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/unknown_species") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/unknown_species") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -58,7 +58,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/bad_reaction_component") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/bad_reaction_component") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -69,7 +69,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/missing_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -80,7 +80,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/more_than_one_reactant") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/more_than_one_reactant") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -91,7 +91,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAero
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension);
     EXPECT_FALSE(parsed);
   }
 }
@@ -102,7 +102,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("unit_configs/reactions/condensed_phase_photolysis/missing_aerosol_phase_water") + extension);
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_aerosol_phase_water") + extension);
     EXPECT_FALSE(parsed);
   }
 }
