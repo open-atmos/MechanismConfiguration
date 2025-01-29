@@ -6,12 +6,12 @@
 TEST(ParserBase, ParsesFullV0Configuration)
 {
   mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
+  std::vector<std::string> extensions = { "yaml", "json" };
   for (auto& extension : extensions)
   {
-    std::string path = "examples/v0/full_configuration" + extension;
+    std::string path = "examples/v0/" + extension;
     auto parsed = parser.Parse(path);
-    EXPECT_FALSE(parsed);
+    EXPECT_TRUE(parsed);
   }
 }
 
