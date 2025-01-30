@@ -24,6 +24,8 @@ namespace mechanism_configuration
       const std::string CAMP_DATA = "camp-data";
       const std::string TYPE = "type";
 
+      ConfigParseStatus GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files);
+
      public:
       std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path) override;
 

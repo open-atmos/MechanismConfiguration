@@ -42,7 +42,8 @@ namespace mechanism_configuration
       return status;
     }
 
-    ConfigParseStatus ParseMechanism(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object) {
+    ConfigParseStatus ParseMechanism(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    {
       ConfigParseStatus status = ConfigParseStatus::Success;
       auto required = { validation::NAME, validation::REACTIONS, validation::TYPE };
 
@@ -56,17 +57,12 @@ namespace mechanism_configuration
       return status;
     }
 
-
-    std::optional<std::unique_ptr<GlobalMechanism>> Parser::TryParse(const std::filesystem::path& config_path)
+    ConfigParseStatus Parser::GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files)
     {
-      ConfigParseStatus status;
-      std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
-
       // Look for CAMP config path
       if (!std::filesystem::exists(config_path))
       {
-        std::cerr << "File does not exist: " << config_path << std::endl;
-        return std::nullopt;
+        return ConfigParseStatus::FileNotFound;
       }
 
       std::filesystem::path config_dir;
@@ -96,19 +92,16 @@ namespace mechanism_configuration
       YAML::Node camp_data = YAML::LoadFile(config_file.string());
       if (!camp_data[CAMP_FILES])
       {
-        std::cerr << "CAMP files not found in: " << config_file << std::endl;
-        return std::nullopt;
+        return ConfigParseStatus::FileNotFound;
       }
 
       // Build a list of individual CAMP config files
-      std::vector<std::filesystem::path> camp_files;
       for (const auto& element : camp_data[CAMP_FILES])
       {
         std::filesystem::path camp_file = config_dir / element.as<std::string>();
         if (!std::filesystem::exists(camp_file))
         {
-          std::cerr << "CAMP file not found: " << camp_file << std::endl;
-          return std::nullopt;
+          return ConfigParseStatus::FileNotFound;
         }
         camp_files.push_back(camp_file);
       }
@@ -116,11 +109,29 @@ namespace mechanism_configuration
       // No config files found
       if (camp_files.size() < 1)
       {
-        std::cerr << "No CAMP files found in: " << config_file << std::endl;
+        return ConfigParseStatus::FileNotFound;
+      }
+
+      return ConfigParseStatus::Success;
+    }
+
+    std::optional<std::unique_ptr<GlobalMechanism>> Parser::TryParse(const std::filesystem::path& config_path)
+    {
+      ConfigParseStatus status;
+      std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
+
+      std::vector<std::filesystem::path> camp_files;
+      status = GetCampFiles(config_path, camp_files);
+
+      if (status != ConfigParseStatus::Success)
+      {
         return std::nullopt;
       }
 
       ParserMap parsers;
+
+      std::function<ConfigParseStatus(std::unique_ptr<types::Mechanism>&, const YAML::Node&)> ParseMechanismArray =
+          [&](std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object) { return ParseMechanism(parsers, mechanism, object); };
 
       parsers["CHEM_SPEC"] = ParseChemicalSpecies;
       parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;
@@ -136,14 +147,8 @@ namespace mechanism_configuration
       parsers["WENNBERG_TUNNELING"] = TunnelingParser;
       parsers["SURFACE"] = SurfaceParser;
       parsers["USER_DEFINED"] = UserDefinedParser;
-
-      std::function<ConfigParseStatus(std::unique_ptr<types::Mechanism>&, const YAML::Node&)> ParseMechanismArray = [&](std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object) {
-        return ParseMechanism(parsers, mechanism, object);
-      };
-
       parsers["MECHANISM"] = ParseMechanismArray;
 
-      // Iterate CAMP file list and form CAMP data object arrays
       for (const auto& camp_file : camp_files)
       {
         YAML::Node config_subset = YAML::LoadFile(camp_file.string());

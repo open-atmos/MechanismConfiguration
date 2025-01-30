@@ -15,6 +15,7 @@ namespace mechanism_configuration
       InvalidKey,
       UnknownKey,
       InvalidFilePath,
+      FileNotFound,
       ObjectTypeNotFound,
       RequiredKeyNotFound,
       MutuallyExclusiveOption,
