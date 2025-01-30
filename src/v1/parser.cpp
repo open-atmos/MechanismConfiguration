@@ -7,7 +7,7 @@
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
-
+#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {

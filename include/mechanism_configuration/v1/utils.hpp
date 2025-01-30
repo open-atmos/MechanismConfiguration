@@ -32,9 +32,6 @@ namespace mechanism_configuration
     std::unordered_map<std::string, std::string>
     GetComments(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
 
-    ConfigParseStatus
-    ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
-
     std::pair<ConfigParseStatus, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects);
 
     std::pair<ConfigParseStatus, std::vector<v1::types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<v1::types::Species> existing_species);
