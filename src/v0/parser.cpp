@@ -115,17 +115,20 @@ namespace mechanism_configuration
       return ConfigParseStatus::Success;
     }
 
-    std::optional<std::unique_ptr<GlobalMechanism>> Parser::TryParse(const std::filesystem::path& config_path)
+    ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
     {
       ConfigParseStatus status;
-      std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
+
+      ParserResult<types::Mechanism> result;
+      result.mechanism = std::make_unique<types::Mechanism>();
 
       std::vector<std::filesystem::path> camp_files;
       status = GetCampFiles(config_path, camp_files);
 
       if (status != ConfigParseStatus::Success)
       {
-        return std::nullopt;
+        result.errors.push_back({ status, "Failed to load CAMP files." });
+        return result;
       }
 
       ParserMap parsers;
@@ -153,18 +156,18 @@ namespace mechanism_configuration
       {
         YAML::Node config_subset = YAML::LoadFile(camp_file.string());
 
-        status = run_parsers(parsers, mechanism, config_subset[CAMP_DATA]);
+        status = run_parsers(parsers, result.mechanism, config_subset[CAMP_DATA]);
       }
 
       // all species in version 0 are in the gas phase
       types::Phase gas_phase;
       gas_phase.name = "GAS";
-      for (auto& species : mechanism->species)
+      for (auto& species : result.mechanism->species)
       {
         gas_phase.species.push_back(species.name);
       }
 
-      return std::unique_ptr<GlobalMechanism>(std::move(mechanism));
+      return result;
     }
   }  // namespace v0
 }  // namespace mechanism_configuration

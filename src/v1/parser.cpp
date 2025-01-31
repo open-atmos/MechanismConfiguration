@@ -8,23 +8,25 @@
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+#include <mechanism_configuration/load_node.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    std::optional<std::unique_ptr<GlobalMechanism>> Parser::TryParse(const YAML::Node& object)
+    ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
     {
+      YAML::Node object = LoadNode(config_path);
       ConfigParseStatus status;
+      ParserResult<types::Mechanism> result;
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       status = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
 
       if (status != ConfigParseStatus::Success)
       {
-        std::string msg = configParseStatusToString(status);
-        std::cerr << "[" << msg << "] Invalid top level configuration." << std::endl;
-        return std::nullopt;
+        result.errors.push_back({ status, "Invalid top level configuration." });
+        return result;
       }
 
       Version version = Version(object[validation::keys.version].as<std::string>());
@@ -32,9 +34,7 @@ namespace mechanism_configuration
       if (version.major != 1)
       {
         status = ConfigParseStatus::InvalidVersion;
-        std::string msg = configParseStatusToString(status);
-        std::cerr << "[" << msg << "] This parser supports version 1.x and you requested version " << version.to_string()
-                  << ". Please download the appropriate version of the parser or switch to the supported format's version." << std::endl;
+        result.errors.push_back({ status, "Invalid version." });
       }
 
       std::string name = object[validation::keys.name].as<std::string>();
@@ -45,8 +45,7 @@ namespace mechanism_configuration
       if (species_parsing.first != ConfigParseStatus::Success)
       {
         status = species_parsing.first;
-        std::string msg = configParseStatusToString(status);
-        std::cerr << "[" << msg << "] Failed to parse the species." << std::endl;
+        result.errors.push_back({ status, "Failed to parse the species." });
       }
 
       auto phases_parsing = ParsePhases(object[validation::keys.phases], species_parsing.second);
@@ -54,8 +53,7 @@ namespace mechanism_configuration
       if (phases_parsing.first != ConfigParseStatus::Success)
       {
         status = phases_parsing.first;
-        std::string msg = configParseStatusToString(status);
-        std::cerr << "[" << msg << "] Failed to parse the phases." << std::endl;
+        result.errors.push_back({ status, "Failed to parse the phases." });
       }
 
       auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second, phases_parsing.second);
@@ -63,22 +61,15 @@ namespace mechanism_configuration
       if (reactions_parsing.first != ConfigParseStatus::Success)
       {
         status = reactions_parsing.first;
-        std::string msg = configParseStatusToString(status);
-        std::cerr << "[" << msg << "] Failed to parse the reactions." << std::endl;
+        result.errors.push_back({ status, "Failed to parse the reactions." });
       }
 
       mechanism->species = species_parsing.second;
       mechanism->phases = phases_parsing.second;
       mechanism->reactions = reactions_parsing.second;
 
-      if (status == ConfigParseStatus::Success)
-      {
-        return std::unique_ptr<GlobalMechanism>(std::move(mechanism));
-      }
-      else
-      {
-        return std::nullopt;
-      }
+      result.mechanism = std::move(mechanism);
+      return result;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

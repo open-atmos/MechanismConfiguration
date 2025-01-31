@@ -4,9 +4,9 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/types.hpp>
 #include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/parser_base.hpp>
 #include <filesystem>
 #include <iostream>
 
@@ -14,9 +14,7 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    using V0Mechanism = ::mechanism_configuration::v0::types::Mechanism;
-
-    class Parser : public ::mechanism_configuration::ParserBase<V0Mechanism>
+    class Parser
     {
       const std::string DEFAULT_CONFIG_FILE_JSON = "config.json";
       const std::string DEFAULT_CONFIG_FILE_YAML = "config.yaml";
@@ -27,17 +25,8 @@ namespace mechanism_configuration
       ConfigParseStatus GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files);
 
      public:
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::filesystem::path& config_path) override;
+      ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
 
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const std::string& config_path) override {
-        return TryParse(std::filesystem::path(config_path));
-      }
-
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source) override {
-        std::cerr << "Version 0 can only parse from a filepath" << std::endl;
-        // version 0 must be given a file
-        return std::nullopt;
-      }
     };
   }  // namespace v0
 }  // namespace mechanism_configuration

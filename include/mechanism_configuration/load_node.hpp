@@ -7,8 +7,6 @@
 
 namespace mechanism_configuration
 {
-  using GlobalMechanism = ::mechanism_configuration::Mechanism;
-
   // Helper for static_assert to provide meaningful error messages
   template<typename>
   struct always_false : std::false_type

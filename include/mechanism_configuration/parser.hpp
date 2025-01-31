@@ -1,7 +1,6 @@
 #pragma once
 
-#include <mechanism_configuration/load_node.hpp>
-#include <mechanism_configuration/parser_base.hpp>
+#include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <memory>
@@ -12,73 +11,30 @@ namespace mechanism_configuration
   class UniversalParser
   {
    public:
-    UniversalParser()
+    ParserResult<GlobalMechanism> Parse(const std::filesystem::path& config_path)
     {
-      RegisterParser(std::make_unique<ParserWrapperImpl<v1::types::Mechanism>>(std::make_unique<v1::Parser>()));
+      ParserResult<GlobalMechanism> result;
+
+      v1::Parser v1_parser;
+      auto v1_result = v1_parser.Parse(config_path);
+
+      if (v1_result)
+      {
+        result.mechanism = std::move(v1_result.mechanism);
+        return result;
+      }
+
+      v0::Parser v0_parser;
+      auto v0_result = v0_parser.Parse(config_path);
+
+      if (v0_result)
+      {
+        result.mechanism = std::move(v0_result.mechanism);
+        return result;
+      }
+
+      result.errors.push_back({ ConfigParseStatus::InvalidVersion, "No parser succeeded" });
+      return result;
     }
-
-    /// @brief Attempts to parse the input using the registered parsers
-    /// @param source A YAML node, file path, or string representing a file path
-    /// @return A unique pointer to the parsed mechanism, or nullptr if no parser succeeded
-    template<typename T>
-    std::optional<std::unique_ptr<GlobalMechanism>> Parse(const T& source)
-    {
-      if constexpr (IsStringOrPath<T>())
-      {
-        // version 0 can only take a string or file path
-        auto result = ::mechanism_configuration::v0::Parser().TryParse(source);
-        if (result)
-        {
-          return result;
-        }
-      }
-      YAML::Node node = LoadNode(source);
-
-      for (const auto& parser : parsers_)
-      {
-        auto result = parser->TryParse(node);
-        if (result)
-        {
-          return result;
-        }
-      }
-      return std::nullopt;
-    }
-
-   private:
-    // Type-erased wrapper for Parsers of different mechanism types
-    class ParserWrapper
-    {
-     public:
-      virtual ~ParserWrapper() = default;
-      virtual std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) = 0;
-    };
-
-    template<typename MechanismType>
-    class ParserWrapperImpl : public ParserWrapper
-    {
-     public:
-      explicit ParserWrapperImpl(std::unique_ptr<::mechanism_configuration::ParserBase<MechanismType>> parser)
-          : parser_(std::move(parser))
-      {
-      }
-
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& node) override
-      {
-        return parser_->TryParse(node);
-      }
-
-     private:
-      std::unique_ptr<::mechanism_configuration::ParserBase<MechanismType>> parser_;
-    };
-
-    /// @brief Registers a new parser
-    /// @param parser A unique pointer to a parser
-    void RegisterParser(std::unique_ptr<ParserWrapper> parser)
-    {
-      parsers_.emplace_back(std::move(parser));
-    }
-
-    std::vector<std::unique_ptr<ParserWrapper>> parsers_;
   };
 }  // namespace mechanism_configuration

@@ -55,4 +55,6 @@ namespace mechanism_configuration
     Mechanism() : version() {}
     virtual ~Mechanism() = default;
   };
+
+  using GlobalMechanism = ::mechanism_configuration::Mechanism;
 }  // namespace mechanism_configuration

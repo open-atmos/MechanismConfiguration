@@ -6,20 +6,18 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/parser_base.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    using V1Mechanism = ::mechanism_configuration::v1::types::Mechanism;
-
-    class Parser : public ::mechanism_configuration::ParserBase<V1Mechanism>
+    class Parser 
     {
      public:
-      std::optional<std::unique_ptr<GlobalMechanism>> TryParse(const YAML::Node& source);
+      ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
     };
   }  // namespace v1
 }  // namespace mechanism_configuration
