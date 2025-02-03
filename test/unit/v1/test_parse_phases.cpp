@@ -38,8 +38,15 @@ TEST(ParserBase, DetectsDuplicatePhases)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/duplicate_phases") + extension);
+    std::string file = std::string("v1_unit_configs/phases/duplicate_phases") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicatePhasesDetected);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -49,8 +56,15 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/missing_required_key") + extension);
+    std::string file = std::string("v1_unit_configs/phases/missing_required_key") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -60,8 +74,15 @@ TEST(ParserBase, DetectsInvalidKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/invalid_key") + extension);
+    std::string file = std::string("v1_unit_configs/phases/invalid_key") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -71,7 +92,14 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/phases/unknown_species") + extension);
+    std::string file = std::string("v1_unit_configs/phases/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::PhaseRequiresUnknownSpecies);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
