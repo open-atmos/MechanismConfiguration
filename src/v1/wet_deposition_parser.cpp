@@ -39,7 +39,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 
         wet_deposition.aerosol_phase = aerosol_phase;
