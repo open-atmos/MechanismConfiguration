@@ -26,5 +26,5 @@ create_standard_test(NAME v1_parse_wet_deposition SOURCES test_parse_wet_deposit
 ################################################################################
 # Copy test data
 
-add_custom_target(copy_unit_test_configs ALL ${CMAKE_COMMAND} -E copy_directory
+add_custom_target(copy_v1_unit_test_configs ALL ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/v1_unit_configs ${CMAKE_BINARY_DIR}/v1_unit_configs)
