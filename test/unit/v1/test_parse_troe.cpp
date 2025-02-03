@@ -71,8 +71,15 @@ TEST(ParserBase, TroeDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/unknown_species") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/troe/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -82,8 +89,16 @@ TEST(ParserBase, TroeDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/bad_reaction_component") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/troe/bad_reaction_component") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -93,7 +108,14 @@ TEST(ParserBase, TroeDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/troe/missing_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/troe/missing_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
