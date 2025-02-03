@@ -11,7 +11,7 @@ namespace mechanism_configuration
       std::string column = std::to_string(object.Mark().column + 1);
       if (!object || object.IsNull())
       {
-        errors.push_back({ConfigParseStatus::RequiredKeyNotFound, "Object is null at line " + line + " column " + column});
+        errors.push_back({ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Object is null"});
       }
 
       std::vector<std::string> sorted_object_keys;
@@ -44,7 +44,7 @@ namespace mechanism_configuration
             sorted_object_keys.end(),
             std::back_inserter(missing_keys));
         for (auto& key : missing_keys) {
-          errors.push_back({ConfigParseStatus::RequiredKeyNotFound, "Missing required key '" + key + "' in object at line " + line + " column " + column});
+          errors.push_back({ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Missing required key '" + key + "'"});
         }
       }
 
@@ -58,7 +58,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[key].Mark().line + 1);
           std::string column = std::to_string(object[key].Mark().column + 1);
-          errors.push_back({ConfigParseStatus::InvalidKey, "Non-standard key '" + key + "' found in object at line " + line + " column " + column});
+          errors.push_back({ConfigParseStatus::InvalidKey, line + ":" + column + ": error: Non-standard key '" + key + "' found"});
         }
       }
 
