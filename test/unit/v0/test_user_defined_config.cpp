@@ -9,7 +9,7 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -25,7 +25,7 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/missing_MUSICA_name");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/missing_MUSICA_name");
   }
   catch (const std::system_error& e)
   {
@@ -37,7 +37,7 @@ TEST(UserDefinedConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./unit_configs/process/user_defined/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -83,7 +83,7 @@ TEST(PhotolysisConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -97,7 +97,7 @@ TEST(PhotolysisConfig, DetectsNonstandardProductCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -111,7 +111,7 @@ TEST(PhotolysisConfig, DetectsNonstandardReactantCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./unit_configs/process/user_defined/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/process/user_defined/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

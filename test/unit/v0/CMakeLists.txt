@@ -6,7 +6,7 @@ include(test_util)
 ################################################################################
 # Tests
 
-# create_standard_test(NAME v0_parse_arrhenius SOURCES test_arrhenius_config.cpp)
+create_standard_test(NAME v0_parse_arrhenius SOURCES test_arrhenius_config.cpp)
 # create_standard_test(NAME v0_parse_branched SOURCES test_branched_config.cpp)
 # create_standard_test(NAME v0_parse_emission SOURCES test_emission_config.cpp)
 # create_standard_test(NAME v0_parse_first_order_loss SOURCES test_first_order_loss_config.cpp)
