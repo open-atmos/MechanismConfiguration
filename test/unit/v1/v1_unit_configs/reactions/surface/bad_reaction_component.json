@@ -16,6 +16,13 @@
         "A",
         "B"
       ]
+    },
+    {
+      "name": "surface reacting phase",
+      "species": [
+        "A",
+        "B"
+      ]
     }
   ],
   "reactions": [
@@ -30,7 +37,7 @@
           "coefficient": 1
         },
         {
-          "species name": "C",
+          "species name": "B",
           "coefficient": 1
         }
       ],

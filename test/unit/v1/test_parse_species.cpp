@@ -45,8 +45,15 @@ TEST(ParserBase, DetectsDuplicateSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/species/duplicate_species") + extension);
+    std::string file = std::string("v1_unit_configs/species/duplicate_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesDetected);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -56,8 +63,16 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/species/missing_required_key") + extension);
+    std::string file = std::string("v1_unit_configs/species/missing_required_key") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -67,7 +82,14 @@ TEST(ParserBase, DetectsInvalidKeys)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/species/invalid_key") + extension);
+    std::string file = std::string("v1_unit_configs/species/invalid_key") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }

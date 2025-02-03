@@ -4,6 +4,10 @@ phases:
   species:
   - A
   - B
+- name: surface reacting phase
+  species:
+  - A
+  - B
 reactions:
 - aerosol phase: surface reacting phase
   gas phase: gas
