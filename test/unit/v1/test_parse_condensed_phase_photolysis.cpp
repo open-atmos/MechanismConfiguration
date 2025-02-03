@@ -132,7 +132,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAero
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownAerosolPhaseWater)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
