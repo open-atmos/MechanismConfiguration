@@ -54,14 +54,14 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species" });
         }
 
         if (reactants.second.size() > 1)
         {
           std::string line = std::to_string(object[validation::keys.reactants].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.reactants].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, "Too many reaction components at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
         }
 
         auto phase_it = std::find_if(
@@ -74,14 +74,14 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, "Requested aerosol species not included in aerosol phase at line " + line + " column " + column });
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
           }
         }
         else
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 
         condensed_phase_photolysis.aerosol_phase = aerosol_phase;

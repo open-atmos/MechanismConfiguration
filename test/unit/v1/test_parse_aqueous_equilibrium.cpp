@@ -55,8 +55,16 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second << std::endl;
+    }
   }
 }
 

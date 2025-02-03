@@ -8,7 +8,6 @@
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
-#include <mechanism_configuration/load_node.hpp>
 
 namespace mechanism_configuration
 {
@@ -16,9 +15,13 @@ namespace mechanism_configuration
   {
     ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
     {
-      YAML::Node object = LoadNode(config_path);
-      ConfigParseStatus status;
       ParserResult<types::Mechanism> result;
+      if (!std::filesystem::exists(config_path))
+      {
+        result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
+        return result;
+      }
+      YAML::Node object = YAML::LoadFile(config_path);
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       auto validate = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
@@ -33,8 +36,7 @@ namespace mechanism_configuration
 
       if (version.major != 1)
       {
-        status = ConfigParseStatus::InvalidVersion;
-        result.errors.push_back({ status, "Invalid version." });
+        result.errors.push_back({ ConfigParseStatus::InvalidVersion, "Invalid version." });
       }
 
       std::string name = object[validation::keys.name].as<std::string>();

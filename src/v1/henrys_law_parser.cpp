@@ -45,7 +45,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species" });
         }
 
         auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
@@ -53,7 +53,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + gas_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
         auto phase_it = std::find_if(
@@ -66,14 +66,14 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, "Requested aerosol species not included in aerosol phase at line " + line + " column " + column });
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
           }
         }
         else
         {
           std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 
         henrys_law.gas_phase = gas_phase;

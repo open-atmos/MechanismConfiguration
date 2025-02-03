@@ -52,7 +52,7 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::keys.Ea].Mark().line + 1);
             std::string column = std::to_string(object[validation::keys.Ea].Mark().column + 1);
-            errors.push_back({ConfigParseStatus::MutuallyExclusiveOption, "Cannot specify both 'C' and 'Ea' in object at line " + line + " column " + column});
+            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
           }
           condensed_phase_arrhenius.C = -1 * object[validation::keys.Ea].as<double>() / constants::boltzmann;
         }
@@ -80,7 +80,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species at line " + line + " column " + column});
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species" });
         }
 
         auto phase_it = std::find_if(
@@ -93,14 +93,14 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, "Requested aerosol species not included in aerosol phase at line " + line + " column " + column});
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
           }
         }
         else
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column});
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 
         condensed_phase_arrhenius.aerosol_phase = aerosol_phase;
