@@ -47,8 +47,16 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/unknown_species") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -58,8 +66,15 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/bad_reaction_component") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/bad_reaction_component") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -69,8 +84,15 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -80,8 +102,15 @@ TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/more_than_one_reactant") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/more_than_one_reactant") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::TooManyReactionComponents);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -91,8 +120,15 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAero
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -102,7 +138,15 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_aerosol_phase_water") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/missing_aerosol_phase_water") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
