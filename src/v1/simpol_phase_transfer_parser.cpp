@@ -34,7 +34,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
         }
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
@@ -44,7 +44,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
         else
         {
@@ -57,7 +57,7 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::keys.aerosol_phase_species].Mark().line + 1);
             std::string column = std::to_string(object[validation::keys.aerosol_phase_species].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Unknown species: " + aerosol_phase_species + " at line " + line + " column " + column });
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aerosol_phase_species });
           }
         }
 
@@ -68,7 +68,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + gas_phase + " at line " + line + " column " + column });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
         else
         {
@@ -79,7 +79,7 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::keys.gas_phase_species].Mark().line + 1);
             std::string column = std::to_string(object[validation::keys.gas_phase_species].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Unknown species: " + gas_phase_species + " at line " + line + " column " + column });
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + gas_phase_species });
           }
         }
 

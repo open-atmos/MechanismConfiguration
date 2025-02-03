@@ -46,8 +46,16 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/unknown_species") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/simpol_phase_transfer/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -57,8 +65,15 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -68,8 +83,15 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -79,8 +101,15 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
@@ -90,8 +119,14 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAeroso
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed =
-        parser.Parse(std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase") + extension);
+    std::string file = std::string("v1_unit_configs/reactions/simpol_phase_transfer/missing_aerosol_phase_species_in_aerosol_phase") + extension;
+    auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
