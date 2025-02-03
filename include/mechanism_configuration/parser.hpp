@@ -14,6 +14,11 @@ namespace mechanism_configuration
     ParserResult<GlobalMechanism> Parse(const std::filesystem::path& config_path)
     {
       ParserResult<GlobalMechanism> result;
+      if (!std::filesystem::exists(config_path))
+      {
+        result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
+        return result;
+      }
 
       v1::Parser v1_parser;
       auto v1_result = v1_parser.Parse(config_path);
@@ -33,7 +38,8 @@ namespace mechanism_configuration
         return result;
       }
 
-      result.errors.push_back({ ConfigParseStatus::InvalidVersion, "No parser succeeded" });
+      result.errors = v1_result.errors;
+      result.errors.insert(result.errors.end(), v0_result.errors.begin(), v0_result.errors.end());
       return result;
     }
   };

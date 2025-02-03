@@ -22,6 +22,9 @@ namespace mechanism_configuration
       case ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase: return "RequestedAerosolSpeciesNotIncludedInAerosolPhase";
       case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
       case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";
+      case ConfigParseStatus::InvalidVersion: return "InvalidVersion";
+      case ConfigParseStatus::UnknownType: return "UnknownType";
+      case ConfigParseStatus::FileNotFound: return "FileNotFound";
       default: return "Unknown";
     }
   }

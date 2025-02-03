@@ -36,5 +36,7 @@ TEST(ParserBase, ParserReportsBadFiles)
     std::string path = "examples/_missing_configuration" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, mechanism_configuration::ConfigParseStatus::FileNotFound);
   }
 }
