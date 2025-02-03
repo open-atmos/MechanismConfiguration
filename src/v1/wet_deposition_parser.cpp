@@ -8,17 +8,18 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ConfigParseStatus WetDepositionParser::parse(
+    Errors WetDepositionParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::WetDeposition wet_deposition;
 
-      status = ValidateSchema(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         if (object[validation::keys.scaling_factor])
         {
@@ -34,9 +35,11 @@ namespace mechanism_configuration
 
         auto it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
-        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        if (it == existing_phases.end())
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
         }
 
         wet_deposition.aerosol_phase = aerosol_phase;
@@ -44,7 +47,7 @@ namespace mechanism_configuration
         reactions.wet_deposition.push_back(wet_deposition);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

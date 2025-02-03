@@ -8,6 +8,7 @@
 
 #include <mechanism_configuration/v0/types.hpp>
 #include <mechanism_configuration/parse_status.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <vector>
 
 namespace mechanism_configuration
@@ -15,22 +16,22 @@ namespace mechanism_configuration
   namespace v0
   {
     // species and mechanism
-    ConfigParseStatus ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products);
-    ConfigParseStatus ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants);
-    ConfigParseStatus ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products);
+    Errors ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants);
+    Errors ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
 
     // reactions
-    ConfigParseStatus ArrheniusParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus BranchedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus FirstOrderLossParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus PhotolysisParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus SurfaceParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus TernaryChemicalActivationParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus TroeParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus TunnelingParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-    ConfigParseStatus UserDefinedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors ArrheniusParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors BranchedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors FirstOrderLossParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors PhotolysisParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors SurfaceParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors TernaryChemicalActivationParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors TroeParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors TunnelingParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+    Errors UserDefinedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
 
   }  // namespace v0
 }  // namespace mechanism_configuration

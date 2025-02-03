@@ -1,4 +1,5 @@
 
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/v0/parser_types.hpp>
 #include <mechanism_configuration/v0/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
@@ -7,68 +8,77 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    ConfigParseStatus ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
-      auto required = { validation::NAME, validation::TYPE };
-      auto optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT };
+      Errors errors;
+      std::vector<std::string> required = { validation::NAME, validation::TYPE };
+      std::vector<std::string> optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT, validation::THIRD_BODY };
 
-      status = ValidateSchema(object, required, optional);
-
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, required, optional);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         std::string name = object[validation::NAME].as<std::string>();
         types::Species species;
         species.name = name;
 
-        // Load remaining keys as properties
+        if (object[validation::MOL_WEIGHT])
+          species.molecular_weight = object[validation::MOL_WEIGHT].as<double>();
+        if (object[validation::DIFFUSION_COEFF])
+          species.diffusion_coefficient = object[validation::DIFFUSION_COEFF].as<double>();
+        if (object[validation::THIRD_BODY])
+          species.third_body = object[validation::THIRD_BODY].as<bool>();
+        if (object[validation::ABS_TOLERANCE])
+          species.absolute_tolerance = object[validation::ABS_TOLERANCE].as<double>();
+        if (object[validation::TRACER_TYPE])
+          species.tracer_type = object[validation::TRACER_TYPE].as<std::string>();
+        if (object[validation::THIRD_BODY])
+          species.third_body = object[validation::THIRD_BODY].as<bool>();
+
+        // Load remaining keys as unknown properties
         for (auto it = object.begin(); it != object.end(); ++it)
         {
           auto key = it->first.as<std::string>();
           auto value = it->second;
 
-          if (key != validation::NAME && key != validation::TYPE)
+          if (std::find(required.begin(), required.end(), key) == required.end() && std::find(optional.begin(), optional.end(), key) == optional.end())
           {
             std::string stringValue = value.as<std::string>();
             species.unknown_properties[key] = stringValue;
-
-            if (key == validation::TRACER_TYPE && stringValue == validation::THIRD_BODY)
-            {
-              species.third_body = true;
-            }
           }
         }
         mechanism->species.push_back(species);
       }
 
-      return status;
+      return errors;
     }
 
-    ConfigParseStatus ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       auto required = { validation::VALUE, validation::TYPE };
 
-      status = ValidateSchema(object, required, {});
-
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, required, {});
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         mechanism->relative_tolerance = object[validation::VALUE].as<double>();
       }
 
-      return status;
+      return errors;
     }
 
-    ConfigParseStatus ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants)
+    Errors ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       for (auto it = object.begin(); it != object.end(); ++it)
       {
         auto key = it->first.as<std::string>();
         auto value = it->second;
 
-        status = ValidateSchema(value, {}, { validation::QTY });
-        if (status == ConfigParseStatus::Success)
+        auto validate = ValidateSchema(value, {}, { validation::QTY });
+        errors.insert(errors.end(), validate.begin(), validate.end());
+        if (validate.empty())
         {
           double qty = 1;
           if (value[validation::QTY])
@@ -78,19 +88,20 @@ namespace mechanism_configuration
         }
       }
 
-      return status;
+      return errors;
     }
 
-    ConfigParseStatus ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products)
+    Errors ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       for (auto it = object.begin(); it != object.end(); ++it)
       {
         auto key = it->first.as<std::string>();
         auto value = it->second;
 
-        status = ValidateSchema(value, {}, { validation::YIELD });
-        if (status == ConfigParseStatus::Success)
+        auto validate = ValidateSchema(value, {}, { validation::YIELD });
+        errors.insert(errors.end(), validate.begin(), validate.end());
+        if (validate.empty())
         {
           types::ReactionComponent product = { .species_name = key, .coefficient = 1 };
           if (value[validation::YIELD])
@@ -101,7 +112,7 @@ namespace mechanism_configuration
           products.push_back(product);
         }
       }
-      return status;
+      return errors;
     }
   }  // namespace v0
 }  // namespace mechanism_configuration

@@ -21,11 +21,11 @@ namespace mechanism_configuration
       ParserResult<types::Mechanism> result;
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
-      status = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
+      auto validate = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
 
-      if (status != ConfigParseStatus::Success)
+      if (!validate.empty())
       {
-        result.errors.push_back({ status, "Invalid top level configuration." });
+        result.errors = validate;
         return result;
       }
 
@@ -41,28 +41,13 @@ namespace mechanism_configuration
       mechanism->name = name;
 
       auto species_parsing = ParseSpecies(object[validation::keys.species]);
-
-      if (species_parsing.first != ConfigParseStatus::Success)
-      {
-        status = species_parsing.first;
-        result.errors.push_back({ status, "Failed to parse the species." });
-      }
+      result.errors.insert(result.errors.end(), species_parsing.first.begin(), species_parsing.first.end());
 
       auto phases_parsing = ParsePhases(object[validation::keys.phases], species_parsing.second);
-
-      if (phases_parsing.first != ConfigParseStatus::Success)
-      {
-        status = phases_parsing.first;
-        result.errors.push_back({ status, "Failed to parse the phases." });
-      }
+      result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
 
       auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second, phases_parsing.second);
-
-      if (reactions_parsing.first != ConfigParseStatus::Success)
-      {
-        status = reactions_parsing.first;
-        result.errors.push_back({ status, "Failed to parse the reactions." });
-      }
+      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
 
       mechanism->species = species_parsing.second;
       mechanism->phases = phases_parsing.second;

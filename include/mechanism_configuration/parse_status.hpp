@@ -28,6 +28,7 @@ namespace mechanism_configuration
       RequestedAerosolSpeciesNotIncludedInAerosolPhase,
       TooManyReactionComponents,
       InvalidIonPair,
+      UnknownType
     };
 
     std::string configParseStatusToString(const ConfigParseStatus &status);

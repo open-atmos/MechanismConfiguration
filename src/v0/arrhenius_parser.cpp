@@ -8,35 +8,27 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    ConfigParseStatus ArrheniusParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors ArrheniusParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
 
       auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
       auto optional = { validation::A, validation::B, validation::C, validation::D, validation::E, validation::Ea, validation::MUSICA_NAME };
 
-      status = ValidateSchema(object, required, optional);
-      std::vector<types::ReactionComponent> reactants;
-      std::vector<types::ReactionComponent> products;
-
-      std::vector<std::function<void()>> parseSteps = { [&]()
-                                                        {
-                                                          if (status == ConfigParseStatus::Success)
-                                                            status = ParseReactants(object[validation::REACTANTS], reactants);
-                                                        },
-                                                        [&]()
-                                                        {
-                                                          if (status == ConfigParseStatus::Success)
-                                                            status = ParseProducts(object[validation::PRODUCTS], products);
-                                                        } };
-
-      for (const auto& step : parseSteps)
+      auto status = ValidateSchema(object, required, optional);
+      auto validate = ValidateSchema(object, required, optional);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
-        step();
-      }
+        std::vector<types::ReactionComponent> reactants;
+        std::vector<types::ReactionComponent> products;
 
-      if (status == ConfigParseStatus::Success)
-      {
+        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
+        parse_error = ParseProducts(object[validation::PRODUCTS], products);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
         types::Arrhenius parameters;
         if (object[validation::A])
         {
@@ -63,7 +55,9 @@ namespace mechanism_configuration
         {
           if (parameters.C != 0)
           {
-            status = ConfigParseStatus::MutuallyExclusiveOption;
+            std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
+            std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
+            errors.push_back({ConfigParseStatus::MutuallyExclusiveOption, "Cannot specify both 'C' and 'Ea' in object at line " + line + " column " + column});
           }
           else
           {
@@ -78,7 +72,7 @@ namespace mechanism_configuration
         mechanism->reactions.arrhenius.push_back(parameters);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v0
 }  // namespace mechanism_configuration

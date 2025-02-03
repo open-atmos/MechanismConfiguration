@@ -6,6 +6,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/errors.hpp>
 #include <iostream>
 #include <mechanism_configuration/parse_status.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
@@ -21,7 +22,7 @@ namespace mechanism_configuration
     class IReactionParser
     {
      public:
-      virtual ConfigParseStatus parse(
+      virtual Errors parse(
           const YAML::Node& object,
           const std::vector<v1::types::Species>& existing_species,
           const std::vector<v1::types::Phase>& existing_phases,
@@ -32,15 +33,15 @@ namespace mechanism_configuration
     std::unordered_map<std::string, std::string>
     GetComments(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
 
-    std::pair<ConfigParseStatus, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects);
+    std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<ConfigParseStatus, std::vector<v1::types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<v1::types::Species> existing_species);
+    std::pair<Errors, std::vector<v1::types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<v1::types::Species> existing_species);
 
-    std::pair<ConfigParseStatus, v1::types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
+    std::pair<Errors, v1::types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
-    std::vector<v1::types::ReactionComponent> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object, ConfigParseStatus& status);
+    std::pair<Errors, std::vector<v1::types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
 
-    std::pair<ConfigParseStatus, types::Reactions> ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Reactions> ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
 
     template<typename T>
     bool ContainsUniqueObjectsByName(const std::vector<T>& collection)

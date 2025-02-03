@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <memory>
 #include <utility>
@@ -13,7 +14,7 @@ namespace mechanism_configuration
   struct ParserResult
   {
     std::unique_ptr<MechanismType> mechanism = nullptr;
-    std::vector<std::pair<ConfigParseStatus, std::string>> errors;
+    Errors errors;
 
     bool has_errors() const
     {

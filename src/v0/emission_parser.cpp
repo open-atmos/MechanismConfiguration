@@ -8,16 +8,16 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    ConfigParseStatus EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
 
       auto required = { validation::TYPE, validation::SPECIES, validation::MUSICA_NAME };
       auto optional = { validation::SCALING_FACTOR, validation::PRODUCTS };
 
-      status = ValidateSchema(object, required, optional);
-
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, required, optional);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         std::string species = object[validation::SPECIES].as<std::string>();
         YAML::Node products_object{};
@@ -31,7 +31,7 @@ namespace mechanism_configuration
         mechanism->reactions.user_defined.push_back(user_defined);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v0
 }  // namespace mechanism_configuration

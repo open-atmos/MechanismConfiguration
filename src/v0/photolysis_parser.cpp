@@ -8,29 +8,26 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    ConfigParseStatus PhotolysisParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors PhotolysisParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
 
       auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME };
       auto optional = { validation::SCALING_FACTOR };
 
-      status = ValidateSchema(object, required, optional);
-      std::vector<types::ReactionComponent> reactants;
-      std::vector<types::ReactionComponent> products;
-
-      std::vector<std::function<void()>> parseSteps = {
-        [&](){ if (status == ConfigParseStatus::Success) status = ParseReactants(object[validation::REACTANTS], reactants); },
-        [&](){ if (status == ConfigParseStatus::Success) status = ParseProducts(object[validation::PRODUCTS], products); }
-      };
-
-      for(const auto& step : parseSteps)
+      auto validate = ValidateSchema(object, required, optional);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
-        step();
-      }
+        std::vector<types::ReactionComponent> reactants;
+        std::vector<types::ReactionComponent> products;
 
-      if (status == ConfigParseStatus::Success)
-      {
+        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
+        parse_error = ParseProducts(object[validation::PRODUCTS], products);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
         double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
 
         std::string name = "PHOTO." + object[validation::MUSICA_NAME].as<std::string>();
@@ -38,7 +35,7 @@ namespace mechanism_configuration
         mechanism->reactions.user_defined.push_back(user_defined);
       }
 
-      return status;
-    }
+      return errors;
+    }  // namespace mechanism_configuration
   }  // namespace v0
 }  // namespace mechanism_configuration

@@ -6,12 +6,12 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parse_status.hpp>
 #include <string>
 #include <vector>
 
 namespace mechanism_configuration
 {
-  ConfigParseStatus
-  ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
+  Errors ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
 }  // namespace mechanism_configuration

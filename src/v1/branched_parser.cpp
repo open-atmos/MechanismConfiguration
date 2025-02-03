@@ -8,21 +8,25 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ConfigParseStatus BranchedParser::parse(
+    Errors BranchedParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::Branched branched;
 
-      status = ValidateSchema(object, validation::branched.required_keys, validation::branched.optional_keys);
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, validation::branched.required_keys, validation::branched.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
-        auto alkoxy_products = ParseReactantsOrProducts(validation::keys.alkoxy_products, object, status);
-        auto nitrate_products = ParseReactantsOrProducts(validation::keys.nitrate_products, object, status);
-        auto reactants = ParseReactantsOrProducts(validation::keys.reactants, object, status);
+        auto alkoxy_products = ParseReactantsOrProducts(validation::keys.alkoxy_products, object);
+        errors.insert(errors.end(), alkoxy_products.first.begin(), alkoxy_products.first.end());
+        auto nitrate_products = ParseReactantsOrProducts(validation::keys.nitrate_products, object);
+        errors.insert(errors.end(), nitrate_products.first.begin(), nitrate_products.first.end());
+        auto reactants = ParseReactantsOrProducts(validation::keys.reactants, object);
+        errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
         branched.X = object[validation::keys.X].as<double>();
         branched.Y = object[validation::keys.Y].as<double>();
@@ -35,40 +39,44 @@ namespace mechanism_configuration
         }
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : nitrate_products)
+        for (const auto& spec : nitrate_products.second)
         {
           requested_species.push_back(spec.species_name);
         }
-        for (const auto& spec : alkoxy_products)
+        for (const auto& spec : alkoxy_products.second)
         {
           requested_species.push_back(spec.species_name);
         }
-        for (const auto& spec : reactants)
+        for (const auto& spec : reactants.second)
         {
           requested_species.push_back(spec.species_name);
         }
 
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        if (RequiresUnknownSpecies(requested_species, existing_species))
         {
-          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          std::string line = std::to_string(object.Mark().line + 1);
+          std::string column = std::to_string(object.Mark().column + 1);
+          errors.push_back({ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column});
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].as<std::string>();
         auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
-        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        if (it == existing_phases.end())
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
+          errors.push_back({ConfigParseStatus::UnknownPhase, "Unknown phase: " + gas_phase + " in object at line " + line + " column " + column});
         }
 
         branched.gas_phase = gas_phase;
-        branched.nitrate_products = nitrate_products;
-        branched.alkoxy_products = alkoxy_products;
-        branched.reactants = reactants;
+        branched.nitrate_products = nitrate_products.second;
+        branched.alkoxy_products = alkoxy_products.second;
+        branched.reactants = reactants.second;
         branched.unknown_properties = GetComments(object, validation::branched.required_keys, validation::branched.optional_keys);
         reactions.branched.push_back(branched);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

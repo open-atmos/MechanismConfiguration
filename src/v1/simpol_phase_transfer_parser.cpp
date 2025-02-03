@@ -8,17 +8,18 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ConfigParseStatus SimpolPhaseTransferParser::parse(
+    Errors SimpolPhaseTransferParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
-      status = ValidateSchema(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         std::string gas_phase_species = object[validation::keys.gas_phase_species].as<std::string>();
         std::string aerosol_phase_species = object[validation::keys.aerosol_phase_species].as<std::string>();
@@ -29,17 +30,21 @@ namespace mechanism_configuration
         }
 
         std::vector<std::string> requested_species{ gas_phase_species, aerosol_phase_species };
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        if (RequiresUnknownSpecies(requested_species, existing_species))
         {
-          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          std::string line = std::to_string(object.Mark().line + 1);
+          std::string column = std::to_string(object.Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
         }
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
         auto aerosol_it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
-        if (status == ConfigParseStatus::Success && aerosol_it == existing_phases.end())
+        if (aerosol_it == existing_phases.end())
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
         }
         else
         {
@@ -50,16 +55,20 @@ namespace mechanism_configuration
               [&aerosol_phase_species](const std::string& species) { return species == aerosol_phase_species; });
           if (spec_it == phase.species.end())
           {
-            status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+            std::string line = std::to_string(object[validation::keys.aerosol_phase_species].Mark().line + 1);
+            std::string column = std::to_string(object[validation::keys.aerosol_phase_species].Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Unknown species: " + aerosol_phase_species + " at line " + line + " column " + column });
           }
         }
 
         std::string gas_phase = object[validation::keys.gas_phase].as<std::string>();
         auto gas_it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
-        if (status == ConfigParseStatus::Success && gas_it == existing_phases.end())
+        if (gas_it == existing_phases.end())
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + gas_phase + " at line " + line + " column " + column });
         }
         else
         {
@@ -68,7 +77,9 @@ namespace mechanism_configuration
               phase.species.begin(), phase.species.end(), [&gas_phase_species](const std::string& species) { return species == gas_phase_species; });
           if (spec_it == phase.species.end())
           {
-            status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+            std::string line = std::to_string(object[validation::keys.gas_phase_species].Mark().line + 1);
+            std::string column = std::to_string(object[validation::keys.gas_phase_species].Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Unknown species: " + gas_phase_species + " at line " + line + " column " + column });
           }
         }
 
@@ -93,7 +104,7 @@ namespace mechanism_configuration
         reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

@@ -8,20 +8,23 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ConfigParseStatus CondensedPhasePhotolysisParser::parse(
+    Errors CondensedPhasePhotolysisParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::CondensedPhasePhotolysis condensed_phase_photolysis;
 
-      status = ValidateSchema(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
-        auto products = ParseReactantsOrProducts(validation::keys.products, object, status);
-        auto reactants = ParseReactantsOrProducts(validation::keys.reactants, object, status);
+        auto products = ParseReactantsOrProducts(validation::keys.products, object);
+        errors.insert(errors.end(), products.first.begin(), products.first.end());
+        auto reactants = ParseReactantsOrProducts(validation::keys.reactants, object);
+        errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
         if (object[validation::keys.scaling_factor])
         {
@@ -37,24 +40,28 @@ namespace mechanism_configuration
         std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].as<std::string>();
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : products)
+        for (const auto& spec : products.second)
         {
           requested_species.push_back(spec.species_name);
         }
-        for (const auto& spec : reactants)
+        for (const auto& spec : reactants.second)
         {
           requested_species.push_back(spec.species_name);
         }
         requested_species.push_back(aerosol_phase_water);
 
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        if (RequiresUnknownSpecies(requested_species, existing_species))
         {
-          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          std::string line = std::to_string(object.Mark().line + 1);
+          std::string column = std::to_string(object.Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
         }
 
-        if (status == ConfigParseStatus::Success && reactants.size() > 1)
+        if (reactants.second.size() > 1)
         {
-          status = ConfigParseStatus::TooManyReactionComponents;
+          std::string line = std::to_string(object[validation::keys.reactants].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.reactants].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, "Too many reaction components at line " + line + " column " + column });
         }
 
         auto phase_it = std::find_if(
@@ -63,26 +70,30 @@ namespace mechanism_configuration
         if (phase_it != existing_phases.end())
         {
           std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
-          if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, aerosol_phase_species))
+          if (RequiresUnknownSpecies(requested_species, aerosol_phase_species))
           {
-            status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
+            std::string line = std::to_string(object.Mark().line + 1);
+            std::string column = std::to_string(object.Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, "Requested aerosol species not included in aerosol phase at line " + line + " column " + column });
           }
         }
         else
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object.Mark().line + 1);
+          std::string column = std::to_string(object.Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
         }
 
         condensed_phase_photolysis.aerosol_phase = aerosol_phase;
         condensed_phase_photolysis.aerosol_phase_water = aerosol_phase_water;
-        condensed_phase_photolysis.products = products;
-        condensed_phase_photolysis.reactants = reactants;
+        condensed_phase_photolysis.products = products.second;
+        condensed_phase_photolysis.reactants = reactants.second;
         condensed_phase_photolysis.unknown_properties =
             GetComments(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
         reactions.condensed_phase_photolysis.push_back(condensed_phase_photolysis);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

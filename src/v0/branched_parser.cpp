@@ -9,44 +9,32 @@ namespace mechanism_configuration
 {
   namespace v0
   {
-    ConfigParseStatus BranchedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors BranchedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
 
       auto required = {
         validation::TYPE, validation::REACTANTS, validation::ALKOXY_PRODUCTS, validation::NITRATE_PRODUCTS, validation::X, validation::Y,
         validation::A0,   validation::n
       };
 
-      status = ValidateSchema(object, required, {});
-
-      std::vector<types::ReactionComponent> reactants;
-      std::vector<types::ReactionComponent> alkoxy_products;
-      std::vector<types::ReactionComponent> nitrate_products;
-
-      std::vector<std::function<void()>> parseSteps = { [&]()
-                                                        {
-                                                          if (status == ConfigParseStatus::Success)
-                                                            status = ParseReactants(object[validation::REACTANTS], reactants);
-                                                        },
-                                                        [&]()
-                                                        {
-                                                          if (status == ConfigParseStatus::Success)
-                                                            status = ParseProducts(object[validation::ALKOXY_PRODUCTS], alkoxy_products);
-                                                        },
-                                                        [&]()
-                                                        {
-                                                          if (status == ConfigParseStatus::Success)
-                                                            status = ParseProducts(object[validation::NITRATE_PRODUCTS], nitrate_products);
-                                                        } };
-
-      for (const auto& step : parseSteps)
+      auto validate = ValidateSchema(object, required, {});
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
-        step();
-      }
+        std::vector<types::ReactionComponent> reactants;
+        std::vector<types::ReactionComponent> alkoxy_products;
+        std::vector<types::ReactionComponent> nitrate_products;
 
-      if (status == ConfigParseStatus::Success)
-      {
+        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
+        parse_error = ParseProducts(object[validation::ALKOXY_PRODUCTS], alkoxy_products);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
+        parse_error = ParseProducts(object[validation::NITRATE_PRODUCTS], nitrate_products);
+        errors.insert(errors.end(), parse_error.begin(), parse_error.end());
+
         types::Branched parameters;
         parameters.X = object[validation::X].as<double>();
         // Account for the conversion of reactant concentrations to molecules cm-3
@@ -62,7 +50,7 @@ namespace mechanism_configuration
         mechanism->reactions.branched.push_back(parameters);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v0
 }  // namespace mechanism_configuration

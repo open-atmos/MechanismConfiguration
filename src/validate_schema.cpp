@@ -3,12 +3,15 @@
 
 namespace mechanism_configuration
 {
-    ConfigParseStatus
+    Errors
     ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
     {
+      Errors errors;
+      std::string line = std::to_string(object.Mark().line + 1);
+      std::string column = std::to_string(object.Mark().column + 1);
       if (!object || object.IsNull())
       {
-        return ConfigParseStatus::RequiredKeyNotFound;
+        errors.push_back({ConfigParseStatus::RequiredKeyNotFound, "Object is null at line " + line + " column " + column});
       }
 
       std::vector<std::string> sorted_object_keys;
@@ -40,10 +43,9 @@ namespace mechanism_configuration
             sorted_object_keys.begin(),
             sorted_object_keys.end(),
             std::back_inserter(missing_keys));
-        for (auto& key : missing_keys)
-          std::cerr << "Missing required key '" << key << "' in object: " << object << std::endl;
-
-        return ConfigParseStatus::RequiredKeyNotFound;
+        for (auto& key : missing_keys) {
+          errors.push_back({ConfigParseStatus::RequiredKeyNotFound, "Missing required key '" + key + "' in object at line " + line + " column " + column});
+        }
       }
 
       std::vector<std::string> remaining;
@@ -54,11 +56,12 @@ namespace mechanism_configuration
       {
         if (key.find("__") == std::string::npos)
         {
-          std::cerr << "Non-standard key '" << key << "' found in object" << object << std::endl;
-
-          return ConfigParseStatus::InvalidKey;
+          std::string line = std::to_string(object[key].Mark().line + 1);
+          std::string column = std::to_string(object[key].Mark().column + 1);
+          errors.push_back({ConfigParseStatus::InvalidKey, "Non-standard key '" + key + "' found in object at line " + line + " column " + column});
         }
       }
-      return ConfigParseStatus::Success;
+
+      return errors;
     }
 }  // namespace mechanism_configuration

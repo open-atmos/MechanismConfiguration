@@ -8,17 +8,18 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ConfigParseStatus HenrysLawParser::parse(
+    Errors HenrysLawParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::HenrysLaw henrys_law;
 
-      status = ValidateSchema(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
-      if (status == ConfigParseStatus::Success)
+      auto validate = ValidateSchema(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       {
         std::string gas_phase = object[validation::keys.gas_phase].as<std::string>();
         std::string gas_phase_species = object[validation::keys.gas_phase_species].as<std::string>();
@@ -40,15 +41,19 @@ namespace mechanism_configuration
         requested_aerosol_species.push_back(aerosol_phase_species);
         requested_aerosol_species.push_back(aerosol_phase_water);
 
-        if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_species, existing_species))
+        if (RequiresUnknownSpecies(requested_species, existing_species))
         {
-          status = ConfigParseStatus::ReactionRequiresUnknownSpecies;
+          std::string line = std::to_string(object.Mark().line + 1);
+          std::string column = std::to_string(object.Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, "Reaction requires unknown species in object at line " + line + " column " + column });
         }
 
         auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
-        if (status == ConfigParseStatus::Success && it == existing_phases.end())
+        if (it == existing_phases.end())
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + gas_phase + " at line " + line + " column " + column });
         }
 
         auto phase_it = std::find_if(
@@ -57,14 +62,18 @@ namespace mechanism_configuration
         if (phase_it != existing_phases.end())
         {
           std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
-          if (status == ConfigParseStatus::Success && RequiresUnknownSpecies(requested_aerosol_species, aerosol_phase_species))
+          if (RequiresUnknownSpecies(requested_aerosol_species, aerosol_phase_species))
           {
-            status = ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase;
+            std::string line = std::to_string(object.Mark().line + 1);
+            std::string column = std::to_string(object.Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, "Requested aerosol species not included in aerosol phase at line " + line + " column " + column });
           }
         }
         else
         {
-          status = ConfigParseStatus::UnknownPhase;
+          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, "Unknown phase: " + aerosol_phase + " at line " + line + " column " + column });
         }
 
         henrys_law.gas_phase = gas_phase;
@@ -76,7 +85,7 @@ namespace mechanism_configuration
         reactions.henrys_law.push_back(henrys_law);
       }
 
-      return status;
+      return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

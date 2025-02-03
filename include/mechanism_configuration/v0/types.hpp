@@ -21,10 +21,13 @@ namespace mechanism_configuration
       struct Species
       {
         std::string name;
-        std::map<std::string, double> optional_numerical_properties;
+        double molecular_weight{ 0.0 };
+        double diffusion_coefficient{ 0.0 };
+        bool third_body{ false };
+        double absolute_tolerance{ 0.0 };
+        std::string tracer_type;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
-        bool third_body{ false };
       };
 
       struct Phase

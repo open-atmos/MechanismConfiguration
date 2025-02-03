@@ -6,6 +6,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 #include <mechanism_configuration/parse_status.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
@@ -18,7 +19,7 @@ namespace mechanism_configuration
     class CondensedPhaseArrheniusParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -28,7 +29,7 @@ namespace mechanism_configuration
     class TroeParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -38,7 +39,7 @@ namespace mechanism_configuration
     class BranchedParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -48,7 +49,7 @@ namespace mechanism_configuration
     class TunnelingParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -58,7 +59,7 @@ namespace mechanism_configuration
     class SurfaceParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -68,7 +69,7 @@ namespace mechanism_configuration
     class CondensedPhasePhotolysisParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -78,7 +79,7 @@ namespace mechanism_configuration
     class SimpolPhaseTransferParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -88,7 +89,7 @@ namespace mechanism_configuration
     class EmissionParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -98,7 +99,7 @@ namespace mechanism_configuration
     class PhotolysisParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -108,7 +109,7 @@ namespace mechanism_configuration
     class FirstOrderLossParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -118,7 +119,7 @@ namespace mechanism_configuration
     class AqueousEquilibriumParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -128,7 +129,7 @@ namespace mechanism_configuration
     class WetDepositionParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -138,7 +139,7 @@ namespace mechanism_configuration
     class HenrysLawParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
@@ -148,7 +149,7 @@ namespace mechanism_configuration
     class ArrheniusParser : public IReactionParser
     {
      public:
-      ConfigParseStatus parse(
+      Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,

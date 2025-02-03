@@ -26,92 +26,97 @@ namespace mechanism_configuration
       return unknown_properties;
     }
 
-    std::pair<ConfigParseStatus, std::vector<types::Species>> ParseSpecies(const YAML::Node& objects)
+    std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       std::vector<types::Species> all_species;
 
       for (const auto& object : objects)
       {
         types::Species species;
-        status = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
-        if (status != ConfigParseStatus::Success)
+        auto validate = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
+        errors.insert(errors.end(), validate.begin(), validate.end());
+        if (validate.empty())
         {
-          break;
-        }
+          std::string name = object[validation::keys.name].as<std::string>();
 
-        std::string name = object[validation::keys.name].as<std::string>();
-
-        std::map<std::string, double> numerical_properties{};
-        for (const auto& key : validation::species.optional_keys)
-        {
-          if (object[key])
+          std::map<std::string, double> numerical_properties{};
+          for (const auto& key : validation::species.optional_keys)
           {
-            double val = object[key].as<double>();
-            numerical_properties[key] = val;
+            if (object[key])
+            {
+              double val = object[key].as<double>();
+              numerical_properties[key] = val;
+            }
           }
+
+          species.name = name;
+          species.optional_numerical_properties = numerical_properties;
+          species.unknown_properties = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
+
+          all_species.push_back(species);
         }
-
-        species.name = name;
-        species.optional_numerical_properties = numerical_properties;
-        species.unknown_properties = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
-
-        all_species.push_back(species);
       }
 
       if (!ContainsUniqueObjectsByName<types::Species>(all_species))
-        status = ConfigParseStatus::DuplicateSpeciesDetected;
+      {
+        errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, "Duplicate species detected." });
+      }
 
-      return { status, all_species };
+      return { errors, all_species };
     }
 
-    std::pair<ConfigParseStatus, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species)
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species)
     {
+      Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
 
       for (const auto& object : objects)
       {
         types::Phase phase;
-        status = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
-        if (status != ConfigParseStatus::Success)
+        auto validate = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
+        errors.insert(errors.end(), validate.begin(), validate.end());
+        if (validate.empty())
         {
-          break;
+          std::string name = object[validation::keys.name].as<std::string>();
+
+          std::vector<std::string> species{};
+          for (const auto& spec : object[validation::keys.species])
+          {
+            species.push_back(spec.as<std::string>());
+          }
+
+          phase.name = name;
+          phase.species = species;
+          phase.unknown_properties = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
+
+          if (RequiresUnknownSpecies(species, existing_species))
+          {
+            errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, "Phase requires unknown species." });
+          }
+          else {
+            all_phases.push_back(phase);
+          }
         }
-
-        std::string name = object[validation::keys.name].as<std::string>();
-
-        std::vector<std::string> species{};
-        for (const auto& spec : object[validation::keys.species])
-        {
-          species.push_back(spec.as<std::string>());
-        }
-
-        phase.name = name;
-        phase.species = species;
-        phase.unknown_properties = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
-
-        if (RequiresUnknownSpecies(species, existing_species))
-        {
-          status = ConfigParseStatus::PhaseRequiresUnknownSpecies;
-          break;
-        }
-
-        all_phases.push_back(phase);
       }
 
-      if (status == ConfigParseStatus::Success && !ContainsUniqueObjectsByName<types::Phase>(all_phases))
-        status = ConfigParseStatus::DuplicatePhasesDetected;
+      if (!ContainsUniqueObjectsByName<types::Phase>(all_phases)) {
+        errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, "Duplicate phases detected." });
+      }
 
-      return { status, all_phases };
+      return { errors, all_phases };
     }
 
-    std::pair<ConfigParseStatus, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)
+    std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)
     {
+      Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::ReactionComponent component;
 
-      status = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      auto validate = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      errors.insert(errors.end(), validate.begin(), validate.end());
+      if (validate.empty())
       if (status == ConfigParseStatus::Success)
       {
         std::string species_name = object[validation::keys.species_name].as<std::string>();
@@ -127,29 +132,29 @@ namespace mechanism_configuration
             GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
       }
 
-      return { status, component };
+      return { errors, component };
     }
 
-    std::vector<types::ReactionComponent> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object, ConfigParseStatus& status)
+    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object)
     {
+      Errors errors;
       std::vector<types::ReactionComponent> result{};
       for (const auto& product : object[key])
       {
         auto component_parse = ParseReactionComponent(product);
-        status = component_parse.first;
-        if (status != ConfigParseStatus::Success)
+        errors.insert(errors.end(), component_parse.first.begin(), component_parse.first.end());
+        if (component_parse.first.empty())
         {
-          break;
+          result.push_back(component_parse.second);
         }
-        result.push_back(component_parse.second);
       }
-      return result;
+      return { errors, result };
     }
 
-    std::pair<ConfigParseStatus, types::Reactions>
+    std::pair<Errors, types::Reactions>
     ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
+      Errors errors;
       types::Reactions reactions;
 
       std::map<std::string, std::unique_ptr<IReactionParser>> parsers;
@@ -174,21 +179,18 @@ namespace mechanism_configuration
         auto it = parsers.find(type);
         if (it != parsers.end())
         {
-          auto parse_status = it->second->parse(object, existing_species, existing_phases, reactions);
-          status = parse_status;
-          if (status != ConfigParseStatus::Success)
-          {
-            break;
-          }
+          auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
+          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
         }
         else
         {
-          const std::string& msg = "Unknown type: " + type;
-          throw std::runtime_error(msg);
+          std::string line = std::to_string(object[validation::keys.type].Mark().line + 1);
+          std::string column = std::to_string(object[validation::keys.type].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
         }
       }
 
-      return { status, reactions };
+      return { errors, reactions };
     }
   }  // namespace v1
 }  // namespace mechanism_configuration
