@@ -10,6 +10,7 @@
 #include <mechanism_configuration/v0/parser_types.hpp>
 #include <mechanism_configuration/v0/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+#include <functional>
 
 namespace mechanism_configuration
 {
