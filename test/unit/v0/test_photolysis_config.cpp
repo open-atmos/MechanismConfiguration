@@ -1,119 +1,141 @@
-#include <micm/configure/solver_config.hpp>
-
 #include <gtest/gtest.h>
+
+#include <mechanism_configuration/v0/parser.hpp>
+#include <mechanism_configuration/constants.hpp>
+
+using namespace mechanism_configuration;
 
 TEST(PhotolysisConfig, DetectsInvalidConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    std::string file = "./v0_unit_configs/photolysis/missing_reactants/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
 
-  // Read and parse the configure files
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_reactants");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_products");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_MUSICA_name");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
+    file = "./v0_unit_configs/photolysis/missing_products/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+
+    file = "./v0_unit_configs/photolysis/missing_MUSICA_name/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(PhotolysisConfig, ParseConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/photolysis/valid"));
-
-  micm::SolverParameters solver_params = solver_config.GetSolverParams();
-
-  auto& process_vector = solver_params.processes_;
-
-  // first reaction
+  for (auto& extension : extensions)
   {
-    EXPECT_EQ(process_vector[0].reactants_.size(), 1);
-    EXPECT_EQ(process_vector[0].reactants_[0].name_, "foo");
-    EXPECT_EQ(process_vector[0].products_.size(), 2);
-    EXPECT_EQ(process_vector[0].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[0].products_[0].second, 1.0);
-    EXPECT_EQ(process_vector[0].products_[1].first.name_, "baz");
-    EXPECT_EQ(process_vector[0].products_[1].second, 3.2);
-    micm::UserDefinedRateConstant* photo_rate_constant =
-        dynamic_cast<micm::UserDefinedRateConstant*>(process_vector[0].rate_constant_.get());
-    EXPECT_EQ(photo_rate_constant->SizeCustomParameters(), 1);
-    EXPECT_EQ(photo_rate_constant->CustomParameters()[0], "PHOTO.jfoo");
-    EXPECT_EQ(photo_rate_constant->parameters_.scaling_factor_, 1.0);
-  }
+    std::string file = "./v0_unit_configs/photolysis/valid/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_TRUE(parsed);
+    v0::types::Mechanism mechanism = *parsed;
 
-  // second reaction
-  {
-    EXPECT_EQ(process_vector[1].reactants_.size(), 1);
-    EXPECT_EQ(process_vector[1].reactants_[0].name_, "bar");
-    EXPECT_EQ(process_vector[1].products_.size(), 2);
-    EXPECT_EQ(process_vector[1].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[1].products_[0].second, 0.5);
-    EXPECT_EQ(process_vector[1].products_[1].first.name_, "foo");
-    EXPECT_EQ(process_vector[1].products_[1].second, 1.0);
-    micm::UserDefinedRateConstant* photo_rate_constant =
-        dynamic_cast<micm::UserDefinedRateConstant*>(process_vector[1].rate_constant_.get());
-    EXPECT_EQ(photo_rate_constant->SizeCustomParameters(), 1);
-    EXPECT_EQ(photo_rate_constant->CustomParameters()[0], "PHOTO.jbar");
-    EXPECT_EQ(photo_rate_constant->parameters_.scaling_factor_, 2.5);
+    auto& process_vector = mechanism.reactions.user_defined;
+    EXPECT_EQ(process_vector.size(), 2);
+
+    // first reaction
+    {
+      EXPECT_EQ(process_vector[0].reactants.size(), 1);
+      EXPECT_EQ(process_vector[0].reactants[0].species_name, "foo");
+      EXPECT_EQ(process_vector[0].products.size(), 2);
+      EXPECT_EQ(process_vector[0].products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
+      EXPECT_EQ(process_vector[0].products[1].species_name, "baz");
+      EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
+      EXPECT_EQ(process_vector[0].name, "PHOTO.jfoo");
+      EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
+    }
+
+    // second reaction
+    {
+      EXPECT_EQ(process_vector[1].reactants.size(), 1);
+      EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].products.size(), 2);
+      EXPECT_EQ(process_vector[1].products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
+      EXPECT_EQ(process_vector[1].products[1].species_name, "foo");
+      EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
+      EXPECT_EQ(process_vector[1].name, "PHOTO.jbar");
+      EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
+    }
   }
 }
 
 TEST(PhotolysisConfig, DetectsNonstandardKeys)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/contains_nonstandard_key");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/photolysis/contains_nonstandard_key/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(PhotolysisConfig, DetectsNonstandardProductCoefficient)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/nonstandard_product_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/photolysis/nonstandard_product_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(PhotolysisConfig, DetectsNonstandardReactantCoefficient)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/photolysis/nonstandard_reactant_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/photolysis/nonstandard_reactant_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
