@@ -1,111 +1,131 @@
-#include <micm/configure/solver_config.hpp>
-
 #include <gtest/gtest.h>
+
+#include <mechanism_configuration/v0/parser.hpp>
+#include <mechanism_configuration/constants.hpp>
+
+using namespace mechanism_configuration;
 
 TEST(SurfaceConfig, DetectsInvalidConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    std::string file = "./v0_unit_configs/surface/missing_reactants/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
 
-  // Read and parse the configure files
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_reactants");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_products");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_MUSICA_name");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
+    file = "./v0_unit_configs/surface/missing_products/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+
+    file = "./v0_unit_configs/surface/missing_MUSICA_name/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(SurfaceConfig, ParseConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/surface/valid"));
-
-  micm::SolverParameters solver_params = solver_config.GetSolverParams();
-
-  auto& process_vector = solver_params.processes_;
-
-  // first reaction
+  for (auto& extension : extensions)
   {
-    EXPECT_EQ(process_vector[0].reactants_.size(), 1);
-    EXPECT_EQ(process_vector[0].reactants_[0].name_, "foo");
-    EXPECT_EQ(process_vector[0].products_.size(), 2);
-    EXPECT_EQ(process_vector[0].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[0].products_[0].second, 1.0);
-    EXPECT_EQ(process_vector[0].products_[1].first.name_, "baz");
-    EXPECT_EQ(process_vector[0].products_[1].second, 3.2);
-    micm::SurfaceRateConstant* surface_rate_constant =
-        dynamic_cast<micm::SurfaceRateConstant*>(process_vector[0].rate_constant_.get());
-    EXPECT_EQ(surface_rate_constant->SizeCustomParameters(), 2);
-    EXPECT_EQ(surface_rate_constant->CustomParameters()[0], "SURF.kfoo.effective radius [m]");
-    EXPECT_EQ(surface_rate_constant->CustomParameters()[1], "SURF.kfoo.particle number concentration [# m-3]");
-    EXPECT_EQ(surface_rate_constant->parameters_.reaction_probability_, 1.0);
-    EXPECT_EQ(surface_rate_constant->diffusion_coefficient_, 2.3e-4);
-    EXPECT_EQ(surface_rate_constant->mean_free_speed_factor_, 8.0 * micm::constants::GAS_CONSTANT / (M_PI * 0.123));
-  }
+    std::string file = "./v0_unit_configs/surface/valid/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_TRUE(parsed);
+    v0::types::Mechanism mechanism = *parsed;
 
-  // second reaction
-  {
-    EXPECT_EQ(process_vector[1].reactants_.size(), 1);
-    EXPECT_EQ(process_vector[1].reactants_[0].name_, "bar");
-    EXPECT_EQ(process_vector[1].products_.size(), 2);
-    EXPECT_EQ(process_vector[1].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[1].products_[0].second, 0.5);
-    EXPECT_EQ(process_vector[1].products_[1].first.name_, "foo");
-    EXPECT_EQ(process_vector[1].products_[1].second, 1.0);
-    micm::SurfaceRateConstant* surface_rate_constant =
-        dynamic_cast<micm::SurfaceRateConstant*>(process_vector[1].rate_constant_.get());
-    EXPECT_EQ(surface_rate_constant->SizeCustomParameters(), 2);
-    EXPECT_EQ(surface_rate_constant->CustomParameters()[0], "SURF.kbar.effective radius [m]");
-    EXPECT_EQ(surface_rate_constant->CustomParameters()[1], "SURF.kbar.particle number concentration [# m-3]");
-    EXPECT_EQ(surface_rate_constant->parameters_.reaction_probability_, 0.5);
-    EXPECT_EQ(surface_rate_constant->diffusion_coefficient_, 0.4e-5);
-    EXPECT_EQ(surface_rate_constant->mean_free_speed_factor_, 8.0 * micm::constants::GAS_CONSTANT / (M_PI * 0.321));
+    auto& process_vector = mechanism.reactions.surface;
+    EXPECT_EQ(process_vector.size(), 2);
+
+    // first reaction
+    {
+      EXPECT_EQ(process_vector[0].gas_phase_species.species_name, "foo");
+      EXPECT_EQ(process_vector[0].gas_phase_products.size(), 2);
+      EXPECT_EQ(process_vector[0].gas_phase_products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[0].gas_phase_products[0].coefficient, 1.0);
+      EXPECT_EQ(process_vector[0].gas_phase_products[1].species_name, "baz");
+      EXPECT_EQ(process_vector[0].gas_phase_products[1].coefficient, 3.2);
+      EXPECT_EQ(process_vector[0].name, "SURF.kfoo");
+      EXPECT_EQ(process_vector[0].reaction_probability, 1.0);
+      auto it = std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) {
+        return species.name == "foo";
+      });
+      ASSERT_NE(it, mechanism.species.end());
+      EXPECT_EQ(it->diffusion_coefficient, 2.3e-4);
+    }
+
+    // second reaction
+    {
+      EXPECT_EQ(process_vector[1].gas_phase_species.species_name, "bar");
+      EXPECT_EQ(process_vector[1].gas_phase_products.size(), 2);
+      EXPECT_EQ(process_vector[1].gas_phase_products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].gas_phase_products[0].coefficient, 0.5);
+      EXPECT_EQ(process_vector[1].gas_phase_products[1].species_name, "foo");
+      EXPECT_EQ(process_vector[1].gas_phase_products[1].coefficient, 1.0);
+      EXPECT_EQ(process_vector[1].name, "SURF.kbar");
+      EXPECT_EQ(process_vector[1].reaction_probability, 0.5);
+      auto it = std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) {
+        return species.name == "bar";
+      });
+      ASSERT_NE(it, mechanism.species.end());
+      EXPECT_EQ(it->diffusion_coefficient, 0.4e-5);
+    }
   }
 }
 
 TEST(SurfaceConfig, DetectsNonstandardKeys)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/surface/contains_nonstandard_key");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/surface/contains_nonstandard_key/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(SurfaceConfig, DetectsNonstandardProductCoefficient)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/surface/nonstandard_product_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/surface/nonstandard_product_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
