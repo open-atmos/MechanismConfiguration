@@ -33,7 +33,13 @@ namespace mechanism_configuration
         {
           parameters.A = object[validation::A].as<double>();
         }
-        parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+        // collect the total number of moles of reactants
+        int total_moles = 0;
+        for (const auto& reactant : reactants)
+        {
+          total_moles += reactant.coefficient;
+        }
+        parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
         if (object[validation::B])
         {
           parameters.B = object[validation::B].as<double>();
