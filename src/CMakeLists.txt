@@ -5,7 +5,7 @@ configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configurat
 add_library(mechanism_configuration)
 add_library(open_atmos::mechanism_configuration ALIAS mechanism_configuration)
 
-target_compile_features(mechanism_configuration PUBLIC cxx_std_17)
+target_compile_features(mechanism_configuration PRIVATE cxx_std_20)
 
 target_sources(mechanism_configuration
   PRIVATE
