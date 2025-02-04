@@ -36,7 +36,12 @@ namespace mechanism_configuration
           parameters.k0_A = object[validation::K0_A].as<double>();
         }
         // Account for the conversion of reactant concentrations (including M) to molecules cm-3
-        parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size());
+        int total_moles = 0;
+        for (const auto& reactant : reactants)
+        {
+          total_moles += reactant.coefficient;
+        }
+        parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles);
         if (object[validation::K0_B])
         {
           parameters.k0_B = object[validation::K0_B].as<double>();
@@ -50,7 +55,7 @@ namespace mechanism_configuration
           parameters.kinf_A = object[validation::KINF_A].as<double>();
         }
         // Account for terms in denominator and exponent that include [M] but not other reactants
-        parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+        parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
         if (object[validation::KINF_B])
         {
           parameters.kinf_B = object[validation::KINF_B].as<double>();
