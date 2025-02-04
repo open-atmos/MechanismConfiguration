@@ -14,7 +14,6 @@ function(create_standard_test)
 
   target_link_libraries(test_${TEST_NAME} PUBLIC open_atmos::mechanism_configuration GTest::gtest_main)
 
-  target_compile_features(test_${TEST_NAME} PRIVATE cxx_std_20)
 
   # link additional libraries
   foreach(library ${TEST_LIBRARIES})
