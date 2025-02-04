@@ -21,7 +21,7 @@ namespace mechanism_configuration
         result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
         return result;
       }
-      YAML::Node object = YAML::LoadFile(config_path);
+      YAML::Node object = YAML::LoadFile(config_path.string());
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       auto validate = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
