@@ -5,6 +5,7 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
+#include <filesystem>
 
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/mechanism.hpp>

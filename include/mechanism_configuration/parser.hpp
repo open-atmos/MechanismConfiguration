@@ -5,6 +5,7 @@
 #include <mechanism_configuration/v0/parser.hpp>
 #include <memory>
 #include <vector>
+#include <filesystem>
 
 namespace mechanism_configuration
 {

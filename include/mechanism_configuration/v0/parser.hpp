@@ -3,12 +3,12 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
+#include <filesystem>
 
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/types.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/errors.hpp>
-#include <filesystem>
 #include <iostream>
 
 namespace mechanism_configuration
