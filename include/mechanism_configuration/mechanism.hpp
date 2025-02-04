@@ -10,39 +10,51 @@
 
 namespace mechanism_configuration
 {
-  struct Version {
+  struct Version
+  {
     unsigned int major;
     unsigned int minor;
     unsigned int patch;
 
-    Version() : major(0), minor(0), patch(0) {}
+    Version()
+        : major(0),
+          minor(0),
+          patch(0)
+    {
+    }
 
-    Version(unsigned int major, unsigned int minor, unsigned int patch) : major(major), minor(minor), patch(patch) {}
+    Version(unsigned int major, unsigned int minor, unsigned int patch)
+        : major(major),
+          minor(minor),
+          patch(patch)
+    {
+    }
 
-    Version(std::string version) {
+    Version(std::string version)
+    {
       std::string delimiter = ".";
       size_t pos = 0;
-      std::string token;
       int i = 0;
-      while ((pos = version.find(delimiter)) != std::string::npos) {
-        token = version.substr(0, pos);
-        switch (i) {
-          case 0:
-            major = std::stoi(token);
-            break;
-          case 1:
-            minor = std::stoi(token);
-            break;
-          case 2:
-            patch = std::stoi(token);
-            break;
+      while ((pos = version.find(delimiter)) != std::string::npos)
+      {
+        std::string token = version.substr(0, pos);
+        switch (i)
+        {
+          case 0: major = std::stoi(token); break;
+          case 1: minor = std::stoi(token); break;
         }
         version.erase(0, pos + delimiter.length());
         i++;
       }
+      // The remaining part is the patch version
+      if (!version.empty())
+      {
+        patch = std::stoi(version);
+      }
     }
 
-    std::string to_string() {
+    std::string to_string()
+    {
       return std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(patch);
     }
   };
@@ -51,8 +63,14 @@ namespace mechanism_configuration
   {
     Version version;
 
-    Mechanism(Version version) : version(version) {}
-    Mechanism() : version() {}
+    Mechanism(Version version)
+        : version(version)
+    {
+    }
+    Mechanism()
+        : version()
+    {
+    }
     virtual ~Mechanism() = default;
   };
 

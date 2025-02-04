@@ -173,6 +173,8 @@ namespace mechanism_configuration
         gas_phase.species.push_back(species.name);
       }
 
+      result.mechanism->version = Version(0, 0, 0);
+
       return result;
     }
   }  // namespace v0

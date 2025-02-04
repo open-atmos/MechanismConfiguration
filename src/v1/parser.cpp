@@ -40,6 +40,8 @@ namespace mechanism_configuration
         return result;
       }
 
+      mechanism->version = version;
+
       std::string name = object[validation::keys.name].as<std::string>();
       mechanism->name = name;
 

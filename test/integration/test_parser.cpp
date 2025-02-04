@@ -12,6 +12,10 @@ TEST(ParserBase, ParsesFullV0Configuration)
     std::string path = "examples/v0/config" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
+
+    EXPECT_EQ(parsed.mechanism->version.major, 0);
+    EXPECT_EQ(parsed.mechanism->version.minor, 0);
+    EXPECT_EQ(parsed.mechanism->version.patch, 0);
   }
 }
 
@@ -24,6 +28,10 @@ TEST(ParserBase, ParsesFullV1Configuration)
     std::string path = "examples/v1/full_configuration" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
+
+    EXPECT_EQ(parsed.mechanism->version.major, 1);
+    EXPECT_EQ(parsed.mechanism->version.minor, 0);
+    EXPECT_EQ(parsed.mechanism->version.patch, 0);
   }
 }
 

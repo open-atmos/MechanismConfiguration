@@ -22,6 +22,10 @@ TEST(ParserBase, ParsesFullv0Configuration)
     EXPECT_EQ(mechanism.reactions.branched.size(), 2);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 2);
     EXPECT_EQ(mechanism.reactions.surface.size(), 1);
+
+    EXPECT_EQ(mechanism.version.major, 0);
+    EXPECT_EQ(mechanism.version.minor, 0);
+    EXPECT_EQ(mechanism.version.patch, 0);
   }
 }
 
