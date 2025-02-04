@@ -33,7 +33,6 @@ namespace mechanism_configuration
         {
           parameters.A = object[validation::A].as<double>();
         }
-        // collect the total number of moles of reactants
         int total_moles = 0;
         for (const auto& reactant : reactants)
         {

@@ -38,7 +38,12 @@ namespace mechanism_configuration
         types::Branched parameters;
         parameters.X = object[validation::X].as<double>();
         // Account for the conversion of reactant concentrations to molecules cm-3
-        parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+        int total_moles = 0;
+        for (const auto& reactant : reactants)
+        {
+          total_moles += reactant.coefficient;
+        }
+        parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
         parameters.Y = object[validation::Y].as<double>();
         parameters.a0 = object[validation::A0].as<double>();
         parameters.n = object[validation::n].as<int>();

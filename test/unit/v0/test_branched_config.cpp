@@ -1,168 +1,177 @@
-#include <micm/configure/solver_config.hpp>
-
 #include <gtest/gtest.h>
+
+#include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/conversions.hpp>
+#include <mechanism_configuration/v0/parser.hpp>
+
+using namespace mechanism_configuration;
 
 TEST(BranchedConfig, DetectsInvalidConfig)
 {
-  // Read and parse the configure files
-  micm::SolverConfig solver_config;
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_reactants");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_alkoxy_products");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_nitrate_products");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
+    std::string file = "./v0_unit_configs/branched/missing_reactants/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 5);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+
+    file = "./v0_unit_configs/branched/missing_alkoxy_products/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 5);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+
+    file = "./v0_unit_configs/branched/missing_nitrate_products/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 5);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(BranchedConfig, ParseConfig)
 {
-  micm::SolverConfig solver_config;
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/branched/valid"));
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
 
-  micm::SolverParameters solver_params = solver_config.GetSolverParams();
-
-  auto& process_vector = solver_params.processes_;
-  EXPECT_EQ(process_vector.size(), 4);
-
-  // Convert Arrhenius parameters from expecting molecules cm-3 to moles m-3
-  const double conv = 1.0e-6 * 6.02214076e23;
-
-  // first reaction
+  for (auto& extension : extensions)
   {
-    EXPECT_EQ(process_vector[0].reactants_.size(), 3);
-    EXPECT_EQ(process_vector[0].reactants_[0].name_, "foo");
-    EXPECT_EQ(process_vector[0].reactants_[1].name_, "quz");
-    EXPECT_EQ(process_vector[0].reactants_[2].name_, "quz");
-    EXPECT_EQ(process_vector[0].products_.size(), 2);
-    EXPECT_EQ(process_vector[0].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[0].products_[0].second, 1.0);
-    EXPECT_EQ(process_vector[0].products_[1].first.name_, "baz");
-    EXPECT_EQ(process_vector[0].products_[1].second, 3.2);
-    micm::BranchedRateConstant* branched_rate_constant =
-        dynamic_cast<micm::BranchedRateConstant*>(process_vector[0].rate_constant_.get());
-    auto& params = branched_rate_constant->parameters_;
-    EXPECT_EQ(params.X_, 12.3 * std::pow(conv, 2));
-    EXPECT_EQ(params.Y_, 42.3);
-    EXPECT_EQ(params.a0_, 1.0e-5);
-    EXPECT_EQ(params.n_, 3);
-    EXPECT_EQ(params.branch_, micm::BranchedRateConstantParameters::Branch::Alkoxy);
-  }
-  {
-    EXPECT_EQ(process_vector[1].reactants_.size(), 3);
-    EXPECT_EQ(process_vector[1].reactants_[0].name_, "foo");
-    EXPECT_EQ(process_vector[1].reactants_[1].name_, "quz");
-    EXPECT_EQ(process_vector[1].reactants_[2].name_, "quz");
-    EXPECT_EQ(process_vector[1].products_.size(), 1);
-    EXPECT_EQ(process_vector[1].products_[0].first.name_, "quz");
-    EXPECT_EQ(process_vector[1].products_[0].second, 1.0);
-    micm::BranchedRateConstant* branched_rate_constant =
-        dynamic_cast<micm::BranchedRateConstant*>(process_vector[1].rate_constant_.get());
-    auto& params = branched_rate_constant->parameters_;
-    EXPECT_EQ(params.X_, 12.3 * std::pow(conv, 2));
-    EXPECT_EQ(params.Y_, 42.3);
-    EXPECT_EQ(params.a0_, 1.0e-5);
-    EXPECT_EQ(params.n_, 3);
-    EXPECT_EQ(params.branch_, micm::BranchedRateConstantParameters::Branch::Nitrate);
-  }
+    std::string file = "./v0_unit_configs/branched/valid/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_TRUE(parsed);
+    v0::types::Mechanism mechanism = *parsed;
 
-  // second reaction
-  {
-    EXPECT_EQ(process_vector[2].reactants_.size(), 2);
-    EXPECT_EQ(process_vector[2].reactants_[0].name_, "bar");
-    EXPECT_EQ(process_vector[2].reactants_[1].name_, "baz");
-    EXPECT_EQ(process_vector[2].products_.size(), 1);
-    EXPECT_EQ(process_vector[2].products_[0].first.name_, "baz");
-    EXPECT_EQ(process_vector[2].products_[0].second, 1.0);
-    micm::BranchedRateConstant* branched_rate_constant =
-        dynamic_cast<micm::BranchedRateConstant*>(process_vector[2].rate_constant_.get());
-    auto& params = branched_rate_constant->parameters_;
-    EXPECT_EQ(params.X_, 0.32 * conv);
-    EXPECT_EQ(params.Y_, 2.3e8);
-    EXPECT_EQ(params.a0_, 0.423);
-    EXPECT_EQ(params.n_, 6);
-    EXPECT_EQ(params.branch_, micm::BranchedRateConstantParameters::Branch::Alkoxy);
-  }
-  {
-    EXPECT_EQ(process_vector[3].reactants_.size(), 2);
-    EXPECT_EQ(process_vector[3].reactants_[0].name_, "bar");
-    EXPECT_EQ(process_vector[3].reactants_[1].name_, "baz");
-    EXPECT_EQ(process_vector[3].products_.size(), 2);
-    EXPECT_EQ(process_vector[3].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[3].products_[0].second, 0.5);
-    EXPECT_EQ(process_vector[3].products_[1].first.name_, "foo");
-    EXPECT_EQ(process_vector[3].products_[1].second, 1.0);
-    micm::BranchedRateConstant* branched_rate_constant =
-        dynamic_cast<micm::BranchedRateConstant*>(process_vector[3].rate_constant_.get());
-    auto& params = branched_rate_constant->parameters_;
-    EXPECT_EQ(params.X_, 0.32 * conv);
-    EXPECT_EQ(params.Y_, 2.3e8);
-    EXPECT_EQ(params.a0_, 0.423);
-    EXPECT_EQ(params.n_, 6);
-    EXPECT_EQ(params.branch_, micm::BranchedRateConstantParameters::Branch::Nitrate);
+    auto& process_vector = mechanism.reactions.branched;
+    EXPECT_EQ(process_vector.size(), 2);
+
+    // first reaction
+    EXPECT_EQ(process_vector[0].reactants.size(), 2);
+    EXPECT_EQ(process_vector[0].reactants[0].species_name, "foo");
+    EXPECT_EQ(process_vector[0].reactants[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[0].reactants[1].species_name, "quz");
+    EXPECT_EQ(process_vector[0].reactants[1].coefficient, 2.0);
+    EXPECT_EQ(process_vector[0].X, 12.3 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+    EXPECT_EQ(process_vector[0].Y, 42.3);
+    EXPECT_EQ(process_vector[0].a0, 1.0e-5);
+    EXPECT_EQ(process_vector[0].n, 3);
+    EXPECT_EQ(process_vector[0].alkoxy_products.size(), 2);
+    EXPECT_EQ(process_vector[0].alkoxy_products[0].species_name, "bar");
+    EXPECT_EQ(process_vector[0].alkoxy_products[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[0].alkoxy_products[1].species_name, "baz");
+    EXPECT_EQ(process_vector[0].alkoxy_products[1].coefficient, 3.2);
+    EXPECT_EQ(process_vector[0].nitrate_products.size(), 1);
+    EXPECT_EQ(process_vector[0].nitrate_products[0].species_name, "quz");
+    EXPECT_EQ(process_vector[0].nitrate_products[0].coefficient, 1.0);
+
+    // second reaction
+    EXPECT_EQ(process_vector[1].X, 0.32 * conversions::MolesM3ToMoleculesCm3);
+    EXPECT_EQ(process_vector[1].Y, 2.3e8);
+    EXPECT_EQ(process_vector[1].a0, 0.423);
+    EXPECT_EQ(process_vector[1].alkoxy_products.size(), 1);
+    EXPECT_EQ(process_vector[1].alkoxy_products[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[1].alkoxy_products[0].species_name, "baz");
+    EXPECT_EQ(process_vector[1].n, 6);
+    EXPECT_EQ(process_vector[1].nitrate_products.size(), 2);
+    EXPECT_EQ(process_vector[1].nitrate_products[0].coefficient, 0.5);
+    EXPECT_EQ(process_vector[1].nitrate_products[0].species_name, "bar");
+    EXPECT_EQ(process_vector[1].nitrate_products[1].coefficient, 1.0);
+    EXPECT_EQ(process_vector[1].nitrate_products[1].species_name, "foo");
+    EXPECT_EQ(process_vector[1].reactants.size(), 2);
+    EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
+    EXPECT_EQ(process_vector[1].reactants[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[1].reactants[1].species_name, "baz");
+    EXPECT_EQ(process_vector[1].reactants[1].coefficient, 1.0);
   }
 }
 
 TEST(BranchedConfig, DetectsNonstandardKeys)
 {
-  micm::SolverConfig solver_config;
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/contains_nonstandard_key");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/branched/contains_nonstandard_key/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(BranchedConfig, DetectsNonstandardProductCoefficient)
 {
-  micm::SolverConfig solver_config;
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_alkoxy_product_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_nitrate_product_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/branched/nonstandard_alkoxy_product_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+
+    file = "./v0_unit_configs/branched/nonstandard_nitrate_product_coef/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(BranchedConfig, DetectsNonstandardReactantCoefficient)
 {
-  micm::SolverConfig solver_config;
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_reactant_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/branched/nonstandard_reactant_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
