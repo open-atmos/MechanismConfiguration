@@ -12,52 +12,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gcc:
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [Debug, Release]
-        enable_json: [OFF, ON]
-        enable_yaml: [OFF, ON]
+        compiler: [g++, clang++]
+        build_type: [Release]
     env:
-      CC: gcc
-      CXX: g++
+      CXX: ${{ matrix.compiler }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Run Cmake 
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D ENABLE_JSON=${{ matrix.enable_json }} -D ENABLE_YAML=${{ matrix.enable_yaml }}
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
       - name: Build
-        run: cmake --build build --parallel 10
+        run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
       - name: Run tests
         run: |
           cd build
-          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose -j 10
-
-  clang:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        build_type: [Debug, Release]
-        enable_json: [OFF, ON]
-        enable_yaml: [OFF, ON]
-    env:
-      CC: clang
-      CXX: clang++
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Cmake 
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D ENABLE_JSON=${{ matrix.enable_json }} -D ENABLE_YAML=${{ matrix.enable_yaml }}
-
-      - name: Build
-        run: cmake --build build --verbose
-
-      - name: Run tests
-        run: |
-          cd build
-          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose -j 10
+          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
