@@ -1,119 +1,138 @@
-#include <micm/configure/solver_config.hpp>
-
 #include <gtest/gtest.h>
+
+#include <mechanism_configuration/v0/parser.hpp>
+#include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/conversions.hpp>
+
+using namespace mechanism_configuration;
 
 TEST(TunnelingConfig, DetectsInvalidConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    std::string file = "./v0_unit_configs/tunneling/missing_reactants/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
 
-  // Read and parse the configure files
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/tunneling/missing_reactants");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
-  }
-  try
-  {
-    solver_config.ReadAndParse("./v0_unit_configs/tunneling/missing_products");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::RequiredKeyNotFound));
+    file = "./v0_unit_configs/tunneling/missing_products/config" + extension;
+    parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(TunnelingConfig, ParseConfig)
 {
-  micm::SolverConfig solver_config;
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/tunneling/valid"));
-
-  micm::SolverParameters solver_params = solver_config.GetSolverParams();
-
-  auto& process_vector = solver_params.processes_;
-
-  // Convert Arrhenius parameters from expecting molecules cm-3 to moles m-3
-  const double conv = 1.0e-6 * 6.02214076e23;
-
-  // first reaction
+  for (auto& extension : extensions)
   {
-    EXPECT_EQ(process_vector[0].reactants_.size(), 3);
-    EXPECT_EQ(process_vector[0].reactants_[0].name_, "foo");
-    EXPECT_EQ(process_vector[0].reactants_[1].name_, "quz");
-    EXPECT_EQ(process_vector[0].reactants_[2].name_, "quz");
-    EXPECT_EQ(process_vector[0].products_.size(), 2);
-    EXPECT_EQ(process_vector[0].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[0].products_[0].second, 1.0);
-    EXPECT_EQ(process_vector[0].products_[1].first.name_, "baz");
-    EXPECT_EQ(process_vector[0].products_[1].second, 3.2);
-    micm::TunnelingRateConstant* tunneling_rate_constant =
-        dynamic_cast<micm::TunnelingRateConstant*>(process_vector[0].rate_constant_.get());
-    auto& params = tunneling_rate_constant->parameters_;
-    EXPECT_EQ(params.A_, 1.0 * conv * conv);
-    EXPECT_EQ(params.B_, 0.0);
-    EXPECT_EQ(params.C_, 0.0);
-  }
+    std::string file = "./v0_unit_configs/tunneling/valid/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_TRUE(parsed);
+    v0::types::Mechanism mechanism = *parsed;
 
-  // second reaction
-  {
-    EXPECT_EQ(process_vector[1].reactants_.size(), 2);
-    EXPECT_EQ(process_vector[1].reactants_[0].name_, "bar");
-    EXPECT_EQ(process_vector[1].reactants_[1].name_, "baz");
-    EXPECT_EQ(process_vector[1].products_.size(), 2);
-    EXPECT_EQ(process_vector[1].products_[0].first.name_, "bar");
-    EXPECT_EQ(process_vector[1].products_[0].second, 0.5);
-    EXPECT_EQ(process_vector[1].products_[1].first.name_, "foo");
-    EXPECT_EQ(process_vector[1].products_[1].second, 1.0);
-    micm::TunnelingRateConstant* tunneling_rate_constant =
-        dynamic_cast<micm::TunnelingRateConstant*>(process_vector[1].rate_constant_.get());
-    auto& params = tunneling_rate_constant->parameters_;
-    EXPECT_EQ(params.A_, 32.1 * conv);
-    EXPECT_EQ(params.B_, -2.3);
-    EXPECT_EQ(params.C_, 102.3);
+    auto& process_vector = mechanism.reactions.tunneling;
+    EXPECT_EQ(process_vector.size(), 2);
+
+    // first reaction
+    {
+      EXPECT_EQ(process_vector[0].reactants.size(), 2);
+      EXPECT_EQ(process_vector[0].reactants[0].species_name, "foo");
+      EXPECT_EQ(process_vector[0].reactants[0].coefficient, 1.0);
+      EXPECT_EQ(process_vector[0].reactants[1].species_name, "quz");
+      EXPECT_EQ(process_vector[0].reactants[1].coefficient, 2.0);
+      EXPECT_EQ(process_vector[0].products.size(), 2);
+      EXPECT_EQ(process_vector[0].products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
+      EXPECT_EQ(process_vector[0].products[1].species_name, "baz");
+      EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
+      EXPECT_EQ(process_vector[0].A, 1.0 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+      EXPECT_EQ(process_vector[0].B, 0.0);
+      EXPECT_EQ(process_vector[0].C, 0.0);
+    }
+
+    // second reaction
+    {
+      EXPECT_EQ(process_vector[1].reactants.size(), 2);
+      EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].reactants[1].species_name, "baz");
+      EXPECT_EQ(process_vector[1].products.size(), 2);
+      EXPECT_EQ(process_vector[1].products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
+      EXPECT_EQ(process_vector[1].products[1].species_name, "foo");
+      EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
+      EXPECT_EQ(process_vector[1].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
+      EXPECT_EQ(process_vector[1].B, -2.3);
+      EXPECT_EQ(process_vector[1].C, 102.3);
+    }
   }
 }
 
 TEST(TunnelingConfig, DetectsNonstandardKeys)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/tunneling/contains_nonstandard_key");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/tunneling/contains_nonstandard_key/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(TunnelingConfig, DetectsNonstandardProductCoefficient)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_product_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/tunneling/nonstandard_product_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 
 TEST(TunnelingConfig, DetectsNonstandardReactantCoefficient)
 {
-  micm::SolverConfig solver_config;
-
-  try
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
   {
-    solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_reactant_coef");
-  }
-  catch (const std::system_error& e)
-  {
-    EXPECT_EQ(e.code().value(), static_cast<int>(MicmConfigErrc::ContainsNonStandardKey));
+    std::string file = "./v0_unit_configs/tunneling/nonstandard_reactant_coef/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }

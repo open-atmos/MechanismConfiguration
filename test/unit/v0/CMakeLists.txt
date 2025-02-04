@@ -14,7 +14,7 @@ create_standard_test(NAME v0_parse_photolysis SOURCES test_photolysis_config.cpp
 create_standard_test(NAME v0_parse_surface SOURCES test_surface_config.cpp)
 create_standard_test(NAME v0_parse_ternary_chemical_activation SOURCES test_ternary_chemical_activation_config.cpp)
 create_standard_test(NAME v0_parse_troe SOURCES test_troe_config.cpp)
-# create_standard_test(NAME v0_parse_tunneling SOURCES test_tunneling_config.cpp)
+create_standard_test(NAME v0_parse_tunneling SOURCES test_tunneling_config.cpp)
 # create_standard_test(NAME v0_parse_user_defined SOURCES test_user_defined_config.cpp)
 
 ################################################################################

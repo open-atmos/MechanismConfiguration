@@ -34,7 +34,12 @@ namespace mechanism_configuration
           parameters.A = object[validation::A].as<double>();
         }
         // Account for the conversion of reactant concentrations to molecules cm-3
-        parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, reactants.size() - 1);
+        int total_moles = 0;
+        for (auto& reactant : reactants)
+        {
+          total_moles += reactant.coefficient;
+        }
+        parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
         if (object[validation::B])
         {
           parameters.B = object[validation::B].as<double>();
