@@ -9,7 +9,7 @@ TEST(FirstOrderLossConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/first_order_loss/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/first_order_loss/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(FirstOrderLossConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/first_order_loss/missing_MUSICA_name");
+    solver_config.ReadAndParse("./v0_unit_configs/first_order_loss/missing_MUSICA_name");
   }
   catch (const std::system_error& e)
   {
@@ -29,7 +29,7 @@ TEST(FirstOrderLossConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/first_order_loss/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/first_order_loss/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -66,7 +66,7 @@ TEST(FirstOrderLossConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/first_order_loss/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/first_order_loss/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {

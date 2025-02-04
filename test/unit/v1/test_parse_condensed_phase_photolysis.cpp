@@ -55,7 +55,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -73,7 +73,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -91,7 +91,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -109,7 +109,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::TooManyReactionComponents);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -127,7 +127,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAero
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -146,7 +146,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownAerosolPhaseWater)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

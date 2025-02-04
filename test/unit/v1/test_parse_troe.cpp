@@ -78,7 +78,7 @@ TEST(ParserBase, TroeDetectsUnknownSpecies)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -97,7 +97,7 @@ TEST(ParserBase, TroeDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -115,7 +115,7 @@ TEST(ParserBase, TroeDetectsUnknownPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

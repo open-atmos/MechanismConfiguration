@@ -45,7 +45,7 @@ TEST(ParserBase, DetectsDuplicatePhases)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicatePhasesDetected);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -63,7 +63,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -81,7 +81,7 @@ TEST(ParserBase, DetectsInvalidKeys)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -99,7 +99,7 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::PhaseRequiresUnknownSpecies);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

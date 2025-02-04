@@ -26,6 +26,8 @@ namespace mechanism_configuration
       std::sort(sorted_required_keys.begin(), sorted_required_keys.end());
       std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());
 
+      // get the difference between the object keys and those required
+      // what's left should be the optional keys and valid comments
       std::vector<std::string> difference;
       std::set_difference(
           sorted_object_keys.begin(),
@@ -34,6 +36,7 @@ namespace mechanism_configuration
           sorted_required_keys.end(),
           std::back_inserter(difference));
 
+      // check that the number of keys remaining is exactly equal to the expected number of required keys
       if (difference.size() != (sorted_object_keys.size() - required_keys.size()))
       {
         std::vector<std::string> missing_keys;
@@ -51,7 +54,8 @@ namespace mechanism_configuration
       std::vector<std::string> remaining;
       std::set_difference(
           difference.begin(), difference.end(), sorted_optional_keys.begin(), sorted_optional_keys.end(), std::back_inserter(remaining));
-
+        
+      // now, anything left must be standard comment starting with __
       for (auto& key : remaining)
       {
         if (key.find("__") == std::string::npos)

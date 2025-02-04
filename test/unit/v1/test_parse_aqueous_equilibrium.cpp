@@ -63,7 +63,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second << std::endl;
+      std::cout << error.second << std::endl;
     }
   }
 }
@@ -86,7 +86,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors[5].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -104,7 +104,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

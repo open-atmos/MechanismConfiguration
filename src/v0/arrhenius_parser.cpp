@@ -15,7 +15,6 @@ namespace mechanism_configuration
       auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
       auto optional = { validation::A, validation::B, validation::C, validation::D, validation::E, validation::Ea, validation::MUSICA_NAME };
 
-      auto status = ValidateSchema(object, required, optional);
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())

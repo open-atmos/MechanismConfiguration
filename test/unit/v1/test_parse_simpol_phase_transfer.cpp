@@ -54,7 +54,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownSpecies)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -72,7 +72,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -90,7 +90,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -108,7 +108,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -126,7 +126,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAerosolPhaseSpeciesNotInAeroso
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

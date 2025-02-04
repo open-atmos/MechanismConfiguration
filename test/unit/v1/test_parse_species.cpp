@@ -52,7 +52,7 @@ TEST(ParserBase, DetectsDuplicateSpecies)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesDetected);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -71,7 +71,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -89,7 +89,7 @@ TEST(ParserBase, DetectsInvalidKeys)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

@@ -9,7 +9,7 @@ TEST(SurfaceConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/surface/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(SurfaceConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/surface/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -25,7 +25,7 @@ TEST(SurfaceConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/surface/missing_MUSICA_name");
+    solver_config.ReadAndParse("./v0_unit_configs/surface/missing_MUSICA_name");
   }
   catch (const std::system_error& e)
   {
@@ -37,7 +37,7 @@ TEST(SurfaceConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/surface/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/surface/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -88,7 +88,7 @@ TEST(SurfaceConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/surface/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/surface/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -102,7 +102,7 @@ TEST(SurfaceConfig, DetectsNonstandardProductCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/surface/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/surface/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {

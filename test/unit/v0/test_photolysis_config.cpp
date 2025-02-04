@@ -9,7 +9,7 @@ TEST(PhotolysisConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(PhotolysisConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -25,7 +25,7 @@ TEST(PhotolysisConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/missing_MUSICA_name");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/missing_MUSICA_name");
   }
   catch (const std::system_error& e)
   {
@@ -37,7 +37,7 @@ TEST(PhotolysisConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/photolysis/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -82,7 +82,7 @@ TEST(PhotolysisConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -96,7 +96,7 @@ TEST(PhotolysisConfig, DetectsNonstandardProductCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -110,7 +110,7 @@ TEST(PhotolysisConfig, DetectsNonstandardReactantCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/photolysis/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/photolysis/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

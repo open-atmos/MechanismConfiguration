@@ -8,7 +8,7 @@ TEST(BranchedConfig, DetectsInvalidConfig)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -16,7 +16,7 @@ TEST(BranchedConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/missing_alkoxy_products");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_alkoxy_products");
   }
   catch (const std::system_error& e)
   {
@@ -24,7 +24,7 @@ TEST(BranchedConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/missing_nitrate_products");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/missing_nitrate_products");
   }
   catch (const std::system_error& e)
   {
@@ -35,7 +35,7 @@ TEST(BranchedConfig, DetectsInvalidConfig)
 TEST(BranchedConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/branched/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/branched/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -125,7 +125,7 @@ TEST(BranchedConfig, DetectsNonstandardKeys)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -138,7 +138,7 @@ TEST(BranchedConfig, DetectsNonstandardProductCoefficient)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/nonstandard_alkoxy_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_alkoxy_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -146,7 +146,7 @@ TEST(BranchedConfig, DetectsNonstandardProductCoefficient)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/nonstandard_nitrate_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_nitrate_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -159,7 +159,7 @@ TEST(BranchedConfig, DetectsNonstandardReactantCoefficient)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/branched/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/branched/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

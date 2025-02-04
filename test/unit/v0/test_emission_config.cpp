@@ -9,7 +9,7 @@ TEST(EmissionConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/emission/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/emission/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(EmissionConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/emission/missing_MUSICA_name");
+    solver_config.ReadAndParse("./v0_unit_configs/emission/missing_MUSICA_name");
   }
   catch (const std::system_error& e)
   {
@@ -29,7 +29,7 @@ TEST(EmissionConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/emission/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/emission/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -68,7 +68,7 @@ TEST(EmissionConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/emission/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/emission/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {

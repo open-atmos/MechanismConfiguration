@@ -9,7 +9,7 @@ TEST(TunnelingConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/tunneling/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/tunneling/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(TunnelingConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/tunneling/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/tunneling/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -29,7 +29,7 @@ TEST(TunnelingConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/tunneling/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/tunneling/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -82,7 +82,7 @@ TEST(TunnelingConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/tunneling/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/tunneling/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -96,7 +96,7 @@ TEST(TunnelingConfig, DetectsNonstandardProductCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -110,7 +110,7 @@ TEST(TunnelingConfig, DetectsNonstandardReactantCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

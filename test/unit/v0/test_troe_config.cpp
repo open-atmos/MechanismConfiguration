@@ -9,7 +9,7 @@ TEST(TroeConfig, DetectsInvalidConfig)
   // Read and parse the configure files
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/troe/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/troe/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -17,7 +17,7 @@ TEST(TroeConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/troe/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/troe/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -29,7 +29,7 @@ TEST(TroeConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
 
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/troe/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/troe/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -93,7 +93,7 @@ TEST(TroeConfig, DetectsNonstandardKeys)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/troe/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/troe/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -107,7 +107,7 @@ TEST(TroeConfig, DetectsNonstandardProductCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/troe/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/troe/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -121,7 +121,7 @@ TEST(TroeConfig, DetectsNonstandardReactantCoefficient)
 
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/troe/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/troe/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

@@ -156,6 +156,11 @@ namespace mechanism_configuration
         YAML::Node config_subset = YAML::LoadFile(camp_file.string());
 
         auto parse_errors = run_parsers(parsers, result.mechanism, config_subset[CAMP_DATA]);
+        // prepend the file name to the error messages
+        for (auto& error : parse_errors)
+        {
+          error.second = camp_file.string() + ":" + error.second;
+        }
         result.errors.insert(result.errors.end(), parse_errors.begin(), parse_errors.end());
       }
 

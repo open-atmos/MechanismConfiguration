@@ -8,7 +8,7 @@ TEST(TernaryChemicalActivationConfig, DetectsInvalidConfig)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/missing_reactants");
+    solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/missing_reactants");
   }
   catch (const std::system_error& e)
   {
@@ -16,7 +16,7 @@ TEST(TernaryChemicalActivationConfig, DetectsInvalidConfig)
   }
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/missing_products");
+    solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/missing_products");
   }
   catch (const std::system_error& e)
   {
@@ -27,7 +27,7 @@ TEST(TernaryChemicalActivationConfig, DetectsInvalidConfig)
 TEST(TernaryChemicalActivationConfig, ParseConfig)
 {
   micm::SolverConfig solver_config;
-  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/valid"));
+  EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/valid"));
 
   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -89,7 +89,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardKeys)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/contains_nonstandard_key");
+    solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/contains_nonstandard_key");
   }
   catch (const std::system_error& e)
   {
@@ -102,7 +102,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardProductCoefficient)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/nonstandard_product_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/nonstandard_product_coef");
   }
   catch (const std::system_error& e)
   {
@@ -115,7 +115,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardReactantCoefficient)
   micm::SolverConfig solver_config;
   try
   {
-    solver_config.ReadAndParse("./v0_unit_configs/process/ternary_chemical_activation/nonstandard_reactant_coef");
+    solver_config.ReadAndParse("./v0_unit_configs/ternary_chemical_activation/nonstandard_reactant_coef");
   }
   catch (const std::system_error& e)
   {

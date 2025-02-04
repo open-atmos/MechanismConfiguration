@@ -37,6 +37,7 @@ namespace mechanism_configuration
       if (version.major != 1)
       {
         result.errors.push_back({ ConfigParseStatus::InvalidVersion, "Invalid version." });
+        return result;
       }
 
       std::string name = object[validation::keys.name].as<std::string>();
@@ -54,6 +55,12 @@ namespace mechanism_configuration
       mechanism->species = species_parsing.second;
       mechanism->phases = phases_parsing.second;
       mechanism->reactions = reactions_parsing.second;
+
+      // prepend the file name to the error messages
+      for (auto& error : result.errors)
+      {
+        error.second = config_path.string() + ":" + error.second;
+      }
 
       result.mechanism = std::move(mechanism);
       return result;

@@ -10,19 +10,19 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = "./v0_unit_configs/process/arrhenius/missing_reactants" + extension;
+    std::string file = "./v0_unit_configs/arrhenius/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     for(auto& error : parsed.errors)
     {
-      std::cout << file <<  ":" << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
     }
 
-    file = "./v0_unit_configs/process/arrhenius/missing_products" + extension;
+    file = "./v0_unit_configs/arrhenius/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
 
-    file = "./v0_unit_configs/process/arrhenius/mutually_exclusive" + extension;
+    file = "./v0_unit_configs/arrhenius/mutually_exclusive/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
   }
@@ -32,7 +32,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
 // {
 //   micm::SolverConfig solver_config;
 
-//   EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/valid"));
+//   EXPECT_NO_THROW(solver_config.ReadAndParse("./v0_unit_configs/arrhenius/valid"));
 
 //   micm::SolverParameters solver_params = solver_config.GetSolverParams();
 
@@ -106,7 +106,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
 
 //   try
 //   {
-//     solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/contains_nonstandard_key");
+//     solver_config.ReadAndParse("./v0_unit_configs/arrhenius/contains_nonstandard_key");
 //   }
 //   catch (const std::system_error& e)
 //   {
@@ -120,7 +120,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
 
 //   try
 //   {
-//     solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/nonstandard_product_coef");
+//     solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_product_coef");
 //   }
 //   catch (const std::system_error& e)
 //   {
@@ -134,7 +134,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
 
 //   try
 //   {
-//     solver_config.ReadAndParse("./v0_unit_configs/process/arrhenius/nonstandard_reactant_coef");
+//     solver_config.ReadAndParse("./v0_unit_configs/arrhenius/nonstandard_reactant_coef");
 //   }
 //   catch (const std::system_error& e)
 //   {
