@@ -13,6 +13,8 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     std::string file = "./v0_unit_configs/arrhenius/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
     for(auto& error : parsed.errors)
     {
       std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
@@ -21,10 +23,22 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/arrhenius/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
 
     file = "./v0_unit_configs/arrhenius/mutually_exclusive/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
+    for(auto& error : parsed.errors)
+    {
+      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+    }
   }
 }
 

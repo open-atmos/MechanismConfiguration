@@ -1,4 +1,4 @@
 camp-files:
-- species.json
-- reactions.json
-- tolerance.json
+- species.yaml
+- reactions.yaml
+- tolerance.yaml
