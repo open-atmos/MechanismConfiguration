@@ -95,13 +95,15 @@ namespace mechanism_configuration
           {
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, "Phase requires unknown species." });
           }
-          else {
+          else
+          {
             all_phases.push_back(phase);
           }
         }
       }
 
-      if (!ContainsUniqueObjectsByName<types::Phase>(all_phases)) {
+      if (!ContainsUniqueObjectsByName<types::Phase>(all_phases))
+      {
         errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, "Duplicate phases detected." });
       }
 
@@ -117,20 +119,20 @@ namespace mechanism_configuration
       auto validate = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
-      if (status == ConfigParseStatus::Success)
-      {
-        std::string species_name = object[validation::keys.species_name].as<std::string>();
-        double coefficient = 1;
-        if (object[validation::keys.coefficient])
+        if (status == ConfigParseStatus::Success)
         {
-          coefficient = object[validation::keys.coefficient].as<double>();
-        }
+          std::string species_name = object[validation::keys.species_name].as<std::string>();
+          double coefficient = 1;
+          if (object[validation::keys.coefficient])
+          {
+            coefficient = object[validation::keys.coefficient].as<double>();
+          }
 
-        component.species_name = species_name;
-        component.coefficient = coefficient;
-        component.unknown_properties =
-            GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
-      }
+          component.species_name = species_name;
+          component.coefficient = coefficient;
+          component.unknown_properties =
+              GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+        }
 
       return { errors, component };
     }

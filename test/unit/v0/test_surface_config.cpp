@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/v0/parser.hpp>
 
 using namespace mechanism_configuration;
 
@@ -68,9 +68,8 @@ TEST(SurfaceConfig, ParseConfig)
       EXPECT_EQ(process_vector[0].gas_phase_products[1].coefficient, 3.2);
       EXPECT_EQ(process_vector[0].name, "SURF.kfoo");
       EXPECT_EQ(process_vector[0].reaction_probability, 1.0);
-      auto it = std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) {
-        return species.name == "foo";
-      });
+      auto it =
+          std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) { return species.name == "foo"; });
       ASSERT_NE(it, mechanism.species.end());
       EXPECT_EQ(it->diffusion_coefficient, 2.3e-4);
     }
@@ -85,9 +84,8 @@ TEST(SurfaceConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].gas_phase_products[1].coefficient, 1.0);
       EXPECT_EQ(process_vector[1].name, "SURF.kbar");
       EXPECT_EQ(process_vector[1].reaction_probability, 0.5);
-      auto it = std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) {
-        return species.name == "bar";
-      });
+      auto it =
+          std::find_if(mechanism.species.begin(), mechanism.species.end(), [](const v0::types::Species& species) { return species.name == "bar"; });
       ASSERT_NE(it, mechanism.species.end());
       EXPECT_EQ(it->diffusion_coefficient, 0.4e-5);
     }

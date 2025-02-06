@@ -5,17 +5,17 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
-#include <filesystem>
 
-#include <mechanism_configuration/parser_result.hpp>
+#include <filesystem>
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    class Parser 
+    class Parser
     {
      public:
       ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);

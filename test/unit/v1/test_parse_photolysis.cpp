@@ -50,9 +50,9 @@ TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -68,9 +68,9 @@ TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -86,9 +86,9 @@ TEST(ParserBase, PhotolysisDetectsUnknownPhase)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -104,9 +104,9 @@ TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::TooManyReactionComponents);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

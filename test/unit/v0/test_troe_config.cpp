@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/conversions.hpp>
+#include <mechanism_configuration/v0/parser.hpp>
 
 using namespace mechanism_configuration;
 

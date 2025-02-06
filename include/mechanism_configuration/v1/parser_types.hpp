@@ -7,8 +7,8 @@
 #include <yaml-cpp/yaml.h>
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/v1/types.hpp>
 #include <mechanism_configuration/parse_status.hpp>
+#include <mechanism_configuration/v1/types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <vector>
 

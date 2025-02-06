@@ -83,9 +83,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -101,9 +101,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -122,9 +122,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
     EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -141,9 +141,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -160,9 +160,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAeros
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     EXPECT_FALSE(parsed);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -178,9 +178,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

@@ -57,9 +57,9 @@ TEST(ParserBase, TunnelingDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -76,9 +76,9 @@ TEST(ParserBase, TunnelingDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -94,9 +94,9 @@ TEST(ParserBase, TunnelingDetectsUnknownPhase)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for(auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
-      std::cout << error.second <<  " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }

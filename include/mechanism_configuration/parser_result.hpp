@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace mechanism_configuration
 {
