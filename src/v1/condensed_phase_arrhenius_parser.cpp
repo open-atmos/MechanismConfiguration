@@ -17,7 +17,8 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      auto validate = ValidateSchema(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
+      auto validate =
+          ValidateSchema(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -93,7 +94,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase, line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
+            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase,
+                               line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
           }
         }
         else

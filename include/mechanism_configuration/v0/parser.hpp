@@ -3,13 +3,13 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
-#include <filesystem>
 
+#include <filesystem>
+#include <iostream>
+#include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/types.hpp>
-#include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/errors.hpp>
-#include <iostream>
 
 namespace mechanism_configuration
 {
@@ -27,7 +27,6 @@ namespace mechanism_configuration
 
      public:
       ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
-
     };
   }  // namespace v0
 }  // namespace mechanism_configuration

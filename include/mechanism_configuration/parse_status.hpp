@@ -8,28 +8,28 @@
 
 namespace mechanism_configuration
 {
-    enum class ConfigParseStatus
-    {
-      Success,
-      None,
-      InvalidKey,
-      UnknownKey,
-      InvalidFilePath,
-      FileNotFound,
-      ObjectTypeNotFound,
-      RequiredKeyNotFound,
-      MutuallyExclusiveOption,
-      InvalidVersion,
-      DuplicateSpeciesDetected,
-      DuplicatePhasesDetected,
-      PhaseRequiresUnknownSpecies,
-      ReactionRequiresUnknownSpecies,
-      UnknownPhase,
-      RequestedAerosolSpeciesNotIncludedInAerosolPhase,
-      TooManyReactionComponents,
-      InvalidIonPair,
-      UnknownType
-    };
+  enum class ConfigParseStatus
+  {
+    Success,
+    None,
+    InvalidKey,
+    UnknownKey,
+    InvalidFilePath,
+    FileNotFound,
+    ObjectTypeNotFound,
+    RequiredKeyNotFound,
+    MutuallyExclusiveOption,
+    InvalidVersion,
+    DuplicateSpeciesDetected,
+    DuplicatePhasesDetected,
+    PhaseRequiresUnknownSpecies,
+    ReactionRequiresUnknownSpecies,
+    UnknownPhase,
+    RequestedAerosolSpeciesNotIncludedInAerosolPhase,
+    TooManyReactionComponents,
+    InvalidIonPair,
+    UnknownType
+  };
 
-    std::string configParseStatusToString(const ConfigParseStatus &status);
+  std::string configParseStatusToString(const ConfigParseStatus &status);
 }  // namespace mechanism_configuration

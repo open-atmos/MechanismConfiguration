@@ -70,7 +70,8 @@ namespace mechanism_configuration
         reactions.first_order_loss.push_back(first_order_loss);
       }
 
-      return errors;;
+      return errors;
+      ;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

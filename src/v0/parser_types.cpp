@@ -12,7 +12,9 @@ namespace mechanism_configuration
     {
       Errors errors;
       std::vector<std::string> required = { validation::NAME, validation::TYPE };
-      std::vector<std::string> optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT, validation::THIRD_BODY };
+      std::vector<std::string> optional = {
+        validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT, validation::THIRD_BODY
+      };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -41,7 +43,8 @@ namespace mechanism_configuration
           auto key = it->first.as<std::string>();
           auto value = it->second;
 
-          if (std::find(required.begin(), required.end(), key) == required.end() && std::find(optional.begin(), optional.end(), key) == optional.end())
+          if (std::find(required.begin(), required.end(), key) == required.end() &&
+              std::find(optional.begin(), optional.end(), key) == optional.end())
           {
             std::string stringValue = value.as<std::string>();
             species.unknown_properties[key] = stringValue;

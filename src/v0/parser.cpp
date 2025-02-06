@@ -4,13 +4,13 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <functional>
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/conversions.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v0/parser_types.hpp>
 #include <mechanism_configuration/v0/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
-#include <functional>
 
 namespace mechanism_configuration
 {
@@ -108,7 +108,8 @@ namespace mechanism_configuration
         {
           errors.push_back({ ConfigParseStatus::FileNotFound, "File not found: " + camp_file.string() });
         }
-        else {
+        else
+        {
           camp_files.push_back(camp_file);
         }
       }
@@ -126,7 +127,8 @@ namespace mechanism_configuration
       std::vector<std::filesystem::path> camp_files;
       auto errors = GetCampFiles(config_path, camp_files);
 
-      if (!errors.empty()) {
+      if (!errors.empty())
+      {
         result.errors = errors;
         return result;
       }

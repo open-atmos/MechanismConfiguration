@@ -34,7 +34,8 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
+          errors.push_back(
+              { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
         }
 
         std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
@@ -57,7 +58,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::keys.aerosol_phase_species].Mark().line + 1);
             std::string column = std::to_string(object[validation::keys.aerosol_phase_species].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aerosol_phase_species });
+            errors.push_back(
+                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aerosol_phase_species });
           }
         }
 

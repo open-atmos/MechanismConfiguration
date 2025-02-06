@@ -6,11 +6,11 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <mechanism_configuration/errors.hpp>
 #include <iostream>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parse_status.hpp>
-#include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/v1/types.hpp>
+#include <mechanism_configuration/v1/validation.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -41,7 +41,8 @@ namespace mechanism_configuration
 
     std::pair<Errors, std::vector<v1::types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
 
-    std::pair<Errors, types::Reactions> ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Reactions>
+    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
 
     template<typename T>
     bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
