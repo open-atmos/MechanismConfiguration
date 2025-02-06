@@ -12,22 +12,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  msvc2022:
+  build-and-test:
     runs-on: windows-latest
     strategy:
       matrix:
         build_type: [Release]
         architecture: [Win32, x64]
-        enable_json: [OFF, ON]
-        enable_yaml: [OFF, ON]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Run CMake
-      run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D ENABLE_JSON=${{ matrix.enable_json }} -D ENABLE_YAML=${{ matrix.enable_yaml }}
-    - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
-    - name: Run tests
-      run: |
-        cd build
-        ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Cmake
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
