@@ -1,4 +1,3 @@
-
 target_sources(mechanism_configuration
   PRIVATE
     aqueous_equilibrium_parser.cpp
@@ -17,4 +16,5 @@ target_sources(mechanism_configuration
     tunneling_parser.cpp
     utils.cpp
     wet_deposition_parser.cpp
+    writer.cpp
 )

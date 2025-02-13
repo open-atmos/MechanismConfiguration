@@ -3,6 +3,7 @@
 
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
+#include <mechanism_configuration/v1/writer.hpp>
 #include <variant>
 
 namespace py = pybind11;
@@ -394,4 +395,6 @@ PYBIND11_MODULE(mechanism_configuration, m)
               throw std::runtime_error(error);
             }
           });
+
+  py::class_<mechanism_configuration::v1::Writer>(m, "Writer").def_static("write", &mechanism_configuration::v1::Writer::Write);
 }

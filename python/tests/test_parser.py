@@ -1,5 +1,5 @@
 import pytest
-from mechanism_configuration import Parser, Mechanism
+from mechanism_configuration import Parser, ReactionType, Writer
 
 
 def test_parse_full_v1_configuration():
@@ -28,6 +28,13 @@ def test_parse_full_v1_configuration():
         assert mechanism.version.major == 1
         assert mechanism.version.minor == 0
         assert mechanism.version.patch == 0
+        assert (len(mechanism.reactions) == 16)
+        for reaction in mechanism.reactions:
+            assert reaction is not None
+            assert isinstance(reaction.type, ReactionType)
+        
+        Writer.write(mechanism, "test.yaml")
+
 
 
 def test_parser_reports_bad_files():
@@ -37,3 +44,4 @@ def test_parser_reports_bad_files():
         path = f"examples/_missing_configuration{extension}"
         with pytest.raises(Exception):
             parser.parse(path)
+
