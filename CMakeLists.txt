@@ -2,11 +2,8 @@
 # Preamble
 cmake_minimum_required(VERSION 3.21)
 
-project(
-  mechanism_configuration
-  VERSION 1.0.0
-  LANGUAGES CXX
-)
+# must be on the same line so that pyproject.toml can correctly identify the version
+project(mechanism_configuration VERSION 1.0.0 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -23,6 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 option(OPEN_ATMOS_ENABLE_TESTS "Build the tests" ON)
+option(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
 
 ################################################################################
 # Dependencies
@@ -33,6 +31,12 @@ include(cmake/dependencies.cmake)
 # project source code
 
 add_subdirectory(src)
+
+################################################################################
+# python
+if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+  add_subdirectory(python)
+endif()
 
 ################################################################################
 # Tests
@@ -51,6 +55,6 @@ endif()
 # Packaging
 
 # only include packaging if we are the top level project being built
-if(PROJECT_IS_TOP_LEVEL)
+if(PROJECT_IS_TOP_LEVEL AND NOT OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
   add_subdirectory(packaging)
 endif()
