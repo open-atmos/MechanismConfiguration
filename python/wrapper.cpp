@@ -356,8 +356,20 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("species", &Mechanism::species)
       .def_readwrite("phases", &Mechanism::phases)
       .def_readwrite("reactions", &Mechanism::reactions)
+      .def_readwrite("version", &Mechanism::version)
       .def("__str__", [](const Mechanism &m) { return m.name; })
       .def("__repr__", [](const Mechanism &m) { return "<Mechanism: " + m.name + ">"; });
+
+  py::class_<mechanism_configuration::Version>(m, "Version")
+      .def(py::init<>())
+      .def(py::init<unsigned int, unsigned int, unsigned int>())
+      .def(py::init<std::string>())
+      .def_readwrite("major", &mechanism_configuration::Version::major)
+      .def_readwrite("minor", &mechanism_configuration::Version::minor)
+      .def_readwrite("patch", &mechanism_configuration::Version::patch)
+      .def("to_string", &mechanism_configuration::Version::to_string)
+      .def("__str__", &mechanism_configuration::Version::to_string)
+      .def("__repr__", [](const mechanism_configuration::Version &v) { return "<Version: " + v.to_string() + ">"; });
 
   using V1Parser = mechanism_configuration::v1::Parser;
 

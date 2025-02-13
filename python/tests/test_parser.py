@@ -35,5 +35,5 @@ def test_parser_reports_bad_files():
     extensions = [".yaml", ".json"]
     for extension in extensions:
         path = f"examples/_missing_configuration{extension}"
-        mechanism = parser.parse(path)
-        assert mechanism is None
+        with pytest.raises(Exception):
+            parser.parse(path)
