@@ -3,7 +3,6 @@
 
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
-
 #include <variant>
 
 namespace py = pybind11;
@@ -27,60 +26,60 @@ enum class ReactionType
   Tunneling
 };
 
-struct ReactionsIterator {
-    using VariantType = std::variant<
-        Arrhenius,
-        Branched,
-        CondensedPhaseArrhenius,
-        CondensedPhasePhotolysis,
-        Emission,
-        FirstOrderLoss,
-        SimpolPhaseTransfer,
-        AqueousEquilibrium,
-        WetDeposition,
-        HenrysLaw,
-        Photolysis,
-        Surface,
-        Troe,
-        Tunneling
-    >;
+struct ReactionsIterator
+{
+  using VariantType = std::variant<
+      Arrhenius,
+      Branched,
+      CondensedPhaseArrhenius,
+      CondensedPhasePhotolysis,
+      Emission,
+      FirstOrderLoss,
+      SimpolPhaseTransfer,
+      AqueousEquilibrium,
+      WetDeposition,
+      HenrysLaw,
+      Photolysis,
+      Surface,
+      Troe,
+      Tunneling>;
 
-    Reactions& reactions;
-    size_t outer_index = 0;
-    size_t inner_index = 0;
+  std::vector<std::vector<VariantType>> reaction_lists;
+  size_t outer_index = 0;
+  size_t inner_index = 0;
 
-    ReactionsIterator(Reactions& reactions) : reactions(reactions) {}
+  ReactionsIterator(Reactions &reactions)
+      : reaction_lists{ std::vector<VariantType>(reactions.arrhenius.begin(), reactions.arrhenius.end()),
+                        std::vector<VariantType>(reactions.branched.begin(), reactions.branched.end()),
+                        std::vector<VariantType>(reactions.condensed_phase_arrhenius.begin(), reactions.condensed_phase_arrhenius.end()),
+                        std::vector<VariantType>(reactions.condensed_phase_photolysis.begin(), reactions.condensed_phase_photolysis.end()),
+                        std::vector<VariantType>(reactions.emission.begin(), reactions.emission.end()),
+                        std::vector<VariantType>(reactions.first_order_loss.begin(), reactions.first_order_loss.end()),
+                        std::vector<VariantType>(reactions.simpol_phase_transfer.begin(), reactions.simpol_phase_transfer.end()),
+                        std::vector<VariantType>(reactions.aqueous_equilibrium.begin(), reactions.aqueous_equilibrium.end()),
+                        std::vector<VariantType>(reactions.wet_deposition.begin(), reactions.wet_deposition.end()),
+                        std::vector<VariantType>(reactions.henrys_law.begin(), reactions.henrys_law.end()),
+                        std::vector<VariantType>(reactions.photolysis.begin(), reactions.photolysis.end()),
+                        std::vector<VariantType>(reactions.surface.begin(), reactions.surface.end()),
+                        std::vector<VariantType>(reactions.troe.begin(), reactions.troe.end()),
+                        std::vector<VariantType>(reactions.tunneling.begin(), reactions.tunneling.end()) }
+  {
+  }
 
-    py::object next() {
-        std::vector<std::vector<VariantType>> vectors = {
-            std::vector<VariantType>(reactions.arrhenius.begin(), reactions.arrhenius.end()),
-            std::vector<VariantType>(reactions.branched.begin(), reactions.branched.end()),
-            std::vector<VariantType>(reactions.condensed_phase_arrhenius.begin(), reactions.condensed_phase_arrhenius.end()),
-            std::vector<VariantType>(reactions.condensed_phase_photolysis.begin(), reactions.condensed_phase_photolysis.end()),
-            std::vector<VariantType>(reactions.emission.begin(), reactions.emission.end()),
-            std::vector<VariantType>(reactions.first_order_loss.begin(), reactions.first_order_loss.end()),
-            std::vector<VariantType>(reactions.simpol_phase_transfer.begin(), reactions.simpol_phase_transfer.end()),
-            std::vector<VariantType>(reactions.aqueous_equilibrium.begin(), reactions.aqueous_equilibrium.end()),
-            std::vector<VariantType>(reactions.wet_deposition.begin(), reactions.wet_deposition.end()),
-            std::vector<VariantType>(reactions.henrys_law.begin(), reactions.henrys_law.end()),
-            std::vector<VariantType>(reactions.photolysis.begin(), reactions.photolysis.end()),
-            std::vector<VariantType>(reactions.surface.begin(), reactions.surface.end()),
-            std::vector<VariantType>(reactions.troe.begin(), reactions.troe.end()),
-            std::vector<VariantType>(reactions.tunneling.begin(), reactions.tunneling.end())
-        };
-
-        while (outer_index < vectors.size()) {
-            if (inner_index < vectors[outer_index].size()) {
-                VariantType& value = vectors[outer_index][inner_index++];
-                return std::visit([](auto&& arg) { return py::cast(arg); }, value);
-            } else {
-                outer_index++;
-                inner_index = 0;
-            }
-        }
-
-        throw py::stop_iteration();
+  py::object next()
+  {
+    while (outer_index < reaction_lists.size())
+    {
+      const auto &vec = reaction_lists[outer_index];
+      if (inner_index < vec.size())
+      {
+        return std::visit([](auto &&arg) { return py::cast(arg); }, vec[inner_index++]);
+      }
+      ++outer_index;
+      inner_index = 0;
     }
+    throw py::stop_iteration();
+  }
 };
 
 PYBIND11_MODULE(mechanism_configuration, m)
@@ -139,7 +138,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Arrhenius::unknown_properties)
       .def("__str__", [](const Arrhenius &a) { return a.name; })
       .def("__repr__", [](const Arrhenius &a) { return "<Arrhenius: " + a.name + ">"; })
-      .def("type", []() { return ReactionType::Arrhenius; });
+      .def_property_readonly("type", [](const Arrhenius &) { return ReactionType::Arrhenius; });
 
   py::class_<CondensedPhaseArrhenius>(m, "CondensedPhaseArrhenius")
       .def(py::init<>())
@@ -156,7 +155,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &CondensedPhaseArrhenius::unknown_properties)
       .def("__str__", [](const CondensedPhaseArrhenius &cpa) { return cpa.name; })
       .def("__repr__", [](const CondensedPhaseArrhenius &cpa) { return "<CondensedPhaseArrhenius: " + cpa.name + ">"; })
-      .def("type", []() { return ReactionType::CondensedPhaseArrhenius; });
+      .def_property_readonly("type", [](const CondensedPhaseArrhenius &) { return ReactionType::CondensedPhaseArrhenius; });
 
   py::class_<Troe>(m, "Troe")
       .def(py::init<>())
@@ -175,7 +174,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Troe::unknown_properties)
       .def("__str__", [](const Troe &t) { return t.name; })
       .def("__repr__", [](const Troe &t) { return "<Troe: " + t.name + ">"; })
-      .def("type", []() { return ReactionType::Troe; });
+      .def_property_readonly("type", [](const Troe &) { return ReactionType::Troe; });
 
   py::class_<Branched>(m, "Branched")
       .def(py::init<>())
@@ -191,7 +190,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Branched::unknown_properties)
       .def("__str__", [](const Branched &b) { return b.name; })
       .def("__repr__", [](const Branched &b) { return "<Branched: " + b.name + ">"; })
-      .def("type", []() { return ReactionType::Branched; });
+      .def_property_readonly("type", [](const Branched &) { return ReactionType::Branched; });
 
   py::class_<Tunneling>(m, "Tunneling")
       .def(py::init<>())
@@ -205,7 +204,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Tunneling::unknown_properties)
       .def("__str__", [](const Tunneling &t) { return t.name; })
       .def("__repr__", [](const Tunneling &t) { return "<Tunneling: " + t.name + ">"; })
-      .def("type", []() { return ReactionType::Tunneling; });
+      .def_property_readonly("type", [](const Tunneling &) { return ReactionType::Tunneling; });
 
   py::class_<Surface>(m, "Surface")
       .def(py::init<>())
@@ -218,7 +217,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Surface::unknown_properties)
       .def("__str__", [](const Surface &s) { return s.name; })
       .def("__repr__", [](const Surface &s) { return "<Surface: " + s.name + ">"; })
-      .def("type", []() { return ReactionType::Surface; });
+      .def_property_readonly("type", [](const Surface &) { return ReactionType::Surface; });
 
   py::class_<Photolysis>(m, "Photolysis")
       .def(py::init<>())
@@ -230,7 +229,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Photolysis::unknown_properties)
       .def("__str__", [](const Photolysis &p) { return p.name; })
       .def("__repr__", [](const Photolysis &p) { return "<Photolysis: " + p.name + ">"; })
-      .def("type", []() { return ReactionType::Photolysis; });
+      .def_property_readonly("type", [](const Photolysis &) { return ReactionType::Photolysis; });
 
   py::class_<CondensedPhasePhotolysis>(m, "CondensedPhasePhotolysis")
       .def(py::init<>())
@@ -243,7 +242,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &CondensedPhasePhotolysis::unknown_properties)
       .def("__str__", [](const CondensedPhasePhotolysis &cpp) { return cpp.name; })
       .def("__repr__", [](const CondensedPhasePhotolysis &cpp) { return "<CondensedPhasePhotolysis: " + cpp.name + ">"; })
-      .def("type", []() { return ReactionType::CondensedPhasePhotolysis; });
+      .def_property_readonly("type", [](const CondensedPhasePhotolysis &) { return ReactionType::CondensedPhasePhotolysis; });
 
   py::class_<Emission>(m, "Emission")
       .def(py::init<>())
@@ -254,7 +253,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &Emission::unknown_properties)
       .def("__str__", [](const Emission &e) { return e.name; })
       .def("__repr__", [](const Emission &e) { return "<Emission: " + e.name + ">"; })
-      .def("type", []() { return ReactionType::Emission; });
+      .def_property_readonly("type", [](const Emission &) { return ReactionType::Emission; });
 
   py::class_<FirstOrderLoss>(m, "FirstOrderLoss")
       .def(py::init<>())
@@ -265,7 +264,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &FirstOrderLoss::unknown_properties)
       .def("__str__", [](const FirstOrderLoss &fol) { return fol.name; })
       .def("__repr__", [](const FirstOrderLoss &fol) { return "<FirstOrderLoss: " + fol.name + ">"; })
-      .def("type", []() { return ReactionType::FirstOrderLoss; });
+      .def_property_readonly("type", [](const FirstOrderLoss &) { return ReactionType::FirstOrderLoss; });
 
   py::class_<AqueousEquilibrium>(m, "AqueousEquilibrium")
       .def(py::init<>())
@@ -281,7 +280,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &AqueousEquilibrium::unknown_properties)
       .def("__str__", [](const AqueousEquilibrium &ae) { return ae.name; })
       .def("__repr__", [](const AqueousEquilibrium &ae) { return "<AqueousEquilibrium: " + ae.name + ">"; })
-      .def("type", []() { return ReactionType::AqueousEquilibrium; });
+      .def_property_readonly("type", [](const AqueousEquilibrium &) { return ReactionType::AqueousEquilibrium; });
 
   py::class_<WetDeposition>(m, "WetDeposition")
       .def(py::init<>())
@@ -291,7 +290,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &WetDeposition::unknown_properties)
       .def("__str__", [](const WetDeposition &wd) { return wd.name; })
       .def("__repr__", [](const WetDeposition &wd) { return "<WetDeposition: " + wd.name + ">"; })
-      .def("type", []() { return ReactionType::WetDeposition; });
+      .def_property_readonly("type", [](const WetDeposition &) { return ReactionType::WetDeposition; });
 
   py::class_<HenrysLaw>(m, "HenrysLaw")
       .def(py::init<>())
@@ -304,7 +303,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &HenrysLaw::unknown_properties)
       .def("__str__", [](const HenrysLaw &hl) { return hl.name; })
       .def("__repr__", [](const HenrysLaw &hl) { return "<HenrysLaw: " + hl.name + ">"; })
-      .def("type", []() { return ReactionType::HenrysLaw; });
+      .def_property_readonly("type", [](const HenrysLaw &) { return ReactionType::HenrysLaw; });
 
   py::class_<SimpolPhaseTransfer>(m, "SimpolPhaseTransfer")
       .def(py::init<>())
@@ -317,7 +316,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .def_readwrite("unknown_properties", &SimpolPhaseTransfer::unknown_properties)
       .def("__str__", [](const SimpolPhaseTransfer &spt) { return spt.name; })
       .def("__repr__", [](const SimpolPhaseTransfer &spt) { return "<SimpolPhaseTransfer: " + spt.name + ">"; })
-      .def("type", []() { return ReactionType::SimpolPhaseTransfer; });
+      .def_property_readonly("type", [](const SimpolPhaseTransfer &) { return ReactionType::SimpolPhaseTransfer; });
 
   py::class_<Reactions>(m, "Reactions")
       .def(py::init<>())
