@@ -10,24 +10,26 @@ description = "Mechanism Configuration is a library for managing chemical mechan
 long_description = "Mechanism Configuration is a library for managing chemical mechanisms in atmospheric models which provides an interface to parse and write mechanisms."
 long_description_content_type = "text/plain"
 authors = [
-    { name = "Matthew Dawsom", email = "mattdawson@ucar.edu" },
-    { name = "Kyle Shores", email = "kshores@ucar.edu" },
+  { name = "Matthew Dawsom", email = "mattdawson@ucar.edu" },
+  { name = "Kyle Shores", email = "kshores@ucar.edu" },
 ]
-maintainers = [{ name = "ACOM MUSICA Developers", email = "musica-support@ucar.edu" }]
+maintainers = [
+  { name = "ACOM MUSICA Developers", email = "musica-support@ucar.edu" },
+]
 license = { file = "LICENSE" }
 
-dependencies = [
-]
+dependencies = []
 
 [project.optional-dependencies]
 test = [
+  'pytest'
 ]
 
 [tool.scikit-build]
 cmake.args = [
-  "-DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF",
+  "-DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=ON",
   "-DOPEN_ATMOS_ENABLE_TESTS=OFF",
-  "-DCMAKE_BUILD_TYPE=Release"
+  "-DCMAKE_BUILD_TYPE=Release",
 ]
 
 [project.urls]
