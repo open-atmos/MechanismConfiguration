@@ -18,52 +18,34 @@ namespace mechanism_configuration
         if (key_str.compare(0, comment_start.size(), comment_start) == 0)
         {
           YAML::Emitter emitter;
-          emitter << YAML::DoubleQuoted << YAML::Flow  // json style output
-                  << key.second;
+          if (key.second.IsScalar())
+          {
+            try
+            {
+              size_t pos;
+              double numeric_value = std::stod(key.second.as<std::string>(), &pos);
+              if (pos == key.second.as<std::string>().size())
+              {
+                emitter << numeric_value;
+              }
+              else
+              {
+                emitter << YAML::DoubleQuoted << key.second.as<std::string>();
+              }
+            }
+            catch (const std::invalid_argument&)
+            {
+              emitter << YAML::DoubleQuoted << key.second.as<std::string>();
+            }
+          }
+          else
+          {
+            emitter << YAML::DoubleQuoted << YAML::Flow << key.second;
+          }
           unknown_properties[key_str] = emitter.c_str();
         }
       }
       return unknown_properties;
-    }
-
-    std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects)
-    {
-      Errors errors;
-      std::vector<types::Species> all_species;
-
-      for (const auto& object : objects)
-      {
-        types::Species species;
-        auto validate = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
-        errors.insert(errors.end(), validate.begin(), validate.end());
-        if (validate.empty())
-        {
-          std::string name = object[validation::keys.name].as<std::string>();
-
-          std::map<std::string, double> numerical_properties{};
-          for (const auto& key : validation::species.optional_keys)
-          {
-            if (object[key])
-            {
-              double val = object[key].as<double>();
-              numerical_properties[key] = val;
-            }
-          }
-
-          species.name = name;
-          species.optional_numerical_properties = numerical_properties;
-          species.unknown_properties = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
-
-          all_species.push_back(species);
-        }
-      }
-
-      if (!ContainsUniqueObjectsByName<types::Species>(all_species))
-      {
-        errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, "Duplicate species detected." });
-      }
-
-      return { errors, all_species };
     }
 
     std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species)

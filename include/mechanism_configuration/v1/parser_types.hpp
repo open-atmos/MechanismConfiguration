@@ -16,6 +16,8 @@ namespace mechanism_configuration
 {
   namespace v1
   {
+    std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects);
+
     class CondensedPhaseArrheniusParser : public IReactionParser
     {
      public:

@@ -36,6 +36,34 @@ namespace mechanism_configuration
       out << YAML::Key << "version" << YAML::Value << mechanism.version.to_string();
       out << YAML::Key << "name" << YAML::Value << mechanism.name;
 
+      auto write_property = [&](const std::string& key, const std::string& value)
+      {
+        try
+        {
+          size_t pos;
+          double numeric_value = std::stod(value, &pos);
+          if (pos == value.size())
+          {
+            if (numeric_value == static_cast<int>(numeric_value))
+            {
+              out << YAML::Key << key << YAML::Value << static_cast<int>(numeric_value);
+            }
+            else
+            {
+              out << YAML::Key << key << YAML::Value << numeric_value;
+            }
+          }
+          else
+          {
+            out << YAML::Key << key << YAML::Value << value;
+          }
+        }
+        catch (const std::invalid_argument&)
+        {
+          out << YAML::Key << key << YAML::Value << value;
+        }
+      };
+
       out << YAML::Key << "species" << YAML::Value << YAML::BeginSeq;
       for (const auto& species : mechanism.species)
       {
@@ -43,11 +71,11 @@ namespace mechanism_configuration
         out << YAML::Key << "name" << YAML::Value << species.name;
         for (const auto& prop : species.optional_numerical_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, std::to_string(prop.second));
         }
         for (const auto& prop : species.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -61,7 +89,7 @@ namespace mechanism_configuration
         out << YAML::Key << "species" << YAML::Value << phase.species;
         for (const auto& prop : phase.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -76,7 +104,7 @@ namespace mechanism_configuration
         out << YAML::Key << "coefficient" << YAML::Value << component.coefficient;
         for (const auto& prop : component.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       };
@@ -110,7 +138,7 @@ namespace mechanism_configuration
         }
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       };
@@ -182,7 +210,7 @@ namespace mechanism_configuration
         out << YAML::EndSeq;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -205,7 +233,7 @@ namespace mechanism_configuration
         out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -219,7 +247,7 @@ namespace mechanism_configuration
         out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -236,7 +264,7 @@ namespace mechanism_configuration
         out << YAML::Key << "aerosol_phase_water" << YAML::Value << reaction.aerosol_phase_water;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -277,7 +305,7 @@ namespace mechanism_configuration
         out << YAML::EndSeq;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -296,7 +324,7 @@ namespace mechanism_configuration
         out << YAML::EndSeq;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
@@ -332,7 +360,7 @@ namespace mechanism_configuration
         out << YAML::EndSeq;
         for (const auto& prop : reaction.unknown_properties)
         {
-          out << YAML::Key << prop.first << YAML::Value << prop.second;
+          write_property(prop.first, prop.second);
         }
         out << YAML::EndMap;
       }
