@@ -213,6 +213,7 @@ reactions:
   name: my branched
 - gas phase: gas
   type: TUNNELING
+  name: "my tunneling"
   A: 123.45
   B: 1200
   C: 100000000

@@ -16,7 +16,7 @@ install(
 
 install(
   DIRECTORY
-    ${PROJECT_SOURCE_DIR}/include/open_atmos
+    ${PROJECT_SOURCE_DIR}/include/mechanism_configuration
   DESTINATION
     ${INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}
 )
