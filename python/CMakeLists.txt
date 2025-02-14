@@ -5,9 +5,6 @@ pybind11_add_module(mechanism_configuration_python
 target_link_libraries(mechanism_configuration_python PRIVATE mechanism_configuration)
 set_target_properties(mechanism_configuration_python PROPERTIES OUTPUT_NAME mechanism_configuration)
 
-# Set the -fPIC flag for position-independent code
-target_compile_options(mechanism_configuration_python PRIVATE -fPIC)
-
 # Set the rpath for the shared library
 if(APPLE)
   message(STATUS "Building for MacOS")
