@@ -7,8 +7,11 @@ add_library(open_atmos::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
-# Add the -fPIC flag for position-independent code
-set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
+if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+  # Add the -fPIC flag for position-independent code if we are building the python library
+  # so that it links correctly on linux
+  set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 
 target_sources(mechanism_configuration
   PRIVATE
