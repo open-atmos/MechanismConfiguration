@@ -31,12 +31,11 @@ namespace mechanism_configuration
 
     bool Writer::Write(const types::Mechanism& mechanism, const std::string& filepath)
     {
-      YAML::Emitter out;
-      out << YAML::BeginMap;
-      out << YAML::Key << "version" << YAML::Value << mechanism.version.to_string();
-      out << YAML::Key << "name" << YAML::Value << mechanism.name;
+      YAML::Node root;
+      root["version"] = mechanism.version.to_string();
+      root["name"] = mechanism.name;
 
-      auto write_property = [&](const std::string& key, const std::string& value)
+      auto write_property = [](YAML::Node& node, const std::string& key, const std::string& value)
       {
         try
         {
@@ -46,334 +45,348 @@ namespace mechanism_configuration
           {
             if (numeric_value == static_cast<int>(numeric_value))
             {
-              out << YAML::Key << key << YAML::Value << static_cast<int>(numeric_value);
+              node[key] = static_cast<int>(numeric_value);
             }
             else
             {
-              out << YAML::Key << key << YAML::Value << numeric_value;
+              node[key] = numeric_value;
             }
           }
           else
           {
-            out << YAML::Key << key << YAML::Value << value;
+            node[key] = value;
           }
         }
         catch (const std::invalid_argument&)
         {
-          out << YAML::Key << key << YAML::Value << value;
+          node[key] = value;
         }
       };
 
-      out << YAML::Key << "species" << YAML::Value << YAML::BeginSeq;
+      YAML::Node species_node = YAML::Node(YAML::NodeType::Sequence);
       for (const auto& species : mechanism.species)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "name" << YAML::Value << species.name;
+        YAML::Node species_entry;
+        species_entry["name"] = species.name;
         for (const auto& prop : species.optional_numerical_properties)
         {
-          write_property(prop.first, std::to_string(prop.second));
+          write_property(species_entry, prop.first, std::to_string(prop.second));
         }
         for (const auto& prop : species.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(species_entry, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        species_node.push_back(species_entry);
       }
-      out << YAML::EndSeq;
+      root["species"] = species_node;
 
-      out << YAML::Key << "phases" << YAML::Value << YAML::BeginSeq;
+      YAML::Node phases_node = YAML::Node(YAML::NodeType::Sequence);
       for (const auto& phase : mechanism.phases)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "name" << YAML::Value << phase.name;
-        out << YAML::Key << "species" << YAML::Value << phase.species;
+        YAML::Node phase_entry;
+        phase_entry["name"] = phase.name;
+        phase_entry["species"] = phase.species;
         for (const auto& prop : phase.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(phase_entry, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        phases_node.push_back(phase_entry);
       }
-      out << YAML::EndSeq;
+      root["phases"] = phases_node;
 
-      out << YAML::Key << "reactions" << YAML::Value << YAML::BeginSeq;
+      YAML::Node reactions_node = YAML::Node(YAML::NodeType::Sequence);
 
-      auto serialize_reaction_component = [&](const types::ReactionComponent& component)
+      auto serialize_reaction_component = [&](YAML::Node& node, const types::ReactionComponent& component)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "species_name" << YAML::Value << component.species_name;
-        out << YAML::Key << "coefficient" << YAML::Value << component.coefficient;
+        YAML::Node component_node;
+        component_node["species_name"] = component.species_name;
+        component_node["coefficient"] = component.coefficient;
         for (const auto& prop : component.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(component_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        node.push_back(component_node);
       };
 
-      auto serialize_reaction = [&](const auto& reaction, const std::string& type)
+      auto serialize_reaction = [&](YAML::Node& node, const auto& reaction, const std::string& type)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << type;
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
+        YAML::Node reaction_node;
+        reaction_node["type"] = type;
+        reaction_node["name"] = reaction.name;
         if constexpr (has_gas_phase<decltype(reaction)>())
         {
-          out << YAML::Key << "gas phase" << YAML::Value << reaction.gas_phase;
+          reaction_node["gas phase"] = reaction.gas_phase;
         }
         if constexpr (has_reactants<decltype(reaction)>())
         {
-          out << YAML::Key << "reactants" << YAML::Value << YAML::BeginSeq;
+          YAML::Node reactants_node = YAML::Node(YAML::NodeType::Sequence);
           for (const auto& reactant : reaction.reactants)
           {
-            serialize_reaction_component(reactant);
+            serialize_reaction_component(reactants_node, reactant);
           }
-          out << YAML::EndSeq;
+          reaction_node["reactants"] = reactants_node;
         }
         if constexpr (has_products<decltype(reaction)>())
         {
-          out << YAML::Key << "products" << YAML::Value << YAML::BeginSeq;
+          YAML::Node products_node = YAML::Node(YAML::NodeType::Sequence);
           for (const auto& product : reaction.products)
           {
-            serialize_reaction_component(product);
+            serialize_reaction_component(products_node, product);
           }
-          out << YAML::EndSeq;
+          reaction_node["products"] = products_node;
         }
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        node.push_back(reaction_node);
       };
 
+      // Serialize each reaction type
       for (const auto& reaction : mechanism.reactions.arrhenius)
       {
-        serialize_reaction(reaction, "ARRHENIUS");
-        out << YAML::Key << "A" << YAML::Value << reaction.A;
-        out << YAML::Key << "B" << YAML::Value << reaction.B;
-        out << YAML::Key << "C" << YAML::Value << reaction.C;
-        out << YAML::Key << "D" << YAML::Value << reaction.D;
-        out << YAML::Key << "E" << YAML::Value << reaction.E;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "ARRHENIUS");
+        reaction_node["A"] = reaction.A;
+        reaction_node["B"] = reaction.B;
+        reaction_node["C"] = reaction.C;
+        reaction_node["D"] = reaction.D;
+        reaction_node["E"] = reaction.E;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.condensed_phase_arrhenius)
       {
-        serialize_reaction(reaction, "CONDENSED_PHASE_ARRHENIUS");
-        out << YAML::Key << "A" << YAML::Value << reaction.A;
-        out << YAML::Key << "B" << YAML::Value << reaction.B;
-        out << YAML::Key << "C" << YAML::Value << reaction.C;
-        out << YAML::Key << "D" << YAML::Value << reaction.D;
-        out << YAML::Key << "E" << YAML::Value << reaction.E;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
-        out << YAML::Key << "aerosol_phase_water" << YAML::Value << reaction.aerosol_phase_water;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "CONDENSED_PHASE_ARRHENIUS");
+        reaction_node["A"] = reaction.A;
+        reaction_node["B"] = reaction.B;
+        reaction_node["C"] = reaction.C;
+        reaction_node["D"] = reaction.D;
+        reaction_node["E"] = reaction.E;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
+        reaction_node["aerosol_phase_water"] = reaction.aerosol_phase_water;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.troe)
       {
-        serialize_reaction(reaction, "TROE");
-        out << YAML::Key << "k0_A" << YAML::Value << reaction.k0_A;
-        out << YAML::Key << "k0_B" << YAML::Value << reaction.k0_B;
-        out << YAML::Key << "k0_C" << YAML::Value << reaction.k0_C;
-        out << YAML::Key << "kinf_A" << YAML::Value << reaction.kinf_A;
-        out << YAML::Key << "kinf_B" << YAML::Value << reaction.kinf_B;
-        out << YAML::Key << "kinf_C" << YAML::Value << reaction.kinf_C;
-        out << YAML::Key << "Fc" << YAML::Value << reaction.Fc;
-        out << YAML::Key << "N" << YAML::Value << reaction.N;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "TROE");
+        reaction_node["k0_A"] = reaction.k0_A;
+        reaction_node["k0_B"] = reaction.k0_B;
+        reaction_node["k0_C"] = reaction.k0_C;
+        reaction_node["kinf_A"] = reaction.kinf_A;
+        reaction_node["kinf_B"] = reaction.kinf_B;
+        reaction_node["kinf_C"] = reaction.kinf_C;
+        reaction_node["Fc"] = reaction.Fc;
+        reaction_node["N"] = reaction.N;
+        reactions_node.push_back(reaction_node);
       }
 
       static_assert(!has_products<types::Branched>(), "has_products should be false for Branched");
 
       for (const auto& reaction : mechanism.reactions.branched)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "BRANCHED";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "gas phase" << YAML::Value << reaction.gas_phase;
-        out << YAML::Key << "reactants" << YAML::Value << YAML::BeginSeq;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "BRANCHED";
+        reaction_node["name"] = reaction.name;
+        reaction_node["gas phase"] = reaction.gas_phase;
+        YAML::Node reactants_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& reactant : reaction.reactants)
         {
-          serialize_reaction_component(reactant);
+          serialize_reaction_component(reactants_node, reactant);
         }
-        out << YAML::EndSeq;
-        out << YAML::Key << "X" << YAML::Value << reaction.X;
-        out << YAML::Key << "Y" << YAML::Value << reaction.Y;
-        out << YAML::Key << "a0" << YAML::Value << reaction.a0;
-        out << YAML::Key << "n" << YAML::Value << reaction.n;
-        out << YAML::Key << "nitrate_products" << YAML::Value << YAML::BeginSeq;
+        reaction_node["reactants"] = reactants_node;
+        reaction_node["X"] = reaction.X;
+        reaction_node["Y"] = reaction.Y;
+        reaction_node["a0"] = reaction.a0;
+        reaction_node["n"] = reaction.n;
+        YAML::Node nitrate_products_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& product : reaction.nitrate_products)
         {
-          serialize_reaction_component(product);
+          serialize_reaction_component(nitrate_products_node, product);
         }
-        out << YAML::EndSeq;
-        out << YAML::Key << "alkoxy_products" << YAML::Value << YAML::BeginSeq;
+        reaction_node["nitrate_products"] = nitrate_products_node;
+        YAML::Node alkoxy_products_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& product : reaction.alkoxy_products)
         {
-          serialize_reaction_component(product);
+          serialize_reaction_component(alkoxy_products_node, product);
         }
-        out << YAML::EndSeq;
+        reaction_node["alkoxy_products"] = alkoxy_products_node;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.surface)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "SURFACE";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "reaction_probability" << YAML::Value << reaction.reaction_probability;
-        out << YAML::Key << "gas_phase_species" << YAML::Value << YAML::BeginMap;
-        serialize_reaction_component(reaction.gas_phase_species);
-        out << YAML::EndMap;
-        out << YAML::Key << "gas_phase_products" << YAML::Value << YAML::BeginSeq;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "SURFACE";
+        reaction_node["name"] = reaction.name;
+        reaction_node["reaction_probability"] = reaction.reaction_probability;
+        YAML::Node gas_phase_species_node;
+        serialize_reaction_component(gas_phase_species_node, reaction.gas_phase_species);
+        reaction_node["gas_phase_species"] = gas_phase_species_node;
+        YAML::Node gas_phase_products_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& product : reaction.gas_phase_products)
         {
-          serialize_reaction_component(product);
+          serialize_reaction_component(gas_phase_products_node, product);
         }
-        out << YAML::EndSeq;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
+        reaction_node["gas_phase_products"] = gas_phase_products_node;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.wet_deposition)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "WET_DEPOSITION";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "scaling_factor" << YAML::Value << reaction.scaling_factor;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "WET_DEPOSITION";
+        reaction_node["name"] = reaction.name;
+        reaction_node["scaling_factor"] = reaction.scaling_factor;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.henrys_law)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "HENRYS_LAW";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "gas phase" << YAML::Value << reaction.gas_phase;
-        out << YAML::Key << "gas_phase_species" << YAML::Value << reaction.gas_phase_species;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
-        out << YAML::Key << "aerosol_phase_species" << YAML::Value << reaction.aerosol_phase_species;
-        out << YAML::Key << "aerosol_phase_water" << YAML::Value << reaction.aerosol_phase_water;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "HENRYS_LAW";
+        reaction_node["name"] = reaction.name;
+        reaction_node["gas phase"] = reaction.gas_phase;
+        reaction_node["gas_phase_species"] = reaction.gas_phase_species;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
+        reaction_node["aerosol_phase_species"] = reaction.aerosol_phase_species;
+        reaction_node["aerosol_phase_water"] = reaction.aerosol_phase_water;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.tunneling)
       {
-        serialize_reaction(reaction, "TUNNELING");
-        out << YAML::Key << "A" << YAML::Value << reaction.A;
-        out << YAML::Key << "B" << YAML::Value << reaction.B;
-        out << YAML::Key << "C" << YAML::Value << reaction.C;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "TUNNELING");
+        reaction_node["A"] = reaction.A;
+        reaction_node["B"] = reaction.B;
+        reaction_node["C"] = reaction.C;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.photolysis)
       {
-        serialize_reaction(reaction, "PHOTOLYSIS");
-        out << YAML::Key << "scaling_factor" << YAML::Value << reaction.scaling_factor;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "PHOTOLYSIS");
+        reaction_node["scaling_factor"] = reaction.scaling_factor;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.condensed_phase_photolysis)
       {
-        serialize_reaction(reaction, "CONDENSED_PHASE_PHOTOLYSIS");
-        out << YAML::Key << "scaling_factor" << YAML::Value << reaction.scaling_factor_;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
-        out << YAML::Key << "aerosol_phase_water" << YAML::Value << reaction.aerosol_phase_water;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "CONDENSED_PHASE_PHOTOLYSIS");
+        reaction_node["scaling_factor"] = reaction.scaling_factor_;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
+        reaction_node["aerosol_phase_water"] = reaction.aerosol_phase_water;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.emission)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "EMISSION";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "scaling_factor" << YAML::Value << reaction.scaling_factor;
-        out << YAML::Key << "products" << YAML::Value << YAML::BeginSeq;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "EMISSION";
+        reaction_node["name"] = reaction.name;
+        reaction_node["scaling_factor"] = reaction.scaling_factor;
+        YAML::Node products_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& product : reaction.products)
         {
-          serialize_reaction_component(product);
+          serialize_reaction_component(products_node, product);
         }
-        out << YAML::EndSeq;
+        reaction_node["products"] = products_node;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.first_order_loss)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "FIRST_ORDER_LOSS";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "scaling_factor" << YAML::Value << reaction.scaling_factor;
-        out << YAML::Key << "reactants" << YAML::Value << YAML::BeginSeq;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "FIRST_ORDER_LOSS";
+        reaction_node["name"] = reaction.name;
+        reaction_node["scaling_factor"] = reaction.scaling_factor;
+        YAML::Node reactants_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& reactant : reaction.reactants)
         {
-          serialize_reaction_component(reactant);
+          serialize_reaction_component(reactants_node, reactant);
         }
-        out << YAML::EndSeq;
+        reaction_node["reactants"] = reactants_node;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.aqueous_equilibrium)
       {
-        serialize_reaction(reaction, "AQUEOUS_EQUILIBRIUM");
-        out << YAML::Key << "A" << YAML::Value << reaction.A;
-        out << YAML::Key << "C" << YAML::Value << reaction.C;
-        out << YAML::Key << "k_reverse" << YAML::Value << reaction.k_reverse;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
-        out << YAML::Key << "aerosol_phase_water" << YAML::Value << reaction.aerosol_phase_water;
+        YAML::Node reaction_node;
+        serialize_reaction(reaction_node, reaction, "AQUEOUS_EQUILIBRIUM");
+        reaction_node["A"] = reaction.A;
+        reaction_node["C"] = reaction.C;
+        reaction_node["k_reverse"] = reaction.k_reverse;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
+        reaction_node["aerosol_phase_water"] = reaction.aerosol_phase_water;
+        reactions_node.push_back(reaction_node);
       }
 
       for (const auto& reaction : mechanism.reactions.simpol_phase_transfer)
       {
-        out << YAML::BeginMap;
-        out << YAML::Key << "type" << YAML::Value << "SIMPOL_PHASE_TRANSFER";
-        out << YAML::Key << "name" << YAML::Value << reaction.name;
-        out << YAML::Key << "gas phase" << YAML::Value << reaction.gas_phase;
-        out << YAML::Key << "gas_phase_species" << YAML::Value << YAML::BeginMap;
-        serialize_reaction_component(reaction.gas_phase_species);
-        out << YAML::EndMap;
-        out << YAML::Key << "aerosol_phase" << YAML::Value << reaction.aerosol_phase;
-        out << YAML::Key << "aerosol_phase_species" << YAML::Value << YAML::BeginMap;
-        serialize_reaction_component(reaction.aerosol_phase_species);
-        out << YAML::EndMap;
-        out << YAML::Key << "B" << YAML::Value << YAML::Flow << YAML::BeginSeq;
+        YAML::Node reaction_node;
+        reaction_node["type"] = "SIMPOL_PHASE_TRANSFER";
+        reaction_node["name"] = reaction.name;
+        reaction_node["gas phase"] = reaction.gas_phase;
+        YAML::Node gas_phase_species_node;
+        serialize_reaction_component(gas_phase_species_node, reaction.gas_phase_species);
+        reaction_node["gas_phase_species"] = gas_phase_species_node;
+        reaction_node["aerosol_phase"] = reaction.aerosol_phase;
+        YAML::Node aerosol_phase_species_node;
+        serialize_reaction_component(aerosol_phase_species_node, reaction.aerosol_phase_species);
+        reaction_node["aerosol_phase_species"] = aerosol_phase_species_node;
+        YAML::Node B_node = YAML::Node(YAML::NodeType::Sequence);
         for (const auto& b : reaction.B)
         {
-          out << b;
+          B_node.push_back(b);
         }
-        out << YAML::EndSeq;
+        reaction_node["B"] = B_node;
         for (const auto& prop : reaction.unknown_properties)
         {
-          write_property(prop.first, prop.second);
+          write_property(reaction_node, prop.first, prop.second);
         }
-        out << YAML::EndMap;
+        reactions_node.push_back(reaction_node);
       }
 
-      out << YAML::EndSeq;
-      out << YAML::EndMap;
+      root["reactions"] = reactions_node;
 
       std::ofstream file(filepath);
       if (!file.is_open())
       {
         return false;
       }
-      file << out.c_str();
+      file << root;
       file.close();
       return true;
     }
