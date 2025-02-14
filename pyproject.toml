@@ -30,7 +30,6 @@ cmake.args = [
   "-DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=ON",
   "-DOPEN_ATMOS_ENABLE_TESTS=OFF",
   "-DCMAKE_BUILD_TYPE=Release",
-  "-DBUILD_SHARED_LIBS=ON",
 ]
 
 [project.urls]
