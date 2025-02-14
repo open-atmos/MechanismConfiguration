@@ -1,5 +1,5 @@
 import pytest
-from mechanism_configuration import Parser, ReactionType, Writer
+from mechanism_configuration import Parser, ReactionType
 
 
 def test_parse_full_v1_configuration():
@@ -33,9 +33,6 @@ def test_parse_full_v1_configuration():
             assert reaction is not None
             assert isinstance(reaction.type, ReactionType)
         
-        Writer.write(mechanism, "test.yaml")
-
-
 
 def test_parser_reports_bad_files():
     parser = Parser()
