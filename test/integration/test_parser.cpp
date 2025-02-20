@@ -3,6 +3,18 @@
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
+TEST(ParserBase, ParsesFullV0ConfigurationWithoutExtension)
+{
+  mechanism_configuration::UniversalParser parser;
+  std::string path = "examples/v0";
+  auto parsed = parser.Parse(path);
+  EXPECT_TRUE(parsed);
+
+  EXPECT_EQ(parsed.mechanism->version.major, 0);
+  EXPECT_EQ(parsed.mechanism->version.minor, 0);
+  EXPECT_EQ(parsed.mechanism->version.patch, 0);
+}
+
 TEST(ParserBase, ParsesFullV0Configuration)
 {
   mechanism_configuration::UniversalParser parser;
