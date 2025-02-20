@@ -15,18 +15,18 @@ namespace mechanism_configuration
     ParserResult<GlobalMechanism> Parse(const std::filesystem::path& config_path)
     {
       ParserResult<GlobalMechanism> result;
+      std::cout << "Starting Parse function" << std::endl;
+
       if (!std::filesystem::exists(config_path))
       {
-        result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
-        return result;
+      std::cout << "File not found: " << config_path << std::endl;
+      result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
+      return result;
       }
 
-      v1::Parser v1_parser;
-      auto v1_result = v1_parser.Parse(config_path);
+      std::cout << "File exists: " << config_path << std::endl;
 
-      if (v1_result)
-      {
-        result.mechanism = std::move(v1_result.mechanism);
+      v1::Parser v1_parser;
         return result;
       }
 
