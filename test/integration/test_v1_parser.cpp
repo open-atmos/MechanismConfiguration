@@ -54,3 +54,13 @@ TEST(ParserBase, ParserReportsBadFiles)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
   }
 }
+
+TEST(ParserBase, ParserReportsDirectory)
+{
+  v1::Parser parser;
+  std::string path = "examples/";
+  auto parsed = parser.Parse(path);
+  EXPECT_FALSE(parsed);
+  EXPECT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+}
