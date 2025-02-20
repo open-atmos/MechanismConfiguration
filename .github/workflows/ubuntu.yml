@@ -16,10 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        compiler: [g++, clang++]
+        compiler:
+          - { cpp: g++-12, c: gcc-12}
+          - { cpp: g++-13, c: gcc-13}
+          - { cpp: g++-14, c: gcc-14}
+          - { cpp: clang++, c: clang}
         build_type: [Release]
     env:
-      CXX: ${{ matrix.compiler }}
+      CC: ${{ matrix.compiler.c }}
+      CXX: ${{ matrix.compiler.cpp }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
