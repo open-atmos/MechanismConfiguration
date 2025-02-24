@@ -33,36 +33,9 @@ namespace mechanism_configuration
     std::set_difference(
         sorted_required_keys.begin(), sorted_required_keys.end(), object_keys.begin(), object_keys.end(), std::back_inserter(missing_keys));
 
-    bool missing = false;
     for (const auto& key : missing_keys)
     {
-      missing = true;
       errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Missing required key '" + key + "'" });
-    }
-
-    if (missing)
-    {
-      std::cout << "The object: " << object << std::endl;
-      std::cout << "Required Keys: ";
-      for (auto& key : required_keys)
-      {
-        std::cout << key << " ";
-      }
-      std::cout << std::endl;
-
-      std::cout << "Sorted Required Keys: ";
-      for (auto& key : sorted_required_keys)
-      {
-        std::cout << key << " ";
-      }
-      std::cout << std::endl;
-
-      std::cout << "Object Keys: ";
-      for (auto& key : object_keys)
-      {
-        std::cout << key << " ";
-      }
-      std::cout << std::endl;
     }
 
     // Find keys that are neither required nor optional
