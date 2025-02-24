@@ -17,7 +17,14 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhasePhotolysis condensed_phase_photolysis;
 
-      auto validate = ValidateSchema(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
+      auto required_keys = { validation::keys.reactants,
+                             validation::keys.products,
+                             validation::keys.type,
+                             validation::keys.aerosol_phase,
+                             validation::keys.aerosol_phase_water };
+      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -89,8 +96,7 @@ namespace mechanism_configuration
         condensed_phase_photolysis.aerosol_phase_water = aerosol_phase_water;
         condensed_phase_photolysis.products = products.second;
         condensed_phase_photolysis.reactants = reactants.second;
-        condensed_phase_photolysis.unknown_properties =
-            GetComments(object, validation::condensed_phase_photolysis.required_keys, validation::photolysis.optional_keys);
+        condensed_phase_photolysis.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.condensed_phase_photolysis.push_back(condensed_phase_photolysis);
       }
 

@@ -17,8 +17,15 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      auto validate =
-          ValidateSchema(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
+      auto required_keys = { validation::keys.products,
+                             validation::keys.reactants,
+                             validation::keys.type,
+                             validation::keys.aerosol_phase,
+                             validation::keys.aerosol_phase_water };
+      auto optional_keys = { validation::keys.A, validation::keys.B,  validation::keys.C,   validation::keys.D,
+                             validation::keys.E, validation::keys.Ea, validation::keys.name };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -109,8 +116,7 @@ namespace mechanism_configuration
         condensed_phase_arrhenius.aerosol_phase_water = aerosol_phase_water;
         condensed_phase_arrhenius.products = products.second;
         condensed_phase_arrhenius.reactants = reactants.second;
-        condensed_phase_arrhenius.unknown_properties =
-            GetComments(object, validation::condensed_phase_arrhenius.required_keys, validation::condensed_phase_arrhenius.optional_keys);
+        condensed_phase_arrhenius.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.condensed_phase_arrhenius.push_back(condensed_phase_arrhenius);
       }
 

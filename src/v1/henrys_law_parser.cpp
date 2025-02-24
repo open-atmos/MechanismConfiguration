@@ -17,7 +17,15 @@ namespace mechanism_configuration
       Errors errors;
       types::HenrysLaw henrys_law;
 
-      auto validate = ValidateSchema(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
+      auto required_keys = { validation::keys.type,
+                             validation::keys.gas_phase,
+                             validation::keys.gas_phase_species,
+                             validation::keys.aerosol_phase,
+                             validation::keys.aerosol_phase_species,
+                             validation::keys.aerosol_phase_water };
+      auto optional_keys = { validation::keys.name };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -82,7 +90,7 @@ namespace mechanism_configuration
         henrys_law.aerosol_phase = aerosol_phase;
         henrys_law.aerosol_phase_species = aerosol_phase_species;
         henrys_law.aerosol_phase_water = aerosol_phase_water;
-        henrys_law.unknown_properties = GetComments(object, validation::henrys_law.required_keys, validation::henrys_law.optional_keys);
+        henrys_law.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.henrys_law.push_back(henrys_law);
       }
 

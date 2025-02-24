@@ -11,52 +11,71 @@ namespace mechanism_configuration
     if (!object || object.IsNull())
     {
       errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Object is null" });
+      return errors;
     }
 
-    std::vector<std::string> sorted_object_keys;
+    // Collect all keys from the object
+    std::vector<std::string> object_keys;
     for (const auto& key : object)
     {
-      sorted_object_keys.push_back(key.first.as<std::string>());
+      object_keys.push_back(key.first.as<std::string>());
     }
 
+    // Sort keys for comparison
     auto sorted_required_keys = required_keys;
     auto sorted_optional_keys = optional_keys;
-    std::sort(sorted_object_keys.begin(), sorted_object_keys.end());
+    std::sort(object_keys.begin(), object_keys.end());
     std::sort(sorted_required_keys.begin(), sorted_required_keys.end());
     std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());
 
-    // get the difference between the object keys and those required
-    // what's left should be the optional keys and valid comments
-    std::vector<std::string> difference;
+    // Find missing required keys
+    std::vector<std::string> missing_keys;
     std::set_difference(
-        sorted_object_keys.begin(),
-        sorted_object_keys.end(),
-        sorted_required_keys.begin(),
-        sorted_required_keys.end(),
-        std::back_inserter(difference));
+        sorted_required_keys.begin(), sorted_required_keys.end(), object_keys.begin(), object_keys.end(), std::back_inserter(missing_keys));
 
-    // check that the number of keys remaining is exactly equal to the expected number of required keys
-    if (difference.size() != (sorted_object_keys.size() - required_keys.size()))
+    bool missing = false;
+    for (const auto& key : missing_keys)
     {
-      std::vector<std::string> missing_keys;
-      std::set_difference(
-          sorted_required_keys.begin(),
-          sorted_required_keys.end(),
-          sorted_object_keys.begin(),
-          sorted_object_keys.end(),
-          std::back_inserter(missing_keys));
-      for (auto& key : missing_keys)
-      {
-        errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Missing required key '" + key + "'" });
-      }
+      missing = true;
+      errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, line + ":" + column + ": error: Missing required key '" + key + "'" });
     }
 
-    std::vector<std::string> remaining;
+    if (missing)
+    {
+      std::cout << "The object: " << object << std::endl;
+      std::cout << "Required Keys: ";
+      for (auto& key : required_keys)
+      {
+        std::cout << key << " ";
+      }
+      std::cout << std::endl;
+
+      std::cout << "Sorted Required Keys: ";
+      for (auto& key : sorted_required_keys)
+      {
+        std::cout << key << " ";
+      }
+      std::cout << std::endl;
+
+      std::cout << "Object Keys: ";
+      for (auto& key : object_keys)
+      {
+        std::cout << key << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    // Find keys that are neither required nor optional
+    std::vector<std::string> extra_keys;
     std::set_difference(
-        difference.begin(), difference.end(), sorted_optional_keys.begin(), sorted_optional_keys.end(), std::back_inserter(remaining));
+        object_keys.begin(), object_keys.end(), sorted_required_keys.begin(), sorted_required_keys.end(), std::back_inserter(extra_keys));
+
+    std::vector<std::string> invalid_keys;
+    std::set_difference(
+        extra_keys.begin(), extra_keys.end(), sorted_optional_keys.begin(), sorted_optional_keys.end(), std::back_inserter(invalid_keys));
 
     // now, anything left must be standard comment starting with __
-    for (auto& key : remaining)
+    for (auto& key : invalid_keys)
     {
       if (key.find("__") == std::string::npos)
       {

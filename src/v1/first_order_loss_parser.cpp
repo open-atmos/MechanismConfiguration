@@ -17,7 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::FirstOrderLoss first_order_loss;
 
-      auto validate = ValidateSchema(object, validation::first_order_loss.required_keys, validation::first_order_loss.optional_keys);
+      auto required_keys = { validation::keys.reactants, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -65,13 +68,11 @@ namespace mechanism_configuration
 
         first_order_loss.gas_phase = gas_phase;
         first_order_loss.reactants = reactants.second;
-        first_order_loss.unknown_properties =
-            GetComments(object, validation::first_order_loss.required_keys, validation::first_order_loss.optional_keys);
+        first_order_loss.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.first_order_loss.push_back(first_order_loss);
       }
 
       return errors;
-      ;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

@@ -154,127 +154,14 @@ namespace mechanism_configuration
 
       const struct Mechanism
       {
-        const std::vector<std::string> required_keys{ keys.version, keys.species, keys.phases, keys.reactions };
-        const std::vector<std::string> optional_keys{ keys.name };
+        Mechanism()
+            : required_keys{ keys.version, keys.species, keys.phases, keys.reactions },
+              optional_keys{ keys.name }
+        {
+        }
+        const std::vector<std::string> required_keys;
+        const std::vector<std::string> optional_keys;
       } mechanism;
-
-      const struct Species
-      {
-        const std::vector<std::string> required_keys{ keys.name };
-        const std::vector<std::string> optional_keys{ keys.absolute_tolerance,
-                                                      keys.diffusion_coefficient,
-                                                      keys.molecular_weight,
-                                                      keys.henrys_law_constant_298,
-                                                      keys.henrys_law_constant_exponential_factor,
-                                                      keys.n_star,
-                                                      keys.density };
-      } species;
-
-      const struct Phase
-      {
-        const std::vector<std::string> required_keys{ keys.name, keys.species };
-        const std::vector<std::string> optional_keys{};
-      } phase;
-
-      const struct ReactionComponent
-      {
-        const std::vector<std::string> required_keys{ keys.species_name };
-        const std::vector<std::string> optional_keys{ keys.coefficient };
-      } reaction_component;
-
-      const struct Arrhenius
-      {
-        const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
-      } arrhenius;
-
-      const struct CondensedPhaseArrhenius
-      {
-        const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
-        const std::vector<std::string> optional_keys{ keys.A, keys.B, keys.C, keys.D, keys.E, keys.Ea, keys.name };
-      } condensed_phase_arrhenius;
-
-      const struct Troe
-      {
-        const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name,   keys.k0_A,   keys.k0_B, keys.k0_C, keys.kinf_A,
-                                                      keys.kinf_B, keys.kinf_C, keys.Fc,   keys.N };
-      } troe;
-
-      const struct Branched
-      {
-        const std::vector<std::string> required_keys{ keys.nitrate_products, keys.alkoxy_products, keys.reactants, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.X, keys.Y, keys.a0, keys.n };
-      } branched;
-
-      const struct Tunneling
-      {
-        const std::vector<std::string> required_keys{ keys.products, keys.reactants, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.B, keys.C };
-      } tunneling;
-
-      const struct Surface
-      {
-        const std::vector<std::string> required_keys{ keys.gas_phase_products,
-                                                      keys.gas_phase_species,
-                                                      keys.type,
-                                                      keys.gas_phase,
-                                                      keys.aerosol_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.reaction_probability };
-      } surface;
-
-      const struct Photolysis
-      {
-        const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-      } photolysis;
-
-      const struct CondensedPhasePhotolysis
-      {
-        const std::vector<std::string> required_keys{ keys.reactants, keys.products, keys.type, keys.aerosol_phase, keys.aerosol_phase_water };
-        const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-      } condensed_phase_photolysis;
-
-      const struct Emission
-      {
-        const std::vector<std::string> required_keys{ keys.products, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-      } emission;
-
-      const struct FirstOrderLoss
-      {
-        const std::vector<std::string> required_keys{ keys.reactants, keys.type, keys.gas_phase };
-        const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-      } first_order_loss;
-
-      const struct SimpolPhaseTransfer
-      {
-        const std::vector<std::string> required_keys{
-          keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.B
-        };
-        const std::vector<std::string> optional_keys{ keys.name };
-      } simpol_phase_transfer;
-
-      const struct WetDeposition
-      {
-        const std::vector<std::string> required_keys{ keys.aerosol_phase, keys.type };
-        const std::vector<std::string> optional_keys{ keys.name, keys.scaling_factor };
-      } wet_deposition;
-
-      const struct HenrysLaw
-      {
-        const std::vector<std::string> required_keys{
-          keys.type, keys.gas_phase, keys.gas_phase_species, keys.aerosol_phase, keys.aerosol_phase_species, keys.aerosol_phase_water
-        };
-        const std::vector<std::string> optional_keys{ keys.name };
-      } henrys_law;
-
-      const struct AqueousEquilibrium
-      {
-        const std::vector<std::string> required_keys{ keys.type,          keys.reactants,           keys.products,
-                                                      keys.aerosol_phase, keys.aerosol_phase_water, keys.k_reverse };
-        const std::vector<std::string> optional_keys{ keys.name, keys.A, keys.C };
-      } aqueous_equilibrium;
     }  // namespace validation
   }  // namespace v1
 }  // namespace mechanism_configuration

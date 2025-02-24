@@ -16,7 +16,7 @@ install(
 
 install(
   DIRECTORY
-    ${PROJECT_SOURCE_DIR}/include/open_atmos
+    ${PROJECT_SOURCE_DIR}/include
   DESTINATION
     ${INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}
 )

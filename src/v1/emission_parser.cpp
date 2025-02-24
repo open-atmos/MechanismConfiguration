@@ -17,7 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Emission emission;
 
-      auto validate = ValidateSchema(object, validation::emission.required_keys, validation::emission.optional_keys);
+      auto required_keys = { validation::keys.products, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -58,7 +61,7 @@ namespace mechanism_configuration
 
         emission.gas_phase = gas_phase;
         emission.products = products.second;
-        emission.unknown_properties = GetComments(object, validation::emission.required_keys, validation::emission.optional_keys);
+        emission.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.emission.push_back(emission);
       }
 

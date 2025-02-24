@@ -17,7 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Photolysis photolysis;
 
-      auto validate = ValidateSchema(object, validation::photolysis.required_keys, validation::photolysis.optional_keys);
+      auto required_keys = { validation::keys.reactants, validation::keys.products, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -72,7 +75,7 @@ namespace mechanism_configuration
         photolysis.gas_phase = gas_phase;
         photolysis.products = products.second;
         photolysis.reactants = reactants.second;
-        photolysis.unknown_properties = GetComments(object, validation::photolysis.required_keys, validation::photolysis.optional_keys);
+        photolysis.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.photolysis.push_back(photolysis);
       }
 
