@@ -14,12 +14,6 @@ TEST(ParserBase, ParsesFullv0Configuration)
     std::string path = "examples/v0/config" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
-    for(auto& error : parsed.errors)
-    {
-      std::cout
-        << " Message: " << error.second
-        << std::endl;
-    }
 
     v0::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
