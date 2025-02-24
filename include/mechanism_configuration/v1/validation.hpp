@@ -151,17 +151,6 @@ namespace mechanism_configuration
         // aerosol-phase water
         // aerosol-phase species
       } keys;
-
-      const struct Mechanism
-      {
-        Mechanism()
-            : required_keys{ keys.version, keys.species, keys.phases, keys.reactions },
-              optional_keys{ keys.name }
-        {
-        }
-        const std::vector<std::string> required_keys;
-        const std::vector<std::string> optional_keys;
-      } mechanism;
     }  // namespace validation
   }  // namespace v1
 }  // namespace mechanism_configuration

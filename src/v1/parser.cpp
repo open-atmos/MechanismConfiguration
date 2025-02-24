@@ -24,7 +24,10 @@ namespace mechanism_configuration
       YAML::Node object = YAML::LoadFile(config_path.string());
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
-      auto validate = ValidateSchema(object, validation::mechanism.required_keys, validation::mechanism.optional_keys);
+      const auto mechanism_required_keys = { validation::keys.version, validation::keys.species, validation::keys.phases, validation::keys.reactions };
+      const auto mechanism_optional_keys = { validation::keys.name };
+
+      auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
       if (!validate.empty())
       {
