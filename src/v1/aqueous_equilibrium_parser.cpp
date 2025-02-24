@@ -17,7 +17,11 @@ namespace mechanism_configuration
       Errors errors;
       types::AqueousEquilibrium aqueous_equilibrium;
 
-      auto validate = ValidateSchema(object, validation::aqueous_equilibrium.required_keys, validation::aqueous_equilibrium.optional_keys);
+      auto required_keys = { validation::keys.type,          validation::keys.reactants,           validation::keys.products,
+                             validation::keys.aerosol_phase, validation::keys.aerosol_phase_water, validation::keys.k_reverse };
+      auto optional_keys = { validation::keys.name, validation::keys.A, validation::keys.C };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -88,8 +92,7 @@ namespace mechanism_configuration
         aqueous_equilibrium.aerosol_phase_water = aerosol_phase_water;
         aqueous_equilibrium.products = products.second;
         aqueous_equilibrium.reactants = reactants.second;
-        aqueous_equilibrium.unknown_properties =
-            GetComments(object, validation::aqueous_equilibrium.required_keys, validation::aqueous_equilibrium.optional_keys);
+        aqueous_equilibrium.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.aqueous_equilibrium.push_back(aqueous_equilibrium);
       }
 

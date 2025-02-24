@@ -3,6 +3,18 @@
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
+TEST(ParserBase, ParsesFullV0ConfigurationWithoutExtension)
+{
+  mechanism_configuration::UniversalParser parser;
+  std::string path = "examples/v0";
+  auto parsed = parser.Parse(path);
+  EXPECT_TRUE(parsed);
+
+  EXPECT_EQ(parsed.mechanism->version.major, 0);
+  EXPECT_EQ(parsed.mechanism->version.minor, 0);
+  EXPECT_EQ(parsed.mechanism->version.patch, 0);
+}
+
 TEST(ParserBase, ParsesFullV0Configuration)
 {
   mechanism_configuration::UniversalParser parser;
@@ -22,7 +34,7 @@ TEST(ParserBase, ParsesFullV0Configuration)
 TEST(ParserBase, ParsesFullV1Configuration)
 {
   mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string path = "examples/v1/full_configuration" + extension;

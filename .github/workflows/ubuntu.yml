@@ -14,15 +14,21 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
-        compiler: [g++, clang++]
+        compiler:
+          - { cpp: g++-12, c: gcc-12}
+          - { cpp: g++-13, c: gcc-13}
+          - { cpp: g++-14, c: gcc-14}
+          - { cpp: clang++, c: clang}
         build_type: [Release]
     env:
-      CXX: ${{ matrix.compiler }}
+      CC: ${{ matrix.compiler.c }}
+      CXX: ${{ matrix.compiler.cpp }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run Cmake 
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}

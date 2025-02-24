@@ -17,7 +17,14 @@ namespace mechanism_configuration
       Errors errors;
       types::Branched branched;
 
-      auto validate = ValidateSchema(object, validation::branched.required_keys, validation::branched.optional_keys);
+      auto required_keys = { validation::keys.nitrate_products,
+                             validation::keys.alkoxy_products,
+                             validation::keys.reactants,
+                             validation::keys.type,
+                             validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.X, validation::keys.Y, validation::keys.a0, validation::keys.n };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -72,7 +79,7 @@ namespace mechanism_configuration
         branched.nitrate_products = nitrate_products.second;
         branched.alkoxy_products = alkoxy_products.second;
         branched.reactants = reactants.second;
-        branched.unknown_properties = GetComments(object, validation::branched.required_keys, validation::branched.optional_keys);
+        branched.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.branched.push_back(branched);
       }
 

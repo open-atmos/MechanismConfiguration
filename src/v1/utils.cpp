@@ -30,18 +30,26 @@ namespace mechanism_configuration
     {
       Errors errors;
       std::vector<types::Species> all_species;
+      const std::vector<std::string> species_required_keys = { validation::keys.name };
+      const std::vector<std::string> species_optional_keys = { validation::keys.absolute_tolerance,
+                                                               validation::keys.diffusion_coefficient,
+                                                               validation::keys.molecular_weight,
+                                                               validation::keys.henrys_law_constant_298,
+                                                               validation::keys.henrys_law_constant_exponential_factor,
+                                                               validation::keys.n_star,
+                                                               validation::keys.density };
 
       for (const auto& object : objects)
       {
         types::Species species;
-        auto validate = ValidateSchema(object, validation::species.required_keys, validation::species.optional_keys);
+        auto validate = ValidateSchema(object, species_required_keys, species_optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
           std::string name = object[validation::keys.name].as<std::string>();
 
           std::map<std::string, double> numerical_properties{};
-          for (const auto& key : validation::species.optional_keys)
+          for (const auto& key : species_optional_keys)
           {
             if (object[key])
             {
@@ -52,7 +60,7 @@ namespace mechanism_configuration
 
           species.name = name;
           species.optional_numerical_properties = numerical_properties;
-          species.unknown_properties = GetComments(object, validation::species.required_keys, validation::species.optional_keys);
+          species.unknown_properties = GetComments(object, species_required_keys, species_optional_keys);
 
           all_species.push_back(species);
         }
@@ -71,11 +79,13 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
+      const std::vector<std::string> phase_required_keys = { validation::keys.name, validation::keys.species };
+      const std::vector<std::string> phase_optional_keys = {};
 
       for (const auto& object : objects)
       {
         types::Phase phase;
-        auto validate = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
+        auto validate = ValidateSchema(object, phase_required_keys, phase_optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
@@ -89,7 +99,7 @@ namespace mechanism_configuration
 
           phase.name = name;
           phase.species = species;
-          phase.unknown_properties = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
+          phase.unknown_properties = GetComments(object, phase_required_keys, phase_optional_keys);
 
           if (RequiresUnknownSpecies(species, existing_species))
           {
@@ -115,8 +125,10 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::ReactionComponent component;
+      const std::vector<std::string> reaction_component_required_keys = { validation::keys.species_name };
+      const std::vector<std::string> reaction_component_optional_keys = { validation::keys.coefficient };
 
-      auto validate = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
         if (status == ConfigParseStatus::Success)
@@ -130,8 +142,7 @@ namespace mechanism_configuration
 
           component.species_name = species_name;
           component.coefficient = coefficient;
-          component.unknown_properties =
-              GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+          component.unknown_properties = GetComments(object, reaction_component_required_keys, reaction_component_optional_keys);
         }
 
       return { errors, component };

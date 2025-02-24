@@ -17,7 +17,11 @@ namespace mechanism_configuration
       Errors errors;
       types::Arrhenius arrhenius;
 
-      auto validate = ValidateSchema(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+      auto required_keys = { validation::keys.products, validation::keys.reactants, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.A, validation::keys.B,  validation::keys.C,   validation::keys.D,
+                             validation::keys.E, validation::keys.Ea, validation::keys.name };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -91,7 +95,7 @@ namespace mechanism_configuration
         arrhenius.gas_phase = gas_phase;
         arrhenius.products = products.second;
         arrhenius.reactants = reactants.second;
-        arrhenius.unknown_properties = GetComments(object, validation::arrhenius.required_keys, validation::arrhenius.optional_keys);
+        arrhenius.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.arrhenius.push_back(arrhenius);
       }
 
