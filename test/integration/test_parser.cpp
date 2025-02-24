@@ -40,12 +40,6 @@ TEST(ParserBase, ParsesFullV1Configuration)
     std::string path = "examples/v1/full_configuration" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
-    // for(auto& error : parsed.errors)
-    // {
-    //   std::cout
-    //     << " Message: " << error.second
-    //     << std::endl;
-    // }
 
     EXPECT_EQ(parsed.mechanism->version.major, 1);
     EXPECT_EQ(parsed.mechanism->version.minor, 0);
