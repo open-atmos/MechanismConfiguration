@@ -17,7 +17,15 @@ namespace mechanism_configuration
       Errors errors;
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
-      auto validate = ValidateSchema(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
+      auto required_keys = { validation::keys.type,
+                             validation::keys.gas_phase,
+                             validation::keys.gas_phase_species,
+                             validation::keys.aerosol_phase,
+                             validation::keys.aerosol_phase_species,
+                             validation::keys.B };
+      auto optional_keys = { validation::keys.name };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -101,8 +109,7 @@ namespace mechanism_configuration
         types::ReactionComponent aerosol_component;
         aerosol_component.species_name = aerosol_phase_species;
         simpol_phase_transfer.aerosol_phase_species = aerosol_component;
-        simpol_phase_transfer.unknown_properties =
-            GetComments(object, validation::simpol_phase_transfer.required_keys, validation::simpol_phase_transfer.optional_keys);
+        simpol_phase_transfer.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
       }
 

@@ -53,11 +53,13 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
+      const std::vector<std::string> phase_required_keys = { validation::keys.name, validation::keys.species };
+      const std::vector<std::string> phase_optional_keys = {};
 
       for (const auto& object : objects)
       {
         types::Phase phase;
-        auto validate = ValidateSchema(object, validation::phase.required_keys, validation::phase.optional_keys);
+        auto validate = ValidateSchema(object, phase_required_keys, phase_optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
@@ -71,7 +73,7 @@ namespace mechanism_configuration
 
           phase.name = name;
           phase.species = species;
-          phase.unknown_properties = GetComments(object, validation::phase.required_keys, validation::phase.optional_keys);
+          phase.unknown_properties = GetComments(object, phase_required_keys, phase_optional_keys);
 
           if (RequiresUnknownSpecies(species, existing_species))
           {
@@ -97,8 +99,10 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::ReactionComponent component;
+      const std::vector<std::string> reaction_component_required_keys = { validation::keys.species_name };
+      const std::vector<std::string> reaction_component_optional_keys = { validation::keys.coefficient };
 
-      auto validate = ValidateSchema(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+      auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
         if (status == ConfigParseStatus::Success)
@@ -112,8 +116,7 @@ namespace mechanism_configuration
 
           component.species_name = species_name;
           component.coefficient = coefficient;
-          component.unknown_properties =
-              GetComments(object, validation::reaction_component.required_keys, validation::reaction_component.optional_keys);
+          component.unknown_properties = GetComments(object, reaction_component_required_keys, reaction_component_optional_keys);
         }
 
       return { errors, component };

@@ -17,7 +17,14 @@ namespace mechanism_configuration
       Errors errors;
       types::Surface surface;
 
-      auto validate = ValidateSchema(object, validation::surface.required_keys, validation::surface.optional_keys);
+      auto required_keys = { validation::keys.gas_phase_products,
+                             validation::keys.gas_phase_species,
+                             validation::keys.type,
+                             validation::keys.gas_phase,
+                             validation::keys.aerosol_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.reaction_probability };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -67,7 +74,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.species_name = gas_phase_species;
         surface.gas_phase_species = component;
-        surface.unknown_properties = GetComments(object, validation::surface.required_keys, validation::surface.optional_keys);
+        surface.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.surface.push_back(surface);
       }
 

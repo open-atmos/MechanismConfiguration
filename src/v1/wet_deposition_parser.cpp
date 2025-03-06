@@ -17,7 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::WetDeposition wet_deposition;
 
-      auto validate = ValidateSchema(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
+      auto required_keys = { validation::keys.aerosol_phase, validation::keys.type };
+      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -43,7 +46,7 @@ namespace mechanism_configuration
         }
 
         wet_deposition.aerosol_phase = aerosol_phase;
-        wet_deposition.unknown_properties = GetComments(object, validation::wet_deposition.required_keys, validation::wet_deposition.optional_keys);
+        wet_deposition.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.wet_deposition.push_back(wet_deposition);
       }
 

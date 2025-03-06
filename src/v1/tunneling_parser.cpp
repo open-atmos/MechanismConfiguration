@@ -17,7 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Tunneling tunneling;
 
-      auto validate = ValidateSchema(object, validation::tunneling.required_keys, validation::tunneling.optional_keys);
+      auto required_keys = { validation::keys.products, validation::keys.reactants, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name, validation::keys.A, validation::keys.B, validation::keys.C };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -73,7 +76,7 @@ namespace mechanism_configuration
         tunneling.gas_phase = gas_phase;
         tunneling.products = products.second;
         tunneling.reactants = reactants.second;
-        tunneling.unknown_properties = GetComments(object, validation::tunneling.required_keys, validation::tunneling.optional_keys);
+        tunneling.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.tunneling.push_back(tunneling);
       }
 

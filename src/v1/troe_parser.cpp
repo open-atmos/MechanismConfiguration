@@ -17,7 +17,11 @@ namespace mechanism_configuration
       Errors errors;
       types::Troe troe;
 
-      auto validate = ValidateSchema(object, validation::troe.required_keys, validation::troe.optional_keys);
+      auto required_keys = { validation::keys.products, validation::keys.reactants, validation::keys.type, validation::keys.gas_phase };
+      auto optional_keys = { validation::keys.name,   validation::keys.k0_A,   validation::keys.k0_B, validation::keys.k0_C, validation::keys.kinf_A,
+                             validation::keys.kinf_B, validation::keys.kinf_C, validation::keys.Fc,   validation::keys.N };
+
+      auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -93,7 +97,7 @@ namespace mechanism_configuration
         troe.gas_phase = gas_phase;
         troe.products = products.second;
         troe.reactants = reactants.second;
-        troe.unknown_properties = GetComments(object, validation::troe.required_keys, validation::troe.optional_keys);
+        troe.unknown_properties = GetComments(object, required_keys, optional_keys);
         reactions.troe.push_back(troe);
       }
 
