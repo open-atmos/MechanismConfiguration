@@ -21,12 +21,10 @@ namespace mechanism_configuration
       struct Species
       {
         std::string name;
-        double molecular_weight{ 0.0 };
-        double diffusion_coefficient{ 0.0 };
-        bool third_body{ false };
-        double absolute_tolerance{ 0.0 };
-        double mean_free_speed_factor{ 0.0 };
-        std::string tracer_type;
+        std::optional<double> molecular_weight;
+        std::optional<double> diffusion_coefficient;
+        std::optional<double> absolute_tolerance;
+        std::optional<std::string> tracer_type;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

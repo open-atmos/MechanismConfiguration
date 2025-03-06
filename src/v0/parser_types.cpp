@@ -1,4 +1,3 @@
-
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/v0/parser_types.hpp>
 #include <mechanism_configuration/v0/validation.hpp>
@@ -12,9 +11,7 @@ namespace mechanism_configuration
     {
       Errors errors;
       std::vector<std::string> required = { validation::NAME, validation::TYPE };
-      std::vector<std::string> optional = {
-        validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT, validation::THIRD_BODY
-      };
+      std::vector<std::string> optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -28,14 +25,10 @@ namespace mechanism_configuration
           species.molecular_weight = object[validation::MOL_WEIGHT].as<double>();
         if (object[validation::DIFFUSION_COEFF])
           species.diffusion_coefficient = object[validation::DIFFUSION_COEFF].as<double>();
-        if (object[validation::THIRD_BODY])
-          species.third_body = object[validation::THIRD_BODY].as<bool>();
         if (object[validation::ABS_TOLERANCE])
           species.absolute_tolerance = object[validation::ABS_TOLERANCE].as<double>();
         if (object[validation::TRACER_TYPE])
           species.tracer_type = object[validation::TRACER_TYPE].as<std::string>();
-        if (object[validation::THIRD_BODY])
-          species.third_body = object[validation::THIRD_BODY].as<bool>();
 
         // Load remaining keys as unknown properties
         for (auto it = object.begin(); it != object.end(); ++it)
