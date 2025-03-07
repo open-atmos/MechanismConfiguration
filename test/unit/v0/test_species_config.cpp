@@ -17,7 +17,7 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     EXPECT_TRUE(parsed);
     if (!parsed)
     {
-      for(auto &error : parsed.errors)
+      for (auto& error : parsed.errors)
       {
         std::cerr << error.second << std::endl;
       }
