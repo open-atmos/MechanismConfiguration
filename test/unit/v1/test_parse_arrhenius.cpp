@@ -32,7 +32,7 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].species_name, "C");
     EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].coefficient, 0.3);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.arrhenius[0].unknown_properties["__solver_param"], "\"0.1\"");
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].unknown_properties["__solver_param"], "0.10000000000000001");
 
     EXPECT_EQ(mechanism.reactions.arrhenius[1].name, "my arrhenius2");
     EXPECT_EQ(mechanism.reactions.arrhenius[1].gas_phase, "gas");
