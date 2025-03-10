@@ -24,7 +24,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        run: |
+          if [ "${{ matrix.architecture }}" == "Win32" ]; then
+        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF
+          else
+        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          fi
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
