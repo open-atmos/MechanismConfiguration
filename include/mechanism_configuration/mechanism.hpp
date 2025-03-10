@@ -10,6 +10,15 @@
 
 namespace mechanism_configuration
 {
+// Trying to build on linux for the python release, I learned that glibc had a bug which defined
+// a macro called major and minor. This caused a conflict with the Version struct. To fix this, I
+// undefine the macros before defining the struct and then redefine them after the struct.
+// https://stackoverflow.com/a/22253389/5217293
+#pragma push_macro("major")
+#undef major
+#pragma push_macro("minor")
+#undef minor
+
   struct Version
   {
     unsigned int major;
@@ -58,6 +67,9 @@ namespace mechanism_configuration
       return std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(patch);
     }
   };
+
+#pragma pop_macro("minor")
+#pragma pop_macro("major")
 
   struct Mechanism
   {
