@@ -17,12 +17,12 @@ namespace mechanism_configuration
         types::Species species;
         auto required_keys = { validation::keys.name };
         auto optional_keys = { validation::keys.absolute_tolerance,
-                                                      validation::keys.diffusion_coefficient,
-                                                      validation::keys.molecular_weight,
-                                                      validation::keys.henrys_law_constant_298,
-                                                      validation::keys.henrys_law_constant_exponential_factor,
-                                                      validation::keys.n_star,
-                                                      validation::keys.density };
+                               validation::keys.diffusion_coefficient,
+                               validation::keys.molecular_weight,
+                               validation::keys.henrys_law_constant_298,
+                               validation::keys.henrys_law_constant_exponential_factor,
+                               validation::keys.n_star,
+                               validation::keys.density };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
@@ -54,5 +54,5 @@ namespace mechanism_configuration
 
       return { errors, all_species };
     }
-  }
-}
+  }  // namespace v1
+}  // namespace mechanism_configuration
