@@ -7,10 +7,12 @@
       "__absolute tolerance": 1.0e-30
     },
     {
-      "name": "B"
+      "name": "B",
+      "tracer type": "AEROSOL"
     },
     {
-      "name": "C"
+      "name": "C",
+      "tracer type": "THIRD_BODY"
     },
     {
       "name": "M"

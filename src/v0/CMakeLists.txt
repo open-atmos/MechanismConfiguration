@@ -2,7 +2,7 @@
 target_sources(mechanism_configuration
   PRIVATE
     parser.cpp
-    parser_types.cpp
+    species_parser.cpp
     photolysis_parser.cpp
     emission_parser.cpp
     first_order_loss_parser.cpp

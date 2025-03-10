@@ -4,6 +4,7 @@ reactions: []
 species:
 - __absolute tolerance: 1.0e-30
   name: A
+  tracer type: AEROSOL
 - HLC exponential factor [K]: 6340
   HLC(298K) [mol m-3 Pa-1]: 1.011596348
   N star: 1.74

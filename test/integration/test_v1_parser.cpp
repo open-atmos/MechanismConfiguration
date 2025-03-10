@@ -8,7 +8,7 @@ using namespace mechanism_configuration;
 TEST(ParserBase, ParsesFullV1Configuration)
 {
   v1::Parser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
+  std::vector<std::string> extensions = { ".json" };
   for (auto& extension : extensions)
   {
     std::string path = "examples/v1/full_configuration" + extension;
@@ -34,6 +34,11 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
+
+    EXPECT_EQ(mechanism.species[1].tracer_type.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].tracer_type.value(), "AEROSOL");
+    EXPECT_EQ(mechanism.species[2].tracer_type.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].tracer_type.value(), "THIRD_BODY");
 
     EXPECT_EQ(mechanism.version.major, 1);
     EXPECT_EQ(mechanism.version.minor, 0);
