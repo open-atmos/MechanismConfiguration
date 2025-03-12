@@ -36,7 +36,8 @@ namespace mechanism_configuration
           std::map<std::string, double> numerical_properties{};
           for (const auto& key : optional_keys)
           {
-            if (key == validation::keys.tracer_type) continue; // tracer is a string and handled above
+            if (key == validation::keys.tracer_type)
+              continue;  // tracer is a string and handled above
             if (object[key])
             {
               double val = object[key].as<double>();
