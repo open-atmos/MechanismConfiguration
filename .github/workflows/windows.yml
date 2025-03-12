@@ -2,8 +2,6 @@ name: Windows
 
 on: 
   push:
-    branches:
-      - main
   pull_request:
   workflow_dispatch:
 
@@ -26,9 +24,9 @@ jobs:
       - name: Run Cmake
         run: |
           if [ "${{ matrix.architecture }}" == "Win32" ]; then
-        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF
+            cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF
           else
-        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+            cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
           fi
 
       - name: Build
