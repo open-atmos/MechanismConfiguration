@@ -9,11 +9,11 @@ extern "C" {
 
   const char* getVersionString()
   {
-    return "1.0.0";
+    return "0.0.0";
   }
   unsigned getVersionMajor()
   {
-    return 1;
+    return 0;
   }
   unsigned getVersionMinor()
   {
