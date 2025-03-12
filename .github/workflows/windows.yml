@@ -23,11 +23,11 @@ jobs:
 
       - name: Run Cmake
         run: |
-          if [ "${{ matrix.architecture }}" == "Win32" ]; then
+          if (${{ matrix.architecture }} -eq "Win32") {
             cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF
-          else
+          } else {
             cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          fi
+          }
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
