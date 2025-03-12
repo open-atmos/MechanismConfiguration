@@ -18,6 +18,8 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[0].name, "A");
     EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0000000000000001e-30");
+    EXPECT_EQ(mechanism.species[0].tracer_type.has_value(), true);
+    EXPECT_EQ(mechanism.species[0].tracer_type.value(), "AEROSOL");
 
     EXPECT_EQ(mechanism.species[1].name, "H2O2");
     EXPECT_EQ(mechanism.species[1].optional_numerical_properties.size(), 6);

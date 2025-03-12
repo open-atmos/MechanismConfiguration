@@ -4,7 +4,8 @@
   "species": [
     {
       "name": "A",
-      "__absolute tolerance": 1.0e-30
+      "__absolute tolerance": 1.0e-30,
+      "tracer type": "AEROSOL"
     },
     {
       "name": "H2O2",

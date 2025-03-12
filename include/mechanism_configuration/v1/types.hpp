@@ -23,6 +23,7 @@ namespace mechanism_configuration
       {
         std::string name;
         std::map<std::string, double> optional_numerical_properties;
+        std::optional<std::string> tracer_type;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

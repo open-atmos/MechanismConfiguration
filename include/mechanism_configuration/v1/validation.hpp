@@ -33,6 +33,8 @@ namespace mechanism_configuration
         const std::string phase = "phase";
         const std::string n_star = "N star";
         const std::string density = "density [kg m-3]";
+        const std::string tracer_type = "tracer type";
+        const std::string third_body = "THIRD_BODY";
 
         // Reactions
         const std::string reactants = "reactants";

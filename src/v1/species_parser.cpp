@@ -22,16 +22,21 @@ namespace mechanism_configuration
                                validation::keys.henrys_law_constant_298,
                                validation::keys.henrys_law_constant_exponential_factor,
                                validation::keys.n_star,
-                               validation::keys.density };
+                               validation::keys.density,
+                               validation::keys.tracer_type };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
           std::string name = object[validation::keys.name].as<std::string>();
 
+          if (object[validation::keys.tracer_type])
+            species.tracer_type = object[validation::keys.tracer_type].as<std::string>();
+
           std::map<std::string, double> numerical_properties{};
           for (const auto& key : optional_keys)
           {
+            if (key == validation::keys.tracer_type) continue; // tracer is a string and handled above
             if (object[key])
             {
               double val = object[key].as<double>();
