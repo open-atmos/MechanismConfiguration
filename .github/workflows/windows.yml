@@ -23,13 +23,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        if: matrix.architecture == 'Win32'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          architecture: 'x86'
+
+      - name: Setup Python
+        if: matrix.architecture == 'x64'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+
       - name: Run Cmake
-        run: |
-          if [ "${{ matrix.architecture }}" == "Win32" ]; then
-        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=OFF
-          else
-        cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          fi
+        if: matrix.architecture == 'Win32'
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=ON
+      
+      - name: Run Cmake
+        if: matrix.architecture == 'x64'
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
