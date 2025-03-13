@@ -13,4 +13,5 @@ target_sources(mechanism_configuration
     tunneling_parser.cpp
     surface_parser.cpp
     user_defined_reaction_parser.cpp
+    export.cpp
 )

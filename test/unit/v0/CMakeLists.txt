@@ -17,6 +17,7 @@ create_standard_test(NAME v0_parse_troe SOURCES test_troe_config.cpp)
 create_standard_test(NAME v0_parse_tunneling SOURCES test_tunneling_config.cpp)
 create_standard_test(NAME v0_parse_user_defined SOURCES test_user_defined_config.cpp)
 create_standard_test(NAME v0_parse_species SOURCES test_species_config.cpp)
+create_standard_test(NAME v0_export SOURCES test_export.cpp)
 
 ################################################################################
 # Copy test data
