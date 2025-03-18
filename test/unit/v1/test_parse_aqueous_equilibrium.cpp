@@ -31,7 +31,7 @@ TEST(ParserBase, CanParseValidAqueousEquilibriumReaction)
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].products[1].species_name, "C");
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].products[1].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].unknown_properties["__comment"], "\"GIF is pronounced with a hard g\"");
+    EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].unknown_properties["__comment"], "GIF is pronounced with a hard g");
 
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[1].aerosol_phase, "aerosol");
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[1].aerosol_phase_water, "H2O_aq");

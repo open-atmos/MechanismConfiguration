@@ -30,8 +30,7 @@ namespace mechanism_configuration
       virtual ~IReactionParser() = default;
     };
 
-    std::unordered_map<std::string, std::string>
-    GetComments(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
+    std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
     std::pair<Errors, std::vector<v1::types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<v1::types::Species> existing_species);
 

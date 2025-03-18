@@ -26,7 +26,7 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
     EXPECT_EQ(mechanism.reactions.photolysis[0].products[0].species_name, "C");
     EXPECT_EQ(mechanism.reactions.photolysis[0].products[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.photolysis[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.photolysis[0].unknown_properties["__comment"], "\"hi\"");
+    EXPECT_EQ(mechanism.reactions.photolysis[0].unknown_properties["__comment"], "hi");
 
     EXPECT_EQ(mechanism.reactions.photolysis[1].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.photolysis[1].scaling_factor, 1);

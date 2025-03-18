@@ -75,7 +75,7 @@ namespace mechanism_configuration
         photolysis.gas_phase = gas_phase;
         photolysis.products = products.second;
         photolysis.reactants = reactants.second;
-        photolysis.unknown_properties = GetComments(object, required_keys, optional_keys);
+        photolysis.unknown_properties = GetComments(object);
         reactions.photolysis.push_back(photolysis);
       }
 

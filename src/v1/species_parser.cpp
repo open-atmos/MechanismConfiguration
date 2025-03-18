@@ -29,25 +29,27 @@ namespace mechanism_configuration
         if (validate.empty())
         {
           std::string name = object[validation::keys.name].as<std::string>();
+          species.name = name;
 
           if (object[validation::keys.tracer_type])
             species.tracer_type = object[validation::keys.tracer_type].as<std::string>();
 
-          std::map<std::string, double> numerical_properties{};
-          for (const auto& key : optional_keys)
-          {
-            if (key == validation::keys.tracer_type)
-              continue;  // tracer is a string and handled above
-            if (object[key])
-            {
-              double val = object[key].as<double>();
-              numerical_properties[key] = val;
-            }
-          }
+          if (object[validation::keys.absolute_tolerance])
+            species.absolute_tolerance = object[validation::keys.absolute_tolerance].as<double>();
+          if (object[validation::keys.diffusion_coefficient])
+            species.diffusion_coefficient = object[validation::keys.diffusion_coefficient].as<double>();
+          if (object[validation::keys.molecular_weight])
+            species.molecular_weight = object[validation::keys.molecular_weight].as<double>();
+          if (object[validation::keys.henrys_law_constant_298])
+            species.henrys_law_constant_298 = object[validation::keys.henrys_law_constant_298].as<double>();
+          if (object[validation::keys.henrys_law_constant_exponential_factor])
+            species.henrys_law_constant_exponential_factor = object[validation::keys.henrys_law_constant_exponential_factor].as<double>();
+          if (object[validation::keys.n_star])
+            species.n_star = object[validation::keys.n_star].as<double>();
+          if (object[validation::keys.density])
+            species.density = object[validation::keys.density].as<double>();
 
-          species.name = name;
-          species.optional_numerical_properties = numerical_properties;
-          species.unknown_properties = GetComments(object, required_keys, optional_keys);
+          species.unknown_properties = GetComments(object);
 
           all_species.push_back(species);
         }

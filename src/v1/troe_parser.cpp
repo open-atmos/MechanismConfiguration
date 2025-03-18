@@ -97,7 +97,7 @@ namespace mechanism_configuration
         troe.gas_phase = gas_phase;
         troe.products = products.second;
         troe.reactants = reactants.second;
-        troe.unknown_properties = GetComments(object, required_keys, optional_keys);
+        troe.unknown_properties = GetComments(object);
         reactions.troe.push_back(troe);
       }
 

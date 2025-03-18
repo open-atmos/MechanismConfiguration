@@ -7,44 +7,33 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    std::unordered_map<std::string, std::string>
-    GetComments(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys)
+    std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object)
     {
       std::unordered_map<std::string, std::string> unknown_properties;
       const std::string comment_start = "__";
+
       for (const auto& key : object)
       {
         std::string key_str = key.first.as<std::string>();
+
+        // Check if the key starts with the comment prefix
         if (key_str.compare(0, comment_start.size(), comment_start) == 0)
         {
-          YAML::Emitter emitter;
+          // Check if the value is a YAML node
           if (key.second.IsScalar())
           {
-            try
-            {
-              size_t pos;
-              double numeric_value = std::stod(key.second.as<std::string>(), &pos);
-              if (pos == key.second.as<std::string>().size())
-              {
-                emitter << numeric_value;
-              }
-              else
-              {
-                emitter << YAML::DoubleQuoted << key.second.as<std::string>();
-              }
-            }
-            catch (const std::invalid_argument&)
-            {
-              emitter << YAML::DoubleQuoted << key.second.as<std::string>();
-            }
+            unknown_properties[key_str] = key.second.as<std::string>();
           }
           else
           {
-            emitter << YAML::DoubleQuoted << YAML::Flow << key.second;
+            std::stringstream ss;
+            ss << key.second;
+            unknown_properties[key_str] = ss.str();
           }
-          unknown_properties[key_str] = emitter.c_str();
         }
       }
+
+      // Return the map of extracted comments
       return unknown_properties;
     }
 
@@ -73,7 +62,7 @@ namespace mechanism_configuration
 
           phase.name = name;
           phase.species = species;
-          phase.unknown_properties = GetComments(object, phase_required_keys, phase_optional_keys);
+          phase.unknown_properties = GetComments(object);
 
           if (RequiresUnknownSpecies(species, existing_species))
           {
@@ -116,7 +105,7 @@ namespace mechanism_configuration
 
           component.species_name = species_name;
           component.coefficient = coefficient;
-          component.unknown_properties = GetComments(object, reaction_component_required_keys, reaction_component_optional_keys);
+          component.unknown_properties = GetComments(object);
         }
 
       return { errors, component };

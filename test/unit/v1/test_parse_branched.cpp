@@ -29,14 +29,14 @@ TEST(ParserBase, CanParseValidBranchedReaction)
     EXPECT_EQ(mechanism.reactions.branched[0].nitrate_products[0].species_name, "C");
     EXPECT_EQ(mechanism.reactions.branched[0].nitrate_products[0].coefficient, 1.2);
     EXPECT_EQ(mechanism.reactions.branched[0].nitrate_products[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.branched[0].nitrate_products[0].unknown_properties["__thing"], "\"hi\"");
+    EXPECT_EQ(mechanism.reactions.branched[0].nitrate_products[0].unknown_properties["__thing"], "hi");
     EXPECT_EQ(mechanism.reactions.branched[0].alkoxy_products.size(), 2);
     EXPECT_EQ(mechanism.reactions.branched[0].alkoxy_products[0].species_name, "B");
     EXPECT_EQ(mechanism.reactions.branched[0].alkoxy_products[0].coefficient, 0.2);
     EXPECT_EQ(mechanism.reactions.branched[0].alkoxy_products[1].species_name, "A");
     EXPECT_EQ(mechanism.reactions.branched[0].alkoxy_products[1].coefficient, 1.2);
     EXPECT_EQ(mechanism.reactions.branched[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.branched[0].unknown_properties["__comment"], "\"thing\"");
+    EXPECT_EQ(mechanism.reactions.branched[0].unknown_properties["__comment"], "thing");
   }
 }
 

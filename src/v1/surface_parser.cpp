@@ -74,7 +74,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.species_name = gas_phase_species;
         surface.gas_phase_species = component;
-        surface.unknown_properties = GetComments(object, required_keys, optional_keys);
+        surface.unknown_properties = GetComments(object);
         reactions.surface.push_back(surface);
       }
 

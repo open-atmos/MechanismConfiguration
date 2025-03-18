@@ -22,7 +22,13 @@ namespace mechanism_configuration
       struct Species
       {
         std::string name;
-        std::map<std::string, double> optional_numerical_properties;
+        std::optional<double> absolute_tolerance;
+        std::optional<double> diffusion_coefficient;
+        std::optional<double> molecular_weight;
+        std::optional<double> henrys_law_constant_298;
+        std::optional<double> henrys_law_constant_exponential_factor;
+        std::optional<double> n_star;
+        std::optional<double> density;
         std::optional<std::string> tracer_type;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;

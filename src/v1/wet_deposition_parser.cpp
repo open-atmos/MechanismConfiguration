@@ -46,7 +46,7 @@ namespace mechanism_configuration
         }
 
         wet_deposition.aerosol_phase = aerosol_phase;
-        wet_deposition.unknown_properties = GetComments(object, required_keys, optional_keys);
+        wet_deposition.unknown_properties = GetComments(object);
         reactions.wet_deposition.push_back(wet_deposition);
       }
 

@@ -79,7 +79,7 @@ namespace mechanism_configuration
         branched.nitrate_products = nitrate_products.second;
         branched.alkoxy_products = alkoxy_products.second;
         branched.reactants = reactants.second;
-        branched.unknown_properties = GetComments(object, required_keys, optional_keys);
+        branched.unknown_properties = GetComments(object);
         reactions.branched.push_back(branched);
       }
 

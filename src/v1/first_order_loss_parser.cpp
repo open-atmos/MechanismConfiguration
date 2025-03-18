@@ -68,7 +68,7 @@ namespace mechanism_configuration
 
         first_order_loss.gas_phase = gas_phase;
         first_order_loss.reactants = reactants.second;
-        first_order_loss.unknown_properties = GetComments(object, required_keys, optional_keys);
+        first_order_loss.unknown_properties = GetComments(object);
         reactions.first_order_loss.push_back(first_order_loss);
       }
 

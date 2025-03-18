@@ -34,11 +34,11 @@ TEST(ParserBase, CanParseValidTroeReaction)
     EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties.size(), 1);
     if (extension == ".json")
     {
-      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "{\"a\": \"1.0\"}");
+      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "{a: 1.0}");
     }
     else
     {
-      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "\"a\": \"1.0\"");
+      EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties["__my object"], "a: 1.0");
     }
 
     EXPECT_EQ(mechanism.reactions.troe[1].name, "my troe");
@@ -58,7 +58,7 @@ TEST(ParserBase, CanParseValidTroeReaction)
     EXPECT_EQ(mechanism.reactions.troe[1].products[0].species_name, "A");
     EXPECT_EQ(mechanism.reactions.troe[1].products[0].coefficient, 0.2);
     EXPECT_EQ(mechanism.reactions.troe[1].products[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.troe[1].products[0].unknown_properties["__optional thing"], "\"hello\"");
+    EXPECT_EQ(mechanism.reactions.troe[1].products[0].unknown_properties["__optional thing"], "hello");
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].species_name, "B");
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].coefficient, 1.2);
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].unknown_properties.size(), 0);

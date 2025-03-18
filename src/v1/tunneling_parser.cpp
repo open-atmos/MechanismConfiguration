@@ -76,7 +76,7 @@ namespace mechanism_configuration
         tunneling.gas_phase = gas_phase;
         tunneling.products = products.second;
         tunneling.reactants = reactants.second;
-        tunneling.unknown_properties = GetComments(object, required_keys, optional_keys);
+        tunneling.unknown_properties = GetComments(object);
         reactions.tunneling.push_back(tunneling);
       }
 

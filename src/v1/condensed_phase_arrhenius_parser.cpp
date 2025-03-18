@@ -116,7 +116,7 @@ namespace mechanism_configuration
         condensed_phase_arrhenius.aerosol_phase_water = aerosol_phase_water;
         condensed_phase_arrhenius.products = products.second;
         condensed_phase_arrhenius.reactants = reactants.second;
-        condensed_phase_arrhenius.unknown_properties = GetComments(object, required_keys, optional_keys);
+        condensed_phase_arrhenius.unknown_properties = GetComments(object);
         reactions.condensed_phase_arrhenius.push_back(condensed_phase_arrhenius);
       }
 
