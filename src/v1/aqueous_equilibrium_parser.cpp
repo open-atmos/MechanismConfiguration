@@ -92,7 +92,7 @@ namespace mechanism_configuration
         aqueous_equilibrium.aerosol_phase_water = aerosol_phase_water;
         aqueous_equilibrium.products = products.second;
         aqueous_equilibrium.reactants = reactants.second;
-        aqueous_equilibrium.unknown_properties = GetComments(object, required_keys, optional_keys);
+        aqueous_equilibrium.unknown_properties = GetComments(object);
         reactions.aqueous_equilibrium.push_back(aqueous_equilibrium);
       }
 

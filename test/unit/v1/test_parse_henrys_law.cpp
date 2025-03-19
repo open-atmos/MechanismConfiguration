@@ -23,7 +23,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species, "B");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_water, "H2O_aq");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "\"hi\"");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "hi");
 
     EXPECT_EQ(mechanism.reactions.henrys_law[1].name, "");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase, "gas");

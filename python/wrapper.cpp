@@ -103,7 +103,14 @@ PYBIND11_MODULE(mechanism_configuration, m)
   py::class_<Species>(m, "Species")
       .def(py::init<>())
       .def_readwrite("name", &Species::name)
-      .def_readwrite("optional_numerical_properties", &Species::optional_numerical_properties)
+      .def_readwrite("absolute_tolerance", &Species::absolute_tolerance)
+      .def_readwrite("diffusion_coefficient", &Species::diffusion_coefficient)
+      .def_readwrite("molecular_weight", &Species::molecular_weight)
+      .def_readwrite("henrys_law_constant_298", &Species::henrys_law_constant_298)
+      .def_readwrite("henrys_law_constant_exponential_factor", &Species::henrys_law_constant_exponential_factor)
+      .def_readwrite("n_star", &Species::n_star)
+      .def_readwrite("density", &Species::density)
+      .def_readwrite("tracer_type", &Species::tracer_type)
       .def_readwrite("unknown_properties", &Species::unknown_properties)
       .def("__str__", [](const Species &s) { return s.name; })
       .def("__repr__", [](const Species &s) { return "<Species: " + s.name + ">"; });
@@ -394,5 +401,4 @@ PYBIND11_MODULE(mechanism_configuration, m)
               throw std::runtime_error(error);
             }
           });
-
 }

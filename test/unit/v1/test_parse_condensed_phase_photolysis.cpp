@@ -27,7 +27,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].products[0].species_name, "C");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].products[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].unknown_properties["__comment"], "\"hi\"");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].unknown_properties["__comment"], "hi");
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].aerosol_phase, "aqueous aerosol");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].aerosol_phase_water, "H2O_aq");

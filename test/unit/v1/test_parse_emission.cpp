@@ -23,7 +23,7 @@ TEST(ParserBase, CanParseValidEmissionReaction)
     EXPECT_EQ(mechanism.reactions.emission[0].products[0].species_name, "B");
     EXPECT_EQ(mechanism.reactions.emission[0].products[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.emission[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.emission[0].unknown_properties["__comment"], "\"Dr. Pepper outranks any other soda\"");
+    EXPECT_EQ(mechanism.reactions.emission[0].unknown_properties["__comment"], "Dr. Pepper outranks any other soda");
 
     EXPECT_EQ(mechanism.reactions.emission[1].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.emission[1].scaling_factor, 1);

@@ -90,7 +90,7 @@ namespace mechanism_configuration
         henrys_law.aerosol_phase = aerosol_phase;
         henrys_law.aerosol_phase_species = aerosol_phase_species;
         henrys_law.aerosol_phase_water = aerosol_phase_water;
-        henrys_law.unknown_properties = GetComments(object, required_keys, optional_keys);
+        henrys_law.unknown_properties = GetComments(object);
         reactions.henrys_law.push_back(henrys_law);
       }
 

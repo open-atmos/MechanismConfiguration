@@ -109,7 +109,7 @@ namespace mechanism_configuration
         types::ReactionComponent aerosol_component;
         aerosol_component.species_name = aerosol_phase_species;
         simpol_phase_transfer.aerosol_phase_species = aerosol_component;
-        simpol_phase_transfer.unknown_properties = GetComments(object, required_keys, optional_keys);
+        simpol_phase_transfer.unknown_properties = GetComments(object);
         reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
       }
 

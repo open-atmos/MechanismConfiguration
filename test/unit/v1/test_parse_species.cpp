@@ -16,28 +16,35 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species.size(), 3);
 
     EXPECT_EQ(mechanism.species[0].name, "A");
-    EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0000000000000001e-30");
+    EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 2);
+    EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0e-30");
+    EXPECT_EQ(mechanism.species[0].unknown_properties["__long name"], "ozone");
     EXPECT_EQ(mechanism.species[0].tracer_type.has_value(), true);
     EXPECT_EQ(mechanism.species[0].tracer_type.value(), "AEROSOL");
 
     EXPECT_EQ(mechanism.species[1].name, "H2O2");
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties.size(), 6);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["HLC(298K) [mol m-3 Pa-1]"], 1.011596348);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["HLC exponential factor [K]"], 6340);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["diffusion coefficient [m2 s-1]"], 1.46e-05);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["N star"], 1.74);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["molecular weight [kg mol-1]"], 0.0340147);
-    EXPECT_EQ(mechanism.species[1].optional_numerical_properties["density [kg m-3]"], 1000.0);
+    EXPECT_EQ(mechanism.species[1].henrys_law_constant_298.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].henrys_law_constant_298.value(), 1.011596348);
+    EXPECT_EQ(mechanism.species[1].henrys_law_constant_exponential_factor.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].henrys_law_constant_exponential_factor.value(), 6340);
+    EXPECT_EQ(mechanism.species[1].diffusion_coefficient.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].diffusion_coefficient.value(), 1.46e-05);
+    EXPECT_EQ(mechanism.species[1].n_star.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].n_star.value(), 1.74);
+    EXPECT_EQ(mechanism.species[1].molecular_weight.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].molecular_weight.value(), 0.0340147);
+    EXPECT_EQ(mechanism.species[1].density.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].density.value(), 1000.0);
     EXPECT_EQ(mechanism.species[1].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.species[1].unknown_properties["__absolute tolerance"], "1e-10");
+    EXPECT_EQ(mechanism.species[1].unknown_properties["__absolute tolerance"], "1.0e-10");
 
     EXPECT_EQ(mechanism.species[2].name, "aerosol stuff");
-    EXPECT_EQ(mechanism.species[2].optional_numerical_properties.size(), 2);
-    EXPECT_EQ(mechanism.species[2].optional_numerical_properties["molecular weight [kg mol-1]"], 0.5);
-    EXPECT_EQ(mechanism.species[2].optional_numerical_properties["density [kg m-3]"], 1000.0);
+    EXPECT_EQ(mechanism.species[2].molecular_weight.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].molecular_weight.value(), 0.5);
+    EXPECT_EQ(mechanism.species[2].density.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].density.value(), 1000.0);
     EXPECT_EQ(mechanism.species[2].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"], "9.9999999999999995e-21");
+    EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"], "1.0e-20");
   }
 }
 

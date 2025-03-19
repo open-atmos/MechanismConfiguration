@@ -61,7 +61,7 @@ namespace mechanism_configuration
 
         emission.gas_phase = gas_phase;
         emission.products = products.second;
-        emission.unknown_properties = GetComments(object, required_keys, optional_keys);
+        emission.unknown_properties = GetComments(object);
         reactions.emission.push_back(emission);
       }
 

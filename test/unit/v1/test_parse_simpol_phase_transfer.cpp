@@ -26,7 +26,7 @@ TEST(ParserBase, CanParseValidSimpolPhaseTransferReaction)
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].B[2], 1.96e-3);
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].B[3], -4.96e-1);
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].unknown_properties["__comment"], "\"cereal is also soup\"");
+    EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].unknown_properties["__comment"], "cereal is also soup");
 
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[1].name, "");
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[1].gas_phase, "gas");

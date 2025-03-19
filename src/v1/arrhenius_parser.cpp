@@ -95,7 +95,7 @@ namespace mechanism_configuration
         arrhenius.gas_phase = gas_phase;
         arrhenius.products = products.second;
         arrhenius.reactants = reactants.second;
-        arrhenius.unknown_properties = GetComments(object, required_keys, optional_keys);
+        arrhenius.unknown_properties = GetComments(object);
         reactions.arrhenius.push_back(arrhenius);
       }
 

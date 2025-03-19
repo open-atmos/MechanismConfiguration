@@ -5,7 +5,8 @@
     {
       "name": "A",
       "__absolute tolerance": 1.0e-30,
-      "tracer type": "AEROSOL"
+      "tracer type": "AEROSOL",
+      "__long name": "ozone"
     },
     {
       "name": "H2O2",
